@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+
+class LoginFormField extends StatefulWidget {
+  final String label;
+  final TextEditingController controller;
+  LoginFormField({required this.label, required this.controller, super.key});
+
+  @override
+  State<LoginFormField> createState() => _LoginFormFieldState();
+}
+
+class _LoginFormFieldState extends State<LoginFormField> {
+  late String _inputValue; // 상태 변수로 입력값을 저장
+  late FocusNode _focusNode; // FocusNode 추가
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _inputValue = '';
+    _focusNode = FocusNode(); // FocusNode 초기화
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      focusNode: _focusNode,
+      controller: widget.controller,
+      decoration: InputDecoration(
+        labelText: widget.label,
+        border: UnderlineInputBorder(
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '${widget.label}를 입력하세요.';
+        }
+        return null;
+      },
+    );
+  }
+}
