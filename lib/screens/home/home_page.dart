@@ -271,19 +271,6 @@ class MainScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: '관심'),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: '등록'),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: '애쁠톡'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이'),
-        ],
-      ),
     );
   }
 }
