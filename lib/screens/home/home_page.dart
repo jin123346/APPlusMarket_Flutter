@@ -6,22 +6,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Shopping App',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: const MainScreen(),
-    );
-  }
-}
-
-class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     final brands = [
       'ZARA',
       'H&M',
@@ -129,7 +113,7 @@ class MainScreen extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
               child: TextField(
                 decoration: InputDecoration(
                   hintText: '검색어를 입력해주세요',
@@ -208,7 +192,7 @@ class MainScreen extends StatelessWidget {
                 crossAxisSpacing: 16,
               ),
               delegate: SliverChildBuilderDelegate(
-                (context, index) {
+                    (context, index) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -274,3 +258,4 @@ class MainScreen extends StatelessWidget {
     );
   }
 }
+

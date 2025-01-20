@@ -2,7 +2,7 @@
 flutter_native_splash:
   color: "#ffffff"
   image: assets/starbucks-logo.png
-  branding: assets/starbucks-logo.png
+  branding: "APPlus Market"
   color_dark: "#121212"
 
 

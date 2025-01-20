@@ -1,10 +1,10 @@
-import 'package:applus_market/screens/chat/chat_page.dart';
-import 'package:applus_market/screens/my/my_page.dart';
-import 'package:applus_market/screens/product/product_register_page.dart';
-import 'package:applus_market/screens/wish/wish_page.dart';
 import 'package:flutter/material.dart';
 
+import 'chat/chat_page.dart';
 import 'home/home_page.dart';
+import 'my/my_page.dart';
+import 'product/product_register_page.dart';
+import 'wish/wish_page.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
