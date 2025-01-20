@@ -25,6 +25,7 @@ class LoginForm extends StatelessWidget {
             label: '아이디',
             controller: uidController,
           ),
+          SizedBox(height: 16),
           LoginFormField(
             label: '비밀번호',
             controller: passwordController,

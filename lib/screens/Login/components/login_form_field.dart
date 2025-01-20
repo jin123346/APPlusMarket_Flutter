@@ -33,6 +33,8 @@ class _LoginFormFieldState extends State<LoginFormField> {
     return TextFormField(
       focusNode: _focusNode,
       controller: widget.controller,
+      obscureText: widget.label == '비밀번호',
+      keyboardType: TextInputType.text,
       decoration: InputDecoration(
         labelText: widget.label,
         border: UnderlineInputBorder(

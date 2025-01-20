@@ -7,7 +7,7 @@ class APlusTheme {
   // Brand Colors
   static const Color primaryColor = Color(0xFFFF3B30); // Apple Red
   static const Color secondaryColor = Color(0xFFFF6B6B); // Light Red
-  static const Color tertiaryColor = Color(0xFFFF9B9B); // Softer Red
+  static const Color tertiaryColor = Color(0xFFFFE4E4); // Soft Red Background
 
   // System Colors
   static const Color systemBackground = Color(0xFFF2F2F7); // iOS Background
@@ -26,6 +26,13 @@ class APlusTheme {
   static const Color warningColor = Color(0xFFFF9500); // iOS Orange
   static const Color errorColor = Color(0xFFFF3B30); // iOS Red
   static const Color infoColor = Color(0xFF007AFF); // iOS Blue
+
+  // Accent Colors for UI Elements
+  static const Color accentRed = Color(0xFFD63031); // Darker Red for Emphasis
+  static const Color lightRed =
+      Color(0xFFFFEBEB); // Very Light Red for Backgrounds
+  static const Color darkRed =
+      Color(0xFFC72C41); // Deep Red for Special Elements
 
   // Blur Effects
   static const double regularBlur = 10.0;
@@ -47,126 +54,257 @@ class APlusTheme {
   // 테마 데이터
   static ThemeData get lightTheme {
     return ThemeData(
-        brightness: Brightness.light,
-        primaryColor: primaryColor,
-        scaffoldBackgroundColor: systemBackground,
+      brightness: Brightness.light,
+      primaryColor: primaryColor,
+      scaffoldBackgroundColor: systemBackground,
 
-        // Color Scheme
-        colorScheme: const ColorScheme.light(
-          primary: primaryColor,
-          secondary: secondaryColor,
-          surface: secondarySystemBackground,
-          background: systemBackground,
-          error: errorColor,
+      // Color Scheme
+      colorScheme: const ColorScheme.light(
+        primary: primaryColor,
+        secondary: secondaryColor,
+        surface: secondarySystemBackground,
+        background: systemBackground,
+        error: errorColor,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: labelPrimary,
+        onBackground: labelPrimary,
+        onError: Colors.white,
+      ),
+
+      // AppBar Theme
+      appBarTheme: const AppBarTheme(
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w600,
+          color: labelPrimary,
+          letterSpacing: -0.5,
         ),
+        iconTheme: IconThemeData(color: labelPrimary),
+      ),
 
-        // AppBar Theme
-        appBarTheme: const AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
-          backgroundColor: Colors.transparent,
+      // Text Theme
+      textTheme: const TextTheme(
+        headlineLarge: TextStyle(
+          fontSize: 34,
+          fontWeight: FontWeight.bold,
+          letterSpacing: -0.5,
+          color: labelPrimary,
+        ),
+        headlineMedium: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          letterSpacing: -0.5,
+          color: labelPrimary,
+        ),
+        titleLarge: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.5,
+          color: labelPrimary,
+        ),
+        titleMedium: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.5,
+          color: labelPrimary,
+        ),
+        bodyLarge: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.normal,
+          color: labelPrimary,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.normal,
+          color: labelSecondary,
+        ),
+      ),
+
+      // Button Theme
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
           elevation: 0,
-          centerTitle: true,
-          titleTextStyle: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            color: labelPrimary,
-            letterSpacing: -0.5,
+          padding: const EdgeInsets.symmetric(
+            horizontal: spacingL,
+            vertical: spacingM,
           ),
-          iconTheme: IconThemeData(color: labelPrimary),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusM),
+          ),
+          minimumSize: const Size(44, 44),
+          shadowColor: Colors.transparent,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: primaryColor,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: spacingL,
+            vertical: spacingM,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusM),
+          ),
+          minimumSize: const Size(44, 44),
+        ),
+      ),
+
+      // Card Theme
+      cardTheme: CardTheme(
+        color: secondarySystemBackground,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusM),
+          side: const BorderSide(
+            color: tertiarySystemBackground,
+            width: 1,
+          ),
+        ),
+        margin: const EdgeInsets.all(spacingS),
+      ),
+
+      // Bottom Navigation Bar Theme
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: secondarySystemBackground,
+        selectedItemColor: primaryColor,
+        unselectedItemColor: labelSecondary,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+        selectedLabelStyle: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+
+      // Input Decoration Theme
+      // Input Decoration Theme 부분만 수정된 코드입니다
+      inputDecorationTheme: InputDecorationTheme(
+        // 배경색 제거 (밑줄 스타일을 위해)
+        filled: false,
+
+        // 기본 밑줄 스타일
+        border: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: tertiarySystemBackground,
+            width: 1.0,
+          ),
         ),
 
-        // Text Theme
-        textTheme: const TextTheme(
-          headlineLarge: TextStyle(
-            fontSize: 34,
-            fontWeight: FontWeight.bold,
-            letterSpacing: -0.5,
-            color: labelPrimary,
+        // 비활성화된 상태의 밑줄
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: tertiarySystemBackground,
+            width: 1.0,
           ),
-          headlineMedium: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            letterSpacing: -0.5,
-            color: labelPrimary,
+        ),
+
+        // 포커스 상태의 밑줄
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: primaryColor,
+            width: 2.0,
           ),
-          titleLarge: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.5,
-            color: labelPrimary,
+        ),
+
+        // 에러 상태의 밑줄
+        errorBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: errorColor,
+            width: 1.0,
           ),
-          titleMedium: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.5,
-            color: labelPrimary,
+        ),
+
+        // 에러 상태에서 포커스된 밑줄
+        focusedErrorBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: errorColor,
+            width: 2.0,
           ),
-          bodyLarge: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.normal,
-            color: labelPrimary,
-          ),
-          bodyMedium: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.normal,
+        ),
+
+        // 텍스트필드 내부 여백
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: spacingS,
+          vertical: spacingM,
+        ),
+
+        // 힌트 텍스트 스타일
+        hintStyle: const TextStyle(
+          color: labelTertiary,
+          fontSize: 17,
+          letterSpacing: -0.4,
+        ),
+
+        // 레이블 스타일
+        labelStyle: const TextStyle(
+          color: labelSecondary,
+          fontSize: 15,
+          letterSpacing: -0.4,
+        ),
+
+        // 에러 메시지 스타일
+        errorStyle: const TextStyle(
+          color: errorColor,
+          fontSize: 13,
+          letterSpacing: -0.4,
+          height: 1.4,
+        ),
+
+        // 접두사/접미사 아이콘 스타일
+        prefixIconColor: MaterialStateColor.resolveWith((states) {
+          if (states.contains(MaterialState.focused)) {
+            return primaryColor;
+          }
+          return labelTertiary;
+        }),
+        suffixIconColor: MaterialStateColor.resolveWith((states) {
+          if (states.contains(MaterialState.focused)) {
+            return primaryColor;
+          }
+          return labelTertiary;
+        }),
+
+        // 밑줄과 텍스트 사이 간격
+        isDense: true,
+
+        // 플로팅 레이블 애니메이션 설정
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
+        floatingLabelStyle: MaterialStateTextStyle.resolveWith((states) {
+          if (states.contains(MaterialState.focused)) {
+            return const TextStyle(
+              color: primaryColor,
+              fontSize: 13,
+              letterSpacing: -0.4,
+              fontWeight: FontWeight.w500,
+            );
+          }
+          return const TextStyle(
             color: labelSecondary,
-          ),
-        ),
+            fontSize: 13,
+            letterSpacing: -0.4,
+          );
+        }),
+      ),
 
-        // Button Theme
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: primaryColor,
-            foregroundColor: Colors.white,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(
-                horizontal: spacingL, vertical: spacingM),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radiusM),
-            ),
-            minimumSize: const Size(44, 44),
-          ),
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            backgroundColor: primaryColor,
-            foregroundColor: Colors.white,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(
-                horizontal: spacingL, vertical: spacingM),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radiusM),
-            ),
-            minimumSize: const Size(44, 44),
-          ),
-        )
-
-        // Input Decoration Theme
-        // inputDecorationTheme: InputDecorationTheme(
-        //   filled: true,
-        //   fillColor: tertiarySystemBackground,
-        //   border: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(radiusM),
-        //     borderSide: BorderSide.none,
-        //   ),
-        //   enabledBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(radiusM),
-        //     borderSide: BorderSide.none,
-        //   ),
-        //   focusedBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(radiusM),
-        //     borderSide: const BorderSide(color: primaryColor, width: 2),
-        //   ),
-        //   errorBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(radiusM),
-        //     borderSide: const BorderSide(color: errorColor),
-        //   ),
-        //   contentPadding: const EdgeInsets.symmetric(
-        //     horizontal: spacingM,
-        //     vertical: spacingM,
-        //   ),
-        // ),
-        );
+      // Divider Theme
+      dividerTheme: const DividerThemeData(
+        color: tertiarySystemBackground,
+        thickness: 1,
+        space: 1,
+      ),
+    );
   }
 }
 

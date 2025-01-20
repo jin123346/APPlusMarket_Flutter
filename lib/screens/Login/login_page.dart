@@ -41,7 +41,13 @@ class LoginPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/home');
+              },
+              icon: Icon(Icons.arrow_back_ios)),
+        ),
         resizeToAvoidBottomInset: false, // 키보드와 bottomNavigationBar 충돌 방지
         body: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(), // 화면 터치 시 키보드 닫기
