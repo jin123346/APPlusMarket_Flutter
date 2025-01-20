@@ -12,16 +12,16 @@ class ImageContainer extends StatelessWidget {
 
   const ImageContainer(
       {required this.borderRadius,
-        required this.imgUri,
-        required this.width,
-        required this.height,
-        super.key});
+      required this.imgUri,
+      required this.width,
+      required this.height,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: Image.asset(
+      child: Image.network(
         imgUri,
         height: height,
         width: width,
