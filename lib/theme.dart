@@ -10,7 +10,7 @@ class APlusTheme {
   static const Color tertiaryColor = Color(0xFFFFE4E4); // Soft Red Background
 
   // System Colors
-  static const Color systemBackground = Color(0xFFF2F2F7); // iOS Background
+  static const Color systemBackground = Color(0xFFFFFFFF); // iOS Background
   static const Color secondarySystemBackground =
       Color(0xFFFFFFFF); // iOS Secondary Background
   static const Color tertiarySystemBackground =
@@ -26,7 +26,7 @@ class APlusTheme {
   static const Color warningColor = Color(0xFFFF9500); // iOS Orange
   static const Color errorColor = Color(0xFFFF3B30); // iOS Red
   static const Color infoColor = Color(0xFF007AFF); // iOS Blue
-
+  static const Color borderLightGrey = Color(0xFFE1E1E1);
   // Accent Colors for UI Elements
   static const Color accentRed = Color(0xFFD63031); // Darker Red for Emphasis
   static const Color lightRed =
@@ -57,18 +57,16 @@ class APlusTheme {
       brightness: Brightness.light,
       primaryColor: primaryColor,
       scaffoldBackgroundColor: systemBackground,
-
+      dialogBackgroundColor: systemBackground,
       // Color Scheme
       colorScheme: const ColorScheme.light(
         primary: primaryColor,
         secondary: secondaryColor,
         surface: secondarySystemBackground,
-        background: systemBackground,
         error: errorColor,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: labelPrimary,
-        onBackground: labelPrimary,
         onError: Colors.white,
       ),
 
@@ -160,6 +158,7 @@ class APlusTheme {
       // Card Theme
       cardTheme: CardTheme(
         color: secondarySystemBackground,
+        margin: EdgeInsets.zero,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusM),
@@ -168,7 +167,6 @@ class APlusTheme {
             width: 1,
           ),
         ),
-        margin: const EdgeInsets.all(spacingS),
       ),
 
       // Bottom Navigation Bar Theme
