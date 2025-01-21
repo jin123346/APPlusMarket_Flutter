@@ -1,6 +1,6 @@
 import 'package:applus_market/theme.dart';
 import 'package:flutter/material.dart';
-import '../../comon/components/image_container.dart';
+import '../../components/image_container.dart';
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({super.key});

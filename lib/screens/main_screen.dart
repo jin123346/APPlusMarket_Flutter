@@ -1,4 +1,3 @@
-import 'package:applus_market/screens/product/product_list_search.dart';
 import 'package:flutter/material.dart';
 
 import 'chat/chat_page.dart';
@@ -40,7 +39,6 @@ class _MainScreenState extends State<MainScreen> {
             HomePage(),
             WishPage(),
             ProductRegisterPage(),
-            ProductListSearch(), //테스트용 이도영
             ChatPage(),
             MyPage(),
           ],
@@ -58,8 +56,6 @@ class _MainScreenState extends State<MainScreen> {
             BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
             BottomNavigationBarItem(icon: Icon(Icons.favorite), label: '관심'),
             BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: '등록'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.add_circle), label: '목록출력테스트'), //테스트용 이도영
             BottomNavigationBarItem(icon: Icon(Icons.message), label: '애쁠톡'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이'),
           ],

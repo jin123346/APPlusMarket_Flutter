@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-/*
-* 2025.01.21 이도영 : 상품 출력 방식 컴포넌트화 (미완성)
-* */
 class Productlist extends StatelessWidget {
   final int itemCount;
 
