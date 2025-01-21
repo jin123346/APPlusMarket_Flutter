@@ -1,4 +1,5 @@
 import 'package:applus_market/screens/my/components/profile_card.dart';
+import 'package:applus_market/size.dart';
 import 'package:applus_market/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,7 @@ class MyPage extends StatelessWidget {
                   children: [
                     Text(
                       '나의 거래',
-                      style: getTextTheme(context).titleLarge,
+                      style: getTextTheme(context).titleSmall,
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -97,32 +98,30 @@ class MyPage extends StatelessWidget {
             Card(
               margin: EdgeInsets.zero,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 child: Column(
                   children: [
                     _buildListTile(
-                      title: '관심목록',
-                      icon: CupertinoIcons.heart,
-                      onTap: () {
-                        print('관심목록 클릭됨');
-                      },
-                    ),
+                        title: '찜목록',
+                        icon: CupertinoIcons.heart,
+                        onTap: () {
+                          print('관심목록 클릭됨');
+                        }),
                     Divider(color: Colors.grey.shade300, thickness: 1), // 구분선
                     _buildListTile(
-                      title: '판매내역',
-                      icon: CupertinoIcons.square_list,
-                      onTap: () {
-                        print('판매내역 클릭됨');
-                      },
-                    ),
+                        title: '판매내역',
+                        icon: CupertinoIcons.square_list,
+                        onTap: () {
+                          print('판매내역 클릭됨');
+                        }),
                     Divider(color: Colors.grey.shade300, thickness: 1), // 구분선
                     _buildListTile(
-                      title: '구매내역',
-                      icon: Icons.shopping_bag_outlined,
-                      onTap: () {
-                        print('구매내역 클릭됨');
-                      },
-                    ),
+                        title: '구매내역',
+                        icon: Icons.shopping_bag_outlined,
+                        onTap: () {
+                          print('구매내역 클릭됨');
+                        }),
                   ],
                 ),
               ),
@@ -165,13 +164,17 @@ class MyPage extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: Colors.grey), // 아이콘
+      leading: Icon(
+        icon,
+        color: Colors.grey,
+        size: iconList,
+      ), // 아이콘
       title: Text(
         title,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400), // 텍스트 스타일
       ),
       trailing: Icon(Icons.arrow_forward_ios,
-          size: 16, color: Colors.grey), // 오른쪽 화살표
+          size: 16.0, color: Colors.grey), // 오른쪽 화살표
       onTap: onTap, // 클릭 이벤트
     );
   }
