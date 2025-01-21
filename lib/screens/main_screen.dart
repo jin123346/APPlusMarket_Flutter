@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'chat/chat_page.dart';
+import 'chat/chat_list_page.dart';
 import 'home/home_page.dart';
 import 'my/my_logined_page.dart';
 import 'product/product_register_page.dart';
@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
             HomePage(),
             WishPage(),
             ProductRegisterPage(),
-            ChatPage(),
+            ChatListPage(),
             MyLoginedPage(),
           ],
         ),

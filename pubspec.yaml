@@ -42,7 +42,10 @@ dependencies:
   google_fonts: ^6.2.1
   font_awesome_flutter: ^10.8.0
   flutter_svg: ^2.0.17
+
+  intl: ^0.18.0 # 2025.01.21 황수빈 - time_ago 함수에서 사용
   logger: ^2.5.0
+
 
 dev_dependencies:
   flutter_test:
