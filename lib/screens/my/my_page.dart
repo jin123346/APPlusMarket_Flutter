@@ -75,7 +75,25 @@ class MyPage extends StatelessWidget {
                   children: [
                     Text(
                       '나의 거래',
-                      style: getTextTheme(context).titleSmall,
+                      style: getTextTheme(context).titleMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildCountContainer('전체', 1),
+                        Container(height: 15, width: 1, color: Colors.black54),
+                        _buildCountContainer('예약중', 1),
+                        Container(height: 15, width: 1, color: Colors.black54),
+                        _buildCountContainer('채팅중', 0),
+                        Container(height: 15, width: 1, color: Colors.black54),
+                        _buildCountContainer('종료', 0),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    Text(
+                      '판매',
+                      style: getTextTheme(context).titleMedium,
                     ),
                     const SizedBox(height: 16),
                     Row(
