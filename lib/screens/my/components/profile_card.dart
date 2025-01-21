@@ -2,6 +2,10 @@ import 'package:applus_market/theme.dart';
 import 'package:flutter/material.dart';
 import '../../common/components/image_container.dart';
 
+/*
+* 2025.01.21 하진희 : 프로필 카드-  myPage의 상단 프로필 부분
+* */
+
 class ProfileCard extends StatelessWidget {
   const ProfileCard({super.key});
 
@@ -123,7 +127,8 @@ class ProfileCard extends StatelessWidget {
                     // PAY 관리 버튼
                     InkWell(
                       onTap: () {
-                        print('PAY 관리 클릭됨');
+                        //애쁠 페이 홈으로 전환됨
+                        Navigator.pushNamed(context, '/payHome');
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -131,7 +136,7 @@ class ProfileCard extends StatelessWidget {
                           Icon(Icons.payment, color: Colors.grey), // 아이콘
                           SizedBox(width: 8.0), // 아이콘과 텍스트 간격
                           Text(
-                            'PAY 관리',
+                            '애쁠 페이',
                             style:
                                 TextStyle(fontSize: 16.0, color: Colors.black),
                           ),

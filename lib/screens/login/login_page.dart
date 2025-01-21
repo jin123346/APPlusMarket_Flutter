@@ -3,8 +3,10 @@ import 'package:applus_market/screens/Login/components/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/api/login_api.dart';
+import '../../size.dart';
 import '../../theme.dart';
 import '../common/components/logo.dart';
 
@@ -44,7 +46,7 @@ class LoginPage extends ConsumerWidget {
         appBar: AppBar(
           leading: IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/home');
+                Navigator.pushNamed(context, '/home'); //todo - navigator
               },
               icon: Icon(Icons.arrow_back_ios)),
         ),
@@ -53,20 +55,45 @@ class LoginPage extends ConsumerWidget {
           onTap: () => FocusScope.of(context).unfocus(), // 화면 터치 시 키보드 닫기
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(commonPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '로그인',
-                    style: Theme.of(context).textTheme.headlineLarge,
+                  const SizedBox(height: 120),
+
+                  Stack(
+                    children: [
+                      Container(
+                        width: getParentWith(context),
+                        height: 85,
+                        child: Text(
+                          'APPLUS',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.bangers(
+                            fontSize: 50,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5,
+                            color: APlusTheme.primaryColor,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          width: getParentWith(context),
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            '전자제품 중고거래 플랫폼',
+                            style: TextStyle(
+                                fontSize: 14.0, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    '안녕하세요 \n APPLUS 마켓 입니다.',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  Logo(),
+                  // Logo(),
                   const SizedBox(height: 20),
                   LoginForm(
                     formkey: _formkey,
@@ -112,7 +139,7 @@ class LoginPage extends ConsumerWidget {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(halfPadding),
           child: SizedBox(
             height: 50,
             child: ElevatedButton(
