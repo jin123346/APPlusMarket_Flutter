@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/chat/chatRoomCard.dart';
-import '../../components/image_container.dart';
+import '../../common/components/image_container.dart';
 import '../../components/time_ago.dart';
 
 /*

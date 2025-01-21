@@ -1,3 +1,4 @@
+import 'package:applus_market/screens/my/pay_home_page.dart';
 import 'package:flutter/material.dart';
 
 import 'chat/chat_list_page.dart';
@@ -40,6 +41,7 @@ class _MainScreenState extends State<MainScreen> {
             ProductRegisterPage(),
             ChatListPage(),
             MyLoginedPage(),
+            //PayHomePage(),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
