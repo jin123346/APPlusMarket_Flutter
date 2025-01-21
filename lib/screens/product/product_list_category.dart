@@ -4,7 +4,7 @@ import '../common/components/productlist.dart';
 import '../common/components/searchcustombar.dart';
 
 /*
-* 2025.01.21 - 이도영 : 검색 상품 출력
+* 2025.01.21 - 이도영 : 카테고리별 상품 출력
 *
 * */
 class ProductListSearch extends StatefulWidget {
@@ -16,7 +16,7 @@ class ProductListSearch extends StatefulWidget {
 
 class _ProductListState extends State<ProductListSearch> {
   // 선택된 값 저장 변수
-  //String selectedCategory = '카테고리';
+  String selectedCategory = '카테고리';
   String selectedSort = '등록일순';
   String selectedPrice = '가격';
 
@@ -26,7 +26,7 @@ class _ProductListState extends State<ProductListSearch> {
   bool directTransaction = false;
 
   // 카테고리, 정렬 옵션 데이터
-  //final categories = ['카테고리', '노트북', '휴대폰'];
+  final categories = ['카테고리', '노트북', '휴대폰'];
   final sortOptions = ['등록일순', '최신순', '오래된순'];
   final priceOptions = ['가격', '낮은가격순', '높은가격순'];
 
@@ -63,15 +63,15 @@ class _ProductListState extends State<ProductListSearch> {
                 child: Row(
                   children: [
                     // 드롭다운 버튼들
-                    // _buildDropdownButton(
-                    //   items: categories,
-                    //   value: selectedCategory,
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       selectedCategory = value!;
-                    //     });
-                    //   },
-                    // ),
+                    _buildDropdownButton(
+                      items: categories,
+                      value: selectedCategory,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCategory = value!;
+                        });
+                      },
+                    ),
                     _buildDropdownButton(
                       items: sortOptions,
                       value: selectedSort,

@@ -1,4 +1,5 @@
 import 'package:applus_market/screens/my/components/profile_card.dart';
+import 'package:applus_market/size.dart';
 import 'package:applus_market/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,25 @@ class MyPage extends StatelessWidget {
                   children: [
                     Text(
                       '나의 거래',
-                      style: getTextTheme(context).titleLarge,
+                      style: getTextTheme(context).titleMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildCountContainer('전체', 1),
+                        Container(height: 15, width: 1, color: Colors.black54),
+                        _buildCountContainer('예약중', 1),
+                        Container(height: 15, width: 1, color: Colors.black54),
+                        _buildCountContainer('채팅중', 0),
+                        Container(height: 15, width: 1, color: Colors.black54),
+                        _buildCountContainer('종료', 0),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    Text(
+                      '판매',
+                      style: getTextTheme(context).titleMedium,
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -97,32 +116,30 @@ class MyPage extends StatelessWidget {
             Card(
               margin: EdgeInsets.zero,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 child: Column(
                   children: [
                     _buildListTile(
-                      title: '관심목록',
-                      icon: CupertinoIcons.heart,
-                      onTap: () {
-                        print('관심목록 클릭됨');
-                      },
-                    ),
+                        title: '찜목록',
+                        icon: CupertinoIcons.heart,
+                        onTap: () {
+                          print('관심목록 클릭됨');
+                        }),
                     Divider(color: Colors.grey.shade300, thickness: 1), // 구분선
                     _buildListTile(
-                      title: '판매내역',
-                      icon: CupertinoIcons.square_list,
-                      onTap: () {
-                        print('판매내역 클릭됨');
-                      },
-                    ),
+                        title: '판매내역',
+                        icon: CupertinoIcons.square_list,
+                        onTap: () {
+                          print('판매내역 클릭됨');
+                        }),
                     Divider(color: Colors.grey.shade300, thickness: 1), // 구분선
                     _buildListTile(
-                      title: '구매내역',
-                      icon: Icons.shopping_bag_outlined,
-                      onTap: () {
-                        print('구매내역 클릭됨');
-                      },
-                    ),
+                        title: '구매내역',
+                        icon: Icons.shopping_bag_outlined,
+                        onTap: () {
+                          print('구매내역 클릭됨');
+                        }),
                   ],
                 ),
               ),
@@ -165,13 +182,17 @@ class MyPage extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: Colors.grey), // 아이콘
+      leading: Icon(
+        icon,
+        color: Colors.grey,
+        size: iconList,
+      ), // 아이콘
       title: Text(
         title,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400), // 텍스트 스타일
       ),
       trailing: Icon(Icons.arrow_forward_ios,
-          size: 16, color: Colors.grey), // 오른쪽 화살표
+          size: 16.0, color: Colors.grey), // 오른쪽 화살표
       onTap: onTap, // 클릭 이벤트
     );
   }

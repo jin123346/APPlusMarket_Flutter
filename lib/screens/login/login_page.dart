@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/api/login_api.dart';
 import '../../theme.dart';
-import '../components/logo.dart';
+import '../common/components/logo.dart';
 
 class LoginPage extends ConsumerWidget {
   LoginPage({super.key});
