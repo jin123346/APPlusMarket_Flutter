@@ -41,17 +41,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     });
   }
 
-  void _onMessageFocusChange() {
-    if (!_focusNode.hasFocus) {
-      setState(() {
-        _showOptions = false; // 메시지 입력창이 비활성화되면 옵션 목록을 숨김
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     ChatRoom chatRoom = chatRoomExample;
+
     // TODO : (채팅) 현재 아이디 하드코딩 - 로그인한 유저로 바꾸기
     final int myId = 1;
 
@@ -65,7 +58,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       body: Column(
         children: [
           const Divider(height: 1),
-          // ProductCard 정보 표시
+          // 상품 카드 정보 표시
           _buildProductCard(chatRoom.productCard),
           const Divider(height: 1),
           const SizedBox(height: 16),
@@ -85,7 +78,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         : MainAxisAlignment.start,
                     children: [
                       _buildMessageTimestamp(isMyMessage, message.created_at),
-                      _buildMessageContainer(isMyMessage, message.message),
+                      SizedBox(width: isMyMessage ? 5 : 0),
+                      _buildMessageContainer(
+                          isMyMessage, message.message, context),
+                      SizedBox(width: !isMyMessage ? 5 : 0),
                       _buildMessageTimestamp(!isMyMessage, message.created_at),
                     ],
                   ),
@@ -93,54 +89,79 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               },
             ),
           ),
-          // 추가 옵션 메뉴
+          // 텍스트필드 영역
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
               color: Colors.white,
             ),
             child: Row(
               children: [
-                IconButton(
-                  icon: Icon(_showOptions ? Icons.close : Icons.add),
-                  onPressed: _toggleOptions,
-                  color: Colors.grey[600],
+                SizedBox(
+                  width: 30,
+                  child: IconButton(
+                    icon: Icon(_showOptions ? Icons.close : Icons.add),
+                    onPressed: _toggleOptions,
+                    color: Colors.grey[600],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: TextField(
-                        controller: _messageController,
-                        focusNode: _focusNode,
-                        onTap: () {
-                          // 메시지 입력창이 탭될 때 옵션 목록을 숨김
-                          setState(() {
-                            _showOptions = false;
-                          });
-                        },
-                        decoration: InputDecoration(
-                          hintText: '메시지 보내기',
-                          hintStyle:
-                              TextStyle(fontSize: 13, color: Colors.grey[500]),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8),
+                  child: Stack(children: [
+                    Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(25),
                         ),
-                      )),
+                        child: TextField(
+                          controller: _messageController,
+                          focusNode: _focusNode,
+                          onTap: () {
+                            // 메시지 입력창이 탭될 때 옵션 목록을 숨김
+                            setState(() {
+                              _showOptions = false;
+                            });
+                          },
+                          cursorColor: Colors.grey[600],
+                          cursorHeight: 17,
+                          decoration: InputDecoration(
+                            hintText: '메시지 보내기',
+                            hintStyle: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey[500],
+                                fontWeight: FontWeight.w500),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(vertical: 13),
+                          ),
+                        )),
+                    Positioned(
+                      right: 13,
+                      top: 2,
+                      child: SizedBox(
+                        width: 30,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.sentiment_satisfied_outlined,
+                            size: 27,
+                          ),
+                          onPressed: () {},
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ),
+                  ]),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.sentiment_satisfied_outlined),
-                  onPressed: () {},
-                  color: Colors.grey[600],
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 30,
+                  child: IconButton(
+                    icon: const Icon(CupertinoIcons.paperplane_fill),
+                    onPressed: () {},
+                    color: Colors.grey[600],
+                  ),
                 ),
-                IconButton(
-                  icon: const Icon(CupertinoIcons.arrow_right_circle_fill),
-                  onPressed: () {},
-                  color: Colors.grey[600],
-                ),
+                const SizedBox(width: 16)
               ],
             ),
           ),
@@ -172,25 +193,25 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       ),
     );
   }
+}
 
-  _buildOptionButton(String label, IconData icon, Color color) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.white),
+_buildOptionButton(String label, IconData icon, Color color) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
         ),
-        const SizedBox(height: 8),
-        Text(label, style: TextStyle(fontSize: 12)),
-      ],
-    );
-  }
+        child: Icon(icon, color: Colors.white),
+      ),
+      const SizedBox(height: 8),
+      Text(label, style: TextStyle(fontSize: 12)),
+    ],
+  );
 }
 
 _buildMessageTimestamp(bool isMyMessage, String timestamp) {
@@ -203,8 +224,10 @@ _buildMessageTimestamp(bool isMyMessage, String timestamp) {
   );
 }
 
-_buildMessageContainer(bool isMyMessage, String message) {
+_buildMessageContainer(bool isMyMessage, String message, context) {
   return Container(
+    constraints: // 자식 영역 텍스트 줄바꿈을 위해 추가하였음
+        BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
     margin: EdgeInsets.symmetric(vertical: 8),
     decoration: BoxDecoration(
@@ -216,7 +239,9 @@ _buildMessageContainer(bool isMyMessage, String message) {
     ),
     child: Text(
       message,
-      style: TextStyle(fontSize: 14),
+      style: TextStyle(fontSize: 15),
+      softWrap: true, // 텍스트 줄바꿈 허용
+      overflow: TextOverflow.visible,
     ),
   );
 }
@@ -238,10 +263,20 @@ _buildProductCard(ProductCard productCard) {
           children: [
             Text(
               productCard.name,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
-            Text(
-              '${productCard.price}원',
+            Row(
+              children: [
+                Text(
+                  '${productCard.price}원',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  productCard.is_negotiable! ? '(가격제안가능)' : '(가격제안불가)',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                )
+              ],
             ),
           ],
         ),

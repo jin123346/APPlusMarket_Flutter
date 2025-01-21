@@ -21,7 +21,6 @@ class ProductContainer extends StatelessWidget {
       height: 150,
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.05),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(

@@ -1,4 +1,5 @@
 import 'package:applus_market/theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../common/components/image_container.dart';
 
@@ -24,8 +25,8 @@ class ProfileCard extends StatelessWidget {
                 Stack(
                   children: [
                     Container(
-                      width: 100,
-                      height: 100,
+                      width: 90,
+                      height: 90,
                     ),
                     Positioned(
                       left: 10,
@@ -33,7 +34,7 @@ class ProfileCard extends StatelessWidget {
                       child: ImageContainer(
                         width: 80,
                         height: 80,
-                        borderRadius: 20,
+                        borderRadius: 40,
                         imgUri: 'https://picsum.photos/id/237/200/300',
                       ),
                     ),
@@ -41,25 +42,17 @@ class ProfileCard extends StatelessWidget {
                       bottom: 0,
                       right: 0,
                       child: Container(
-                          width: 35,
-                          height: 35,
+                          width: 27,
+                          height: 27,
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.grey[200],
                               borderRadius: BorderRadius.circular(17.5),
-                              border: Border.all(
-                                  color: APlusTheme.borderLightGrey,
-                                  width: 0.5)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: AspectRatio(
-                              aspectRatio: 3 / 2,
-                              child: Image.asset(
-                                'assets/icons/magic-wand.png',
-                                width: 35,
-                                height: 35,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
+                              border:
+                                  Border.all(color: Colors.white, width: 0.5)),
+                          child: Icon(
+                            CupertinoIcons.camera_fill,
+                            size: 16,
+                            color: Colors.black38,
                           )),
                     )
                   ],
@@ -69,11 +62,9 @@ class ProfileCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '김민희 님',
-                        style: getTextTheme(context).titleLarge,
-                      ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 10),
+                      Text('김민희 님', style: CustomTextTheme.titleMedium),
+                      const SizedBox(height: 3),
                       InkWell(
                           onDoubleTap: () {
                             print('회원정보클릭!');
@@ -81,20 +72,20 @@ class ProfileCard extends StatelessWidget {
                           child: Text(
                             '회원정보 변경',
                             style: TextStyle(
-                              decoration: TextDecoration.underline,
-                            ),
+                                decoration: TextDecoration.underline,
+                                fontSize: 14),
                           )),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 25),
             Center(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300), // 외곽선
+                  border: Border.all(color: Colors.grey.shade200), // 외곽선
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Row(
@@ -108,12 +99,12 @@ class ProfileCard extends StatelessWidget {
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.location_on, color: Colors.grey), // 아이콘
+                          Icon(Icons.location_on, color: Colors.black54), // 아이콘
                           SizedBox(width: 8.0), // 아이콘과 텍스트 간격
                           Text(
                             '배송지 관리',
                             style:
-                                TextStyle(fontSize: 16.0, color: Colors.black),
+                                TextStyle(fontSize: 15.0, color: Colors.black),
                           ),
                         ],
                       ),
@@ -122,7 +113,7 @@ class ProfileCard extends StatelessWidget {
                     Container(
                       height: 20.0,
                       width: 1.0,
-                      color: Colors.grey.shade400,
+                      color: Colors.grey.shade200,
                     ),
                     // PAY 관리 버튼
                     InkWell(
@@ -138,7 +129,7 @@ class ProfileCard extends StatelessWidget {
                           Text(
                             '애쁠 페이',
                             style:
-                                TextStyle(fontSize: 16.0, color: Colors.black),
+                                TextStyle(fontSize: 15.0, color: Colors.black),
                           ),
                         ],
                       ),
@@ -147,7 +138,7 @@ class ProfileCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
           ],
         ),
       ),

@@ -75,6 +75,7 @@ flutter:
     - assets/icons/
     - assets/images/      # 2025.01.21 - 김민희 : 이미지 경로 추가
     - assets/images/pay/  # 2025.01.21 - 김민희 : 이미지 경로 추가
+    - assets/images/banner/  # 2025.01.21 - 황수빈 : 이미지 경로 추가
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

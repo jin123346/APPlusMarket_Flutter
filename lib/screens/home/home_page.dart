@@ -1,11 +1,17 @@
+import 'package:applus_market/models/productCard.dart';
+import 'package:applus_market/screens/common/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../theme.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    logger.d(products);
     final brands = [
       'ZARA',
       'H&M',
@@ -26,17 +32,19 @@ class HomePage extends StatelessWidget {
         slivers: [
           SliverAppBar(
             floating: true,
+            titleSpacing: 0,
             backgroundColor: Colors.white,
             elevation: 0,
             title: Row(
               children: [
-                const SizedBox(width: 5),
                 Text(
-                  'APPlus',
-                  style: TextStyle(
-                    color: Colors.red[400],
+                  'APPLUS',
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.bangers(
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
-                    fontSize: 24,
+                    letterSpacing: 1.5,
+                    color: APlusTheme.primaryColor,
                   ),
                 ),
               ],
@@ -113,10 +121,15 @@ class HomePage extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding:
-              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
               child: TextField(
+                cursorColor: Colors.grey,
                 decoration: InputDecoration(
                   hintText: '검색어를 입력해주세요',
+                  hintStyle: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: Colors.black54),
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
                   filled: true,
                   fillColor: Colors.grey[100],
@@ -130,22 +143,14 @@ class HomePage extends StatelessWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: Container(
-              width: double.infinity,
-              height: 150,
-              margin: const EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                color: Colors.pink[50],
-              ),
-              child: const Center(
-                child: Text(
-                  '배너 자리',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+            child: Column(
+              children: [
+                const SizedBox(height: 5),
+                Image.asset(
+                  'assets/images/banner/main_banner_1.jpg',
                 ),
-              ),
+                const SizedBox(height: 20),
+              ],
             ),
           ),
           SliverToBoxAdapter(
@@ -192,64 +197,51 @@ class HomePage extends StatelessWidget {
                 crossAxisSpacing: 16,
               ),
               delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                (context, index) {
+                  final product = products[index];
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              product.thumbnail_image,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          child: Stack(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Positioned(
-                                top: 8,
-                                right: 8,
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.9),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.favorite_border,
-                                    size: 20,
-                                  ),
+                              Text(
+                                '${product.price}원',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                product.name,
+                                style: const TextStyle(fontSize: 14.5),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
                               ),
                             ],
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        color: Colors.white,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '상품 ${index + 1}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${(index + 1) * 10000}원',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 },
-                childCount: 20,
+                childCount: products.length,
               ),
             ),
           ),
@@ -258,4 +250,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-

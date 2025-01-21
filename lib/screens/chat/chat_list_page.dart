@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../models/chat/chatRoomCard.dart';
 
 /*
-* 2025.01.21 황수빈 : 채팅 list page 만들기
+* 2025.01.21 - 황수빈 : Chatting Room List 페이지 생성
 *
 */
 
