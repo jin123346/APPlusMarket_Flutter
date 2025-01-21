@@ -15,7 +15,6 @@ class _LoginFormFieldState extends State<LoginFormField> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _inputValue = '';
     _focusNode = FocusNode(); // FocusNode 초기화
@@ -23,7 +22,6 @@ class _LoginFormFieldState extends State<LoginFormField> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _focusNode.dispose();
     super.dispose();
   }

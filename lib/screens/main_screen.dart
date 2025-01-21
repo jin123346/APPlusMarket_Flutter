@@ -1,8 +1,9 @@
+import 'package:applus_market/screens/my/pay_home_page.dart';
 import 'package:flutter/material.dart';
 
-import 'chat/chat_page.dart';
+import 'chat/chat_list_page.dart';
 import 'home/home_page.dart';
-import 'my/my_page.dart';
+import 'my/my_logined_page.dart';
 import 'product/product_register_page.dart';
 import 'wish/wish_page.dart';
 
@@ -18,7 +19,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     pageIndex = 0;
   }
@@ -39,8 +39,9 @@ class _MainScreenState extends State<MainScreen> {
             HomePage(),
             WishPage(),
             ProductRegisterPage(),
-            ChatPage(),
-            MyPage(),
+            ChatListPage(),
+            MyLoginedPage(),
+            //PayHomePage(),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
