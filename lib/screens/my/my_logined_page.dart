@@ -92,39 +92,23 @@ class MyLoginedPage extends StatelessWidget {
                       '나의 거래',
                       style: getTextTheme(context).titleMedium,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildCountContainer('전체', 1),
-                        Container(height: 15, width: 1, color: Colors.black54),
+                        Container(
+                            height: 15, width: 1, color: Colors.grey.shade300),
                         _buildCountContainer('예약중', 1),
-                        Container(height: 15, width: 1, color: Colors.black54),
+                        Container(
+                            height: 15, width: 1, color: Colors.grey.shade300),
                         _buildCountContainer('채팅중', 0),
-                        Container(height: 15, width: 1, color: Colors.black54),
+                        Container(
+                            height: 15, width: 1, color: Colors.grey.shade300),
                         _buildCountContainer('종료', 0),
                       ],
                     ),
-                    const SizedBox(height: 32),
-                    Text(
-                      '판매내역',
-                      style: getTextTheme(context).titleMedium,
-                    ),
-                    const SizedBox(height: 16),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
-                      child: Row(
-                        children: [
-                          ProductContainer(price: '10000원', name: '상품 1'),
-                          const SizedBox(width: 8),
-                          ProductContainer(price: '20000원', name: '상품 2'),
-                          const SizedBox(width: 8),
-                          ProductContainer(price: '30000원', name: '상품 3'),
-                          const SizedBox(width: 8),
-                          ProductContainer(price: '40000원', name: '상품 4'),
-                        ],
-                      ),
-                    ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -148,7 +132,6 @@ class MyLoginedPage extends StatelessWidget {
                         onTap: () {
                           print('관심목록 클릭됨');
                         }),
-                    Divider(color: Colors.grey.shade300, thickness: 1), // 구분선
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       horizontalTitleGap: 0,
@@ -165,21 +148,18 @@ class MyLoginedPage extends StatelessWidget {
                         print('애쁠 페이');
                       }, // 클릭 이벤트
                     ),
-                    Divider(color: Colors.grey.shade300, thickness: 1), // 구분선
                     _buildListTile(
                       title: '리뷰 작성하기',
                       onTap: () {
                         print('구매내역 클릭됨');
                       },
                     ),
-                    Divider(color: Colors.grey.shade300, thickness: 1), // 구분선
                     _buildListTile(
                       title: '회원 탈퇴',
                       onTap: () {
                         print('구매내역 클릭됨');
                       },
                     ),
-                    Divider(color: Colors.grey.shade300, thickness: 1), // 구분선
                     const SizedBox(height: 50),
                     Center(
                       child: SizedBox(
@@ -219,8 +199,15 @@ class MyLoginedPage extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(text),
-        Text('$count'),
+        Text(
+          text,
+          style: TextStyle(fontSize: 15),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          '$count',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ],
     );
   }
@@ -231,11 +218,12 @@ class MyLoginedPage extends StatelessWidget {
       children: [
         Icon(
           mIcon,
-          size: 30,
+          size: 25,
         ),
+        const SizedBox(height: 5),
         Text(
           name,
-          style: TextStyle(fontSize: 14),
+          style: TextStyle(fontSize: 12),
         ),
       ],
     );

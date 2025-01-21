@@ -1,13 +1,14 @@
+import 'package:applus_market/screens/common/components/image_container.dart';
 import 'package:flutter/material.dart';
-
 import '../../../models/chat/chatRoomCard.dart';
 import '../../common/components/image_container.dart';
 import '../../components/time_ago.dart';
 
 /*
-* 2025.01.21 황수빈 : ChatRoom list뽑기
+* 2025.01.21 - 황수빈 : ChatRoomCardContainer 생성
 *
 */
+
 class ChatListContainer extends StatelessWidget {
   final ChatRoomCard chatRoom;
   const ChatListContainer({required this.chatRoom, super.key});
@@ -44,7 +45,7 @@ class ChatListContainer extends StatelessWidget {
                       Text(
                         chatRoom.user_name, // 사용자 이름
                         style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 14),
+                            fontWeight: FontWeight.w600, fontSize: 15),
                       ),
                       const SizedBox(
                         width: 8,
@@ -57,7 +58,7 @@ class ChatListContainer extends StatelessWidget {
                   ),
                   Text(
                     chatRoom.recent_message, // 최근 메시지
-                    style: TextStyle(fontSize: 13, color: Colors.black54),
+                    style: TextStyle(fontSize: 13.5, color: Colors.black54),
                     overflow: TextOverflow.ellipsis,
                     softWrap: true,
                   )

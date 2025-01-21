@@ -1,3 +1,4 @@
+import 'package:applus_market/theme.dart';
 import 'package:flutter/material.dart';
 
 class LoginFormField extends StatefulWidget {
@@ -29,7 +30,6 @@ class _LoginFormFieldState extends State<LoginFormField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      focusNode: _focusNode,
       controller: widget.controller,
       obscureText: widget.label == '비밀번호',
       keyboardType: TextInputType.text,

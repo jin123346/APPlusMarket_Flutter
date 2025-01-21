@@ -1,6 +1,6 @@
 /*
+* 2025.01.21 - 황수빈 : chatRoom 모델링 클래스
 *
-* 2025.01.21 - 황수빈 : /chatting_room
 */
 
 // 채팅방 조회시 사용됨
@@ -54,6 +54,7 @@ ChatRoom chatRoomExample = ChatRoom(
     ),
   ],
   productCard: ProductCard(
+      is_negotiable: true,
       product_id: 1,
       name: '맥북 프로 14 2024년형 새상품 팝니다',
       price: 3000000,
@@ -62,7 +63,8 @@ ChatRoom chatRoomExample = ChatRoom(
     ChatMessage(
       chat_message_id: 1,
       sender_id: 1,
-      message: "안녕하세요! 만나서 반가워요.",
+      message:
+          "안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.",
       isRead: true,
       created_at: "2025-01-20T15:01:00Z",
     ),
