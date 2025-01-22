@@ -22,6 +22,11 @@ class ChatRoom {
     required this.messages,
     required this.isRead,
   });
+
+  @override
+  String toString() {
+    return 'ChatRoom{chat_room_id: $chat_room_id, productCard: $productCard, participants: $participants, messages: $messages, isRead: $isRead}';
+  }
 }
 
 class ChatMessage {
@@ -37,6 +42,11 @@ class ChatMessage {
       required this.message,
       required this.isRead,
       required this.created_at});
+
+  @override
+  String toString() {
+    return 'ChatMessage{chat_message_id: $chat_message_id, sender_id: $sender_id, message: $message, isRead: $isRead, created_at: $created_at}';
+  }
 }
 
 ChatRoom chatRoomExample = ChatRoom(
@@ -82,6 +92,6 @@ ChatRoom chatRoomExample = ChatRoom(
       isRead: false,
       created_at: "2025-01-20T15:05:00Z",
     ),
-  ],
+  ].reversed.toList(),
   isRead: false,
 );
