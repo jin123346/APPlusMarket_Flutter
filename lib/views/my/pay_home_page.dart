@@ -63,6 +63,7 @@ class PayHomePage extends StatelessWidget {
                             child: Text(
                               '내 계좌',
                               style: TextStyle(
+                                color: Colors.black,
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 0.5,
