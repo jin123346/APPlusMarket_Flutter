@@ -1,5 +1,4 @@
 import 'package:applus_market/theme.dart';
-import 'package:applus_market/views/components/custom_sizedbox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
