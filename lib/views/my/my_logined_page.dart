@@ -1,5 +1,6 @@
-import 'package:applus_market/size.dart';
-import 'package:applus_market/theme.dart';
+import '/size.dart';
+import '/theme.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
