@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:applus_market/models/product_card.dart';
 import '../common/components/productlist.dart';
 import '../common/components/searchcustombar.dart';
 
@@ -34,14 +34,15 @@ class _ProductListState extends State<ProductListSearch> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text('상품 리스트'),
-          backgroundColor: Colors.white,
-          elevation: 0,
-        ),
         body: CustomScrollView(
           slivers: [
+            SliverAppBar(
+              floating: true,
+              titleSpacing: 0,
+              backgroundColor: Colors.white,
+              elevation: 0,
+              title: const Text('상품 리스트'),
+            ),
             SliverToBoxAdapter(
               child: Padding(
                 padding:
@@ -57,77 +58,80 @@ class _ProductListState extends State<ProductListSearch> {
             ),
             // 카테고리 + 체크박스 한 줄 출력
             SliverToBoxAdapter(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Row(
-                  children: [
-                    // 드롭다운 버튼들
-                    // _buildDropdownButton(
-                    //   items: categories,
-                    //   value: selectedCategory,
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       selectedCategory = value!;
-                    //     });
-                    //   },
-                    // ),
-                    _buildDropdownButton(
-                      items: sortOptions,
-                      value: selectedSort,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedSort = value!;
-                        });
-                      },
-                    ),
-                    _buildDropdownButton(
-                      items: priceOptions,
-                      value: selectedPrice,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedPrice = value!;
-                        });
-                      },
-                    ),
-                    // 체크박스들
-                    _buildCheckbox(
-                      title: '네고 가능',
-                      value: isNegotiable,
-                      onChanged: (value) {
-                        setState(() {
-                          isNegotiable = value!;
-                        });
-                      },
-                    ),
-                    _buildCheckbox(
-                      title: '판매완료 제외',
-                      value: excludeCompleted,
-                      onChanged: (value) {
-                        setState(() {
-                          excludeCompleted = value!;
-                        });
-                      },
-                    ),
-                    _buildCheckbox(
-                      title: '직거래 가능',
-                      value: directTransaction,
-                      onChanged: (value) {
-                        setState(() {
-                          directTransaction = value!;
-                        });
-                      },
-                    ),
-                  ],
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        color: Colors.grey.shade300, width: 1), // 아래쪽에만 테두리
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      // 드롭다운 버튼들
+                      // _buildDropdownButton(
+                      //   items: categories,
+                      //   value: selectedCategory,
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       selectedCategory = value!;
+                      //     });
+                      //   },
+                      // ),
+                      _buildDropdownButton(
+                        items: sortOptions,
+                        value: selectedSort,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedSort = value!;
+                          });
+                        },
+                      ),
+                      _buildDropdownButton(
+                        items: priceOptions,
+                        value: selectedPrice,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedPrice = value!;
+                          });
+                        },
+                      ),
+                      // 체크박스들
+                      _buildCheckbox(
+                        title: '네고 가능',
+                        value: isNegotiable,
+                        onChanged: (value) {
+                          setState(() {
+                            isNegotiable = value!;
+                          });
+                        },
+                      ),
+                      _buildCheckbox(
+                        title: '판매완료 제외',
+                        value: excludeCompleted,
+                        onChanged: (value) {
+                          setState(() {
+                            excludeCompleted = value!;
+                          });
+                        },
+                      ),
+                      _buildCheckbox(
+                        title: '직거래 가능',
+                        value: directTransaction,
+                        onChanged: (value) {
+                          setState(() {
+                            directTransaction = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-
-            // 상품 리스트 출력
-            SliverPadding(
-              padding: const EdgeInsets.all(16),
-              sliver: Productlist(itemCount: 20), // SliverGrid 출력
-            ),
+            ProductList(products: products),
           ],
         ),
       ),
