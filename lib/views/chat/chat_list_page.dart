@@ -1,7 +1,7 @@
-import 'package:applus_market/screens/chat/components/chat_list_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../models/chat/chat_room_card.dart';
+import 'components/chat_list_container.dart';
 
 /*
 * 2025.01.21 - 황수빈 : Chatting Room List 페이지 생성

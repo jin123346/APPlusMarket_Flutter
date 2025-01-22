@@ -1,4 +1,3 @@
-import 'package:applus_market/screens/my/components/profile_card.dart';
 import 'package:applus_market/size.dart';
 import 'package:applus_market/theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'components/productContainer.dart';
+import 'components/profile_card.dart';
 
 /*
 * 2025.01.21 하진희 : 마이페이지 구성

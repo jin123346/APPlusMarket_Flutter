@@ -1,10 +1,10 @@
 import 'package:applus_market/models/product_card.dart';
-import 'package:applus_market/screens/common/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme.dart';
+import '../common/utils/logger.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
