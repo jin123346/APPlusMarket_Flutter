@@ -119,7 +119,7 @@ class ProfileCard extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         //애쁠 페이 홈으로 전환됨
-                        Navigator.pushNamed(context, '/payHome');
+                        Navigator.pushNamed(context, '/my/payHome');
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,

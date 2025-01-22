@@ -1,9 +1,9 @@
-import 'package:applus_market/size.dart';
-import 'package:applus_market/theme.dart';
-import 'package:applus_market/views/common/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../size.dart';
+import '../../theme.dart';
+import '../common/utils/logger.dart';
 import 'components/notification_toggle.dart';
 /*
  2025.01.22 하진희 : 앱설정 화면 구현

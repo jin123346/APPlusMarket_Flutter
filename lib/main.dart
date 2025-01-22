@@ -2,12 +2,18 @@ import 'package:applus_market/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'views//Login/login_page.dart';
 import 'views/chat/chat_room_page.dart';
+import 'views/chat/chat_room_page.dart';
+import 'views/login/login_page.dart';
+
 import 'views/main_screen.dart';
 import 'views/my/my_logined_page.dart';
 import 'views/my/my_settings_page.dart';
 import 'views/my/pay_home_page.dart';
+
+/**
+ * 2025.01.21 - 김민희 : 결제 홈 화면
+ */
 
 void main() {
   runApp(
@@ -31,10 +37,10 @@ class MyApp extends StatelessWidget {
         '/home': (context) => MainScreen(),
         '/my': (context) => MyLoginedPage(),
         '/my/settings': (context) => MySettingsPage(),
-        '/payHome': (context) => PayHomePage(),
+        '/my/payHome': (context) => PayHomePage(), // 결제 홈 화면
         '/chatting_room': (context) => ChatRoomPage(),
       },
-      initialRoute: '/my/settings',
+      initialRoute: '/login',
     );
   }
 }

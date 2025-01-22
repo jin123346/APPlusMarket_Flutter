@@ -83,7 +83,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           // 메시지 목록 표시
           Expanded(
             child: ListView.builder(
-              // 리스트를 드래그하면 키보드가 내려가도록 하는 코드ㅁㄴㅇ
+              // 리스트를 드래그하면 키보드가 내려가도록 하는 코드
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               controller: _scrollController,
               itemCount: room.messages.length,

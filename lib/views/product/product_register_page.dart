@@ -1,10 +1,12 @@
 import 'package:applus_market/theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'selection_page.dart';
 
 /*
   2025.01.21 - 이도영 : 상품등록 화면
+  2025.01.22 - 황수빈 : 상품등록 디자인 및 모듈 분리 작업
 */
 class ImageItem {
   final String path;
@@ -22,13 +24,17 @@ class ProductRegisterPage extends StatefulWidget {
 
 class _ProductRegisterPageState extends State<ProductRegisterPage> {
   final List<ImageItem> imagePaths = [];
+
   final int maxImages = 10;
   bool isNegotiable = false;
   String deliveryMethod = "불가능";
+  bool isPossibleMeetYou = false;
+
   final TextEditingController titleController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController tradeLocationController = TextEditingController();
+  final TextEditingController productNameController = TextEditingController();
 
   String selectedCategory = "카테고리";
   String selectedBrand = "브랜드";
@@ -137,16 +143,19 @@ class _ProductRegisterPageState extends State<ProductRegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizedBox height16Box = const SizedBox(height: APlusTheme.spacingM);
+    SizedBox height8Box = const SizedBox(height: 8);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('내 물건 팔기'),
           leading: IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pushNamed(context, '/home'),
           ),
         ),
         body: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
@@ -263,162 +272,199 @@ class _ProductRegisterPageState extends State<ProductRegisterPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: APlusTheme.spacingM),
+                  height16Box,
 
                   // 제목 입력
-                  const Text('제목'),
-                  TextFormField(
-                    controller: titleController,
-                    decoration: customInputDecoration('글 제목'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '제목을 입력해주세요';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: APlusTheme.spacingM),
+                  _buildTitle('제목'),
+                  height8Box,
+                  _buildInputContainer(
+                      controller: titleController, title: '글 제목'),
+                  height16Box,
+                  _buildTitle('제품'),
 
+                  height8Box,
+                  _buildInputContainer(
+                      controller: productNameController, title: '제품명'),
+                  height16Box,
                   // 카테고리 및 브랜드 선택
+
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: _selectCategory,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(selectedCategory),
-                            ],
-                          ),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildTitle('카테고리'),
+                            height8Box,
+                            GestureDetector(
+                              onTap: _selectCategory,
+                              child: Container(
+                                height: 47,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                decoration: _defaultBoxDecoration(),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      selectedCategory,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: selectedCategory == '카테고리'
+                                            ? Colors.grey
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      GestureDetector(
-                        onTap: _selectBrand,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(selectedBrand),
-                            ],
-                          ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildTitle('브랜드'),
+                            height8Box,
+                            GestureDetector(
+                              onTap: _selectBrand,
+                              child: Container(
+                                height: 47,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                decoration: _defaultBoxDecoration(),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      selectedBrand,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: selectedBrand == '브랜드'
+                                              ? Colors.grey
+                                              : Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: APlusTheme.spacingM),
 
+                  height16Box,
                   // 가격 입력
-                  TextFormField(
-                    controller: priceController,
-                    keyboardType: TextInputType.number,
-                    decoration: customInputDecoration('₩ 가격을 입력해주세요'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '가격을 입력해주세요';
-                      }
-                      if (int.tryParse(value) == null) {
-                        return '유효한 숫자를 입력해주세요';
-                      }
-                      return null;
-                    },
-                  ),
+
+                  _buildTitle('가격'),
+                  height8Box,
+                  _buildInputContainer(
+                      type: 'number', controller: priceController, title: '가격'),
+
                   const SizedBox(height: APlusTheme.spacingS),
 
                   // 가격 제안 받기
                   Row(
                     children: [
-                      Checkbox(
-                        value: isNegotiable,
-                        onChanged: (value) {
-                          setState(() {
-                            isNegotiable = value ?? false;
-                          });
-                        },
+                      Container(
+                        width: 25,
+                        height: 25,
+                        child: Checkbox(
+                          value: isNegotiable,
+                          onChanged: (value) {
+                            setState(() {
+                              isNegotiable = value ?? false;
+                            });
+                          },
+                          activeColor: Colors.red,
+                          checkColor: Colors.white,
+                        ),
                       ),
+                      const SizedBox(width: 5),
                       const Text('가격 제안 받기'),
                     ],
                   ),
-                  const SizedBox(height: APlusTheme.spacingM),
-
+                  height16Box,
+                  height8Box,
                   // 거래 방식
-                  const Text(
-                    '거래 방식',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: APlusTheme.labelPrimary,
+
+                  // 설명 입력
+                  _buildTitle('자세한 설명'),
+                  height8Box,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: RadioListTile<String>(
-                          value: "불가능",
-                          groupValue: deliveryMethod,
-                          onChanged: (value) {
-                            setState(() {
-                              deliveryMethod = value!;
-                            });
-                          },
-                          title: const Text('불가능'),
-                        ),
-                      ),
-                      Expanded(
-                        child: RadioListTile<String>(
-                          value: "가능",
-                          groupValue: deliveryMethod,
-                          onChanged: (value) {
-                            setState(() {
-                              deliveryMethod = value!;
-                            });
-                          },
-                          title: const Text('가능'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (deliveryMethod == "가능")
-                    TextFormField(
-                      controller: tradeLocationController,
-                      decoration: customInputDecoration(
-                        '직거래 장소를 입력해주세요',
+                    child: TextFormField(
+                      controller: descriptionController,
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                        hintText: '상품에 대하여 자세히 설명해주세요.',
+                        hintStyle: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey[500],
+                            fontWeight: FontWeight.w500),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 13),
                       ),
                       validator: (value) {
-                        if (deliveryMethod == "가능" &&
-                            (value == null || value.isEmpty)) {
-                          return '직거래 장소를 입력해주세요';
+                        if (value == null || value.isEmpty) {
+                          return '설명을 입력해주세요';
                         }
                         return null;
                       },
                     ),
-                  const SizedBox(height: APlusTheme.spacingM),
-
-                  // 설명 입력
-                  const Text('자재한 설명'),
-                  TextFormField(
-                    controller: descriptionController,
-                    maxLines: 5,
-                    decoration: customInputDecoration(
-                      '상품을 최대한 자세하게 설명해주세요',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '설명을 입력해주세요';
-                      }
-                      return null;
-                    },
                   ),
-                  const SizedBox(height: APlusTheme.spacingM),
+                  height16Box,
+                  _buildTitle('직거래 '),
+
+                  Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                    SizedBox(
+                      width: 30,
+                      child: Radio<bool>(
+                        value: false, // "불가능"
+                        groupValue: isPossibleMeetYou,
+                        onChanged: (value) {
+                          setState(() {
+                            isPossibleMeetYou = value!;
+                          });
+                        },
+                      ),
+                    ),
+                    Text(
+                      '불가능',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(width: 5),
+                    Radio<bool>(
+                      value: true, // "가능"
+                      groupValue: isPossibleMeetYou,
+                      onChanged: (value) {
+                        setState(() {
+                          isPossibleMeetYou = value!;
+                        });
+                      },
+                    ),
+                    Text(
+                      '가능',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ]),
+                  height16Box,
+                  height16Box,
 
                   // 제출 버튼
                   ElevatedButton(
@@ -452,39 +498,57 @@ class _ProductRegisterPageState extends State<ProductRegisterPage> {
   }
 }
 
-InputDecoration customInputDecoration(String hintText) {
-  return InputDecoration(
-    hintText: hintText,
-    floatingLabelBehavior: FloatingLabelBehavior.never,
-    border: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: APlusTheme.borderLightGrey,
-        width: 1.0,
+_buildTitle(String title) {
+  return Text(
+    title,
+    style: TextStyle(
+        fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
+  );
+}
+
+_buildInputContainer({
+  String type = 'text',
+  required TextEditingController controller,
+  required String title,
+}) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    decoration: _defaultBoxDecoration(),
+    child: Expanded(
+      child: TextFormField(
+        controller: controller,
+        keyboardType:
+            type == 'number' ? TextInputType.number : TextInputType.text,
+        cursorColor: Colors.grey[600],
+        cursorHeight: 20,
+        decoration: InputDecoration(
+          hintText: title == "제목" ? "글제목" : title,
+          hintStyle: TextStyle(
+              fontSize: 15,
+              color: Colors.grey[500],
+              fontWeight: FontWeight.w500),
+          border: UnderlineInputBorder(
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 13),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return '${title}을 입력해주세요';
+          }
+          if (title == "가격" && int.tryParse(value) == null) {
+            return '유효한 숫자를 입력해주세요';
+          }
+          return null;
+        },
       ),
     ),
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: APlusTheme.borderLightGrey,
-        width: 1.0,
-      ),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: APlusTheme.borderLightGrey,
-        width: 2.0,
-      ),
-    ),
-    errorBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.red,
-        width: 1.0,
-      ),
-    ),
-    focusedErrorBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.red,
-        width: 2.0,
-      ),
-    ),
+  );
+}
+
+_defaultBoxDecoration() {
+  return BoxDecoration(
+    border: Border.all(color: Colors.grey.shade300),
+    borderRadius: BorderRadius.circular(10),
   );
 }
