@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'views/chat/chat_room_page.dart';
+import 'views/chat/chat_room_page.dart';
 import 'views/login/login_page.dart';
+
 import 'views/main_screen.dart';
 import 'views/my/my_logined_page.dart';
 import 'views/my/my_settings_page.dart';

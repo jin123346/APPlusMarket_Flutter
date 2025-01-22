@@ -153,7 +153,7 @@ class _ProductRegisterPageState extends State<ProductRegisterPage> {
           title: const Text('내 물건 팔기'),
           leading: IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pushNamed(context, '/home'),
           ),
         ),
         body: SingleChildScrollView(

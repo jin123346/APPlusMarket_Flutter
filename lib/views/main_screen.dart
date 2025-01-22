@@ -1,3 +1,5 @@
+
+import 'package:applus_market/views/product/product_view_page.dart';
 import 'package:flutter/material.dart';
 
 import 'chat/chat_list_page.dart';
@@ -38,6 +40,7 @@ class _MainScreenState extends State<MainScreen> {
             HomePage(),
             WishPage(),
             ProductRegisterPage(),
+            ProductViewPage(),
             ChatListPage(),
             MyLoginedPage(),
             //PayHomePage(),

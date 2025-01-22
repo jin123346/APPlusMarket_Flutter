@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../theme.dart';
 import '../common/utils/logger.dart';
 
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
