@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:applus_market/models/product_card.dart';
 import '../common/components/productlist.dart';
 import '../common/components/searchcustombar.dart';
 
@@ -7,14 +7,14 @@ import '../common/components/searchcustombar.dart';
 * 2025.01.21 - 이도영 : 카테고리별 상품 출력
 *
 * */
-class ProductListSearch extends StatefulWidget {
-  const ProductListSearch({super.key});
+class ProductListCategory extends StatefulWidget {
+  const ProductListCategory({super.key});
 
   @override
-  State<ProductListSearch> createState() => _ProductListState();
+  State<ProductListCategory> createState() => _ProductListState();
 }
 
-class _ProductListState extends State<ProductListSearch> {
+class _ProductListState extends State<ProductListCategory> {
   // 선택된 값 저장 변수
   String selectedCategory = '카테고리';
   String selectedSort = '등록일순';
@@ -125,8 +125,9 @@ class _ProductListState extends State<ProductListSearch> {
 
             // 상품 리스트 출력
             SliverPadding(
-              padding: const EdgeInsets.all(16),
-              sliver: Productlist(itemCount: 20), // SliverGrid 출력
+              padding: const EdgeInsets.all(0),
+              // 상품 목록화면
+              sliver: ProductList(products: products),
             ),
           ],
         ),

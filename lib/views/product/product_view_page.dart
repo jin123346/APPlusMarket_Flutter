@@ -1,3 +1,4 @@
+import 'package:applus_market/models/product/product_info_card.dart';
 import 'package:applus_market/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,20 +7,23 @@ import 'package:flutter/cupertino.dart';
   2025.01.22 - 이도영 : 상품 정보 출력화면
 */
 class ProductViewPage extends StatefulWidget {
-  const ProductViewPage({super.key});
+  final int productId;
+  const ProductViewPage({super.key, required this.productId});
 
   @override
   State<ProductViewPage> createState() => _ProductViewState();
 }
 
 class _ProductViewState extends State<ProductViewPage> {
+  late ProductInfoCard product; // 해당 제품 정보를 저장할 변수
   final PageController _pageController = PageController();
   int _currentPage = 0; // 현재 페이지 인덱스 추적
 
   @override
   void initState() {
     super.initState();
-
+    product =
+        products.firstWhere((prod) => prod.product_id == widget.productId);
     // 페이지 변경을 감지하여 현재 페이지 인덱스를 업데이트
     _pageController.addListener(() {
       setState(() {
@@ -57,7 +61,6 @@ class _ProductViewState extends State<ProductViewPage> {
             children: [
               // 사진 + 판매자 정보
               Container(
-                padding: const EdgeInsets.all(16.0),
                 color: Colors.white, // 흰색 배경 추가
                 child: Column(
                   children: [
@@ -65,15 +68,16 @@ class _ProductViewState extends State<ProductViewPage> {
                       height: 300,
                       child: Stack(
                         children: [
-                          PageView(
+                          // 이미지 가로 스크롤
+                          PageView.builder(
                             controller: _pageController,
-                            children: [
-                              Image.asset('assets/filedramon.jpg',
-                                  fit: BoxFit.cover),
-                              Image.asset('assets/starbucks-logo.png',
-                                  fit: BoxFit.cover),
-                              // 다른 이미지들 추가 가능
-                            ],
+                            itemCount: product.images.length, // 이미지 리스트의 길이를 사용
+                            itemBuilder: (context, index) {
+                              return Image.network(
+                                product.images[index], // 동적으로 각 이미지 표시
+                                fit: BoxFit.cover,
+                              );
+                            },
                           ),
                           // 페이지 번호 표시
                           Positioned(
@@ -84,7 +88,7 @@ class _ProductViewState extends State<ProductViewPage> {
                                   horizontal: 12, vertical: 4),
                               color: Colors.black.withOpacity(0.5),
                               child: Text(
-                                '${_currentPage + 1} / 2', // 현재 페이지 인덱스 (1부터 시작하도록 +1)
+                                '${_currentPage + 1} / ${product.images.length}', // 페이지 인덱스 (1부터 시작하도록 +1)
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -96,39 +100,44 @@ class _ProductViewState extends State<ProductViewPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
                     // 판매자 정보
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.grey.shade300,
-                          child: const Icon(Icons.person, color: Colors.grey),
-                        ),
-                        const SizedBox(width: 8),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              '판매자',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text('인천시 가제제1동'),
-                          ],
-                        ),
-                        const Spacer(),
-                        Row(
-                          // 여기 Row로 변경
-                          children: [
-                            Text(
-                              '3.5',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            const SizedBox(width: 4), // 간격 추가
-                            Icon(Icons.star, color: Colors.yellow),
-                          ],
-                        ), // 상태 표시 아이콘
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.grey.shade300,
+                            child: const Icon(Icons.person, color: Colors.grey),
+                          ),
+                          const SizedBox(width: 8),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${product.seller_id}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              //register_location 널이 아닐경우 수정 필요
+                              if (product.register_location != null)
+                                Text('${product.register_location}'),
+                            ],
+                          ),
+                          const Spacer(),
+                          Row(
+                            // 여기 Row로 변경
+                            children: [
+                              Text(
+                                '3.5',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              const SizedBox(width: 4), // 간격 추가
+                              Icon(Icons.star, color: Colors.yellow),
+                            ],
+                          ), // 상태 표시 아이콘
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -144,12 +153,12 @@ class _ProductViewState extends State<ProductViewPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '닌텐도 마리오테니스',
+                      '${product.title}',
                       style: CustomTextTheme.titleLarge,
                     ),
                     const SizedBox(height: 8),
                     // 날짜
-                    const Text('24.11.13',
+                    Text('${product.updated_at}',
                         style: TextStyle(color: Colors.grey)),
                     const SizedBox(height: 8),
                     const Divider(),
@@ -167,14 +176,14 @@ class _ProductViewState extends State<ProductViewPage> {
                           ),
                         ),
                         Expanded(
-                          child: Text('컴퓨터 > 키보드 ',
+                          child: Text('${product.category}',
                               style: TextStyle(color: Colors.grey)),
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Row(
-                      children: const [
+                      children: [
                         // 고정된 너비로 상품상태 레이블 설정
                         SizedBox(
                           width: 70, // 고정 너비 설정
@@ -185,7 +194,7 @@ class _ProductViewState extends State<ProductViewPage> {
                         ),
                         Expanded(
                           child: Text(
-                            '삼성',
+                            '${product.brand}',
                             style: TextStyle(color: Colors.grey),
                           ),
                         ),
@@ -205,12 +214,9 @@ class _ProductViewState extends State<ProductViewPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '실사용 2번으로 거의 새재품에 가깝습니다. \n'
-                      '실사용 2번으로 거의 새재품에 가깝습니다. \n'
-                      '실사용 2번으로 거의 새재품에 가깝습니다. \n'
-                      '실사용 2번으로 거의 새재품에 가깝습니다. \n'
-                      '실사용 2번으로 거의 새재품에 가깝습니다. \n',
+                      '${product.content}',
                     ),
+                    const SizedBox(height: 16),
                     const Text(
                       '채팅 1 : 관심 4 : 조회 36',
                       style: TextStyle(color: Colors.grey),
@@ -242,9 +248,13 @@ class _ProductViewState extends State<ProductViewPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('20,000원', style: CustomTextTheme.titleMedium),
+                    Text('${product.price}원',
+                        style: CustomTextTheme.titleMedium),
                     const SizedBox(height: 4),
-                    const Text('가격 제안 불가'), // 가격 제안 불가
+                    // is_negotiable 값에 따라 가격 제안 가능/불가 텍스트 출력
+                    Text(
+                      product.is_negotiable ? '가격 제안 가능' : '가격 제안 불가',
+                    ),
                   ],
                 ),
               ),
