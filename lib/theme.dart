@@ -192,21 +192,21 @@ class APlusTheme {
         // 배경색 제거 (밑줄 스타일을 위해)
         filled: false,
 
-        // 기본 밑줄 스타일
-        border: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: tertiarySystemBackground,
-            width: 1.0,
-          ),
-        ),
+        // // 기본 밑줄 스타일
+        // border: const UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     color: tertiarySystemBackground,
+        //     width: 1.0,
+        //   ),
+        // ),
 
-        // 비활성화된 상태의 밑줄
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: tertiarySystemBackground,
-            width: 1.0,
-          ),
-        ),
+        // // 비활성화된 상태의 밑줄
+        // enabledBorder: const UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     color: tertiarySystemBackground,
+        //     width: 1.0,
+        //   ),
+        // ),
 
         // 포커스 상태의 밑줄
         // focusedBorder: const UnderlineInputBorder(
