@@ -1,3 +1,4 @@
+import 'package:applus_market/view_models/chat/chat_card_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../models/chat/chat_room_card.dart';
@@ -16,20 +17,27 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPageState extends State<ChatListPage> {
+  ChatCardViewModel chatCardViewModel = ChatCardViewModel();
+
   int selectedIndex = 0;
 
+  // 상황별로 나누는 필터 - 추후에 무한 스크롤 도입 시 변경되어야 함ㅁㄴ
   List<ChatRoomCard> getFilteredChatList(int tabIndex) {
     switch (tabIndex) {
       case 0: // 전체
-        return chatRoomCards;
+        return chatCardViewModel.chatCards;
       case 1: // 판매
-        return chatRoomCards.where((chat) => chat.isSeller).toList();
+        return chatCardViewModel.chatCards
+            .where((chat) => chat.isSeller)
+            .toList();
       case 2: // 구매
-        return chatRoomCards.where((chat) => !chat.isSeller).toList();
+        return chatCardViewModel.chatCards
+            .where((chat) => !chat.isSeller)
+            .toList();
       case 3: // 안 읽은 채팅방
-        return chatRoomCards;
+        return chatCardViewModel.chatCards;
       default:
-        return chatRoomCards;
+        return chatCardViewModel.chatCards;
     }
   }
 

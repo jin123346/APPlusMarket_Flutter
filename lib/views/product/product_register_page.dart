@@ -1,7 +1,9 @@
 import 'package:applus_market/theme.dart';
+import 'package:applus_market/views/components/custom_sizedbox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../size.dart';
 import 'selection_page.dart';
 
 /*
@@ -143,8 +145,8 @@ class _ProductRegisterPageState extends State<ProductRegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    SizedBox height16Box = const SizedBox(height: APlusTheme.spacingM);
-    SizedBox height8Box = const SizedBox(height: 8);
+    SizedBox height16Box = const SizedBox(height: commonPadding);
+    SizedBox height8Box = const SizedBox(height: halfPadding);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -171,8 +173,8 @@ class _ProductRegisterPageState extends State<ProductRegisterPage> {
                       GestureDetector(
                         onTap: addImage,
                         child: Container(
-                          width: 100,
-                          height: 100,
+                          width: 90,
+                          height: 90,
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(8),
@@ -181,11 +183,13 @@ class _ProductRegisterPageState extends State<ProductRegisterPage> {
                               const Icon(Icons.add_a_photo, color: Colors.grey),
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 8),
                       // 이미지 리스트
                       Expanded(
-                        child: SizedBox(
-                          height: 100,
+                        child: Container(
+                          height: 90,
+                          width: 90,
+
                           child: imagePaths.isNotEmpty
                               ? ReorderableListView(
                                   scrollDirection: Axis.horizontal,
@@ -201,69 +205,73 @@ class _ProductRegisterPageState extends State<ProductRegisterPage> {
                                     for (int index = 0;
                                         index < imagePaths.length;
                                         index++)
-                                      Stack(
+                                      Container(
                                         key: ValueKey(imagePaths[index].id),
-                                        children: [
-                                          // 이미지 출력
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                                right: 16),
-                                            width: 100,
-                                            height: 100,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                    imagePaths[index].path),
-                                                fit: BoxFit.cover,
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: Stack(
+                                          key: ValueKey(imagePaths[index].id),
+                                          children: [
+                                            // 이미지 출력
+                                            Container(
+                                              width: 90,
+                                              height: 90,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                      imagePaths[index].path),
+                                                  fit: BoxFit.fill,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          // "대표 사진" 레이블
-                                          if (index == 0)
+                                            // "대표 사진" 레이블
+                                            if (index == 0)
+                                              Positioned(
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  color: Colors.black54,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 3),
+                                                  child: const Text(
+                                                    '대표 사진',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            // 삭제 버튼
                                             Positioned(
-                                              bottom: 0,
-                                              left: 0,
+                                              top: 0,
                                               right: 0,
-                                              child: Container(
-                                                color: Colors.black54,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 4),
-                                                child: const Text(
-                                                  '대표 사진',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
+                                              child: GestureDetector(
+                                                onTap: () => removeImage(index),
+                                                child: Container(
+                                                  width: 18,
+                                                  height: 18,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: Colors.red,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.close,
                                                     color: Colors.white,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
+                                                    size: 16,
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          // 삭제 버튼
-                                          Positioned(
-                                            top: 0,
-                                            right: 0,
-                                            child: GestureDetector(
-                                              onTap: () => removeImage(index),
-                                              child: Container(
-                                                width: 24,
-                                                height: 24,
-                                                decoration: const BoxDecoration(
-                                                  color: Colors.red,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: const Icon(
-                                                  Icons.close,
-                                                  color: Colors.white,
-                                                  size: 16,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                   ],
                                 )
@@ -280,8 +288,9 @@ class _ProductRegisterPageState extends State<ProductRegisterPage> {
                   _buildInputContainer(
                       controller: titleController, title: '글 제목'),
                   height16Box,
-                  _buildTitle('제품'),
 
+                  // 제품 입력
+                  _buildTitle('제품'),
                   height8Box,
                   _buildInputContainer(
                       controller: productNameController, title: '제품명'),
@@ -312,7 +321,7 @@ class _ProductRegisterPageState extends State<ProductRegisterPage> {
                                     Text(
                                       selectedCategory,
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 15,
                                         color: selectedCategory == '카테고리'
                                             ? Colors.grey
                                             : Colors.black,
@@ -512,7 +521,9 @@ _buildInputContainer({
   required String title,
 }) {
   return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 16),
+    padding: const EdgeInsets.symmetric(
+      horizontal: 16,
+    ),
     decoration: _defaultBoxDecoration(),
     child: Expanded(
       child: TextFormField(
@@ -530,7 +541,7 @@ _buildInputContainer({
           border: UnderlineInputBorder(
             borderSide: BorderSide.none,
           ),
-          contentPadding: EdgeInsets.symmetric(vertical: 13),
+          contentPadding: EdgeInsets.symmetric(vertical: 9),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {

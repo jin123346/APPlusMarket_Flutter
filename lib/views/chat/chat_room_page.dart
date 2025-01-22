@@ -1,8 +1,10 @@
+import 'package:applus_market/views/common/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../../models/chat/chat_room.dart';
 import '../../models/product_card.dart';
-import '../../view_models/chat_room_view_model.dart';
+import '../../view_models/chat/chat_room_view_model.dart';
+import '../components/time_ago.dart';
 /*
 * 2025.01.21 황수빈 : ChatRoomPage 구현, 더미ㅇ 데이터 출력
 * 2025.01.22 황수빈 : chat view_models 구현, 채팅 입력 시 화면 재 build
@@ -28,7 +30,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   // 키보드가 올라가면 ListView의 최하단으로 스크롤하는 메서드
   void scrollToBottom() {
-    print('ScrollToBottom 들어옴');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -70,44 +71,56 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         room.participants.firstWhere((user) => user.user_id != myId);
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text(otherUser.name),
       ),
       body: Column(
         children: [
-          const Divider(height: 1),
-          // 상품 카드 정보 표시
           _buildProductCard(room.productCard),
-          const Divider(height: 1),
+
           const SizedBox(height: 16),
           // 메시지 목록 표시
           Expanded(
-            child: ListView.builder(
-              // 리스트를 드래그하면 키보드가 내려가도록 하는 코드
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              controller: _scrollController,
-              itemCount: room.messages.length,
-              itemBuilder: (context, index) {
-                final message = room.messages[index];
-                final isMyMessage = message.sender_id == myId;
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: isMyMessage
-                        ? MainAxisAlignment.end
-                        : MainAxisAlignment.start,
-                    children: [
-                      _buildMessageTimestamp(isMyMessage, message.created_at),
-                      SizedBox(width: isMyMessage ? 5 : 0),
-                      _buildMessageContainer(
-                          isMyMessage, message.message, context),
-                      SizedBox(width: !isMyMessage ? 5 : 0),
-                      _buildMessageTimestamp(!isMyMessage, message.created_at),
-                    ],
-                  ),
-                );
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
               },
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ListView.builder(
+                  reverse: true,
+                  shrinkWrap: true,
+                  // 리스트를 드래그하면 키보드가 내려가도록 하는 코드
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  controller: _scrollController,
+                  itemCount: room.messages.length,
+                  itemBuilder: (context, index) {
+                    final message = room.messages[index];
+                    final isMyMessage = message.sender_id == myId;
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: isMyMessage
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
+                        children: [
+                          _buildMessageTimestamp(
+                              isMyMessage, message.created_at),
+                          SizedBox(width: isMyMessage ? 5 : 0),
+                          _buildMessageContainer(
+                              isMyMessage, message.message, context),
+                          SizedBox(width: !isMyMessage ? 5 : 0),
+                          _buildMessageTimestamp(
+                              !isMyMessage, message.created_at),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ),
           // 텍스트필드 영역
@@ -128,43 +141,42 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Stack(children: [
-                    Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: TextField(
-                          controller: _messageController,
-                          focusNode: _focusNode,
-                          onTap: () {
-                            // 메시지 입력창이 탭될 때 옵션 목록을 숨김
-                            setState(() {
-                              _showOptions = false;
-                            });
-                          },
-                          cursorColor: Colors.grey[600],
-                          cursorHeight: 17,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              icon: const Icon(
-                                CupertinoIcons.smiley,
-                                size: 25,
-                              ),
-                              onPressed: () {},
-                              color: Colors.grey[600],
+                  child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: TextField(
+                        controller: _messageController,
+                        focusNode: _focusNode,
+                        onTap: () {
+                          // 메시지 입력창이 탭될 때 옵션 목록을 숨김
+                          setState(() {
+                            _showOptions = false;
+                            scrollToBottom();
+                          });
+                        },
+                        cursorColor: Colors.grey[600],
+                        cursorHeight: 17,
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            icon: const Icon(
+                              CupertinoIcons.smiley,
+                              size: 25,
                             ),
-                            hintText: '메시지 보내기',
-                            hintStyle: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey[500],
-                                fontWeight: FontWeight.w500),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(vertical: 13),
+                            onPressed: () {},
+                            color: Colors.grey[600],
                           ),
-                        )),
-                  ]),
+                          hintText: '메시지 보내기',
+                          hintStyle: TextStyle(
+                              fontSize: 15,
+                              color: Colors.grey[500],
+                              fontWeight: FontWeight.w500),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(vertical: 13),
+                        ),
+                      )),
                 ),
                 const SizedBox(width: 8),
                 SizedBox(
@@ -176,6 +188,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         // 메시지를 추가하는 비지니스 로직
                         chatRoomViewModel.addMessage(
                             myId, _messageController.text);
+                        logger.d(chatRoomViewModel.chatroom);
                       });
                       _messageController.clear();
 
@@ -219,6 +232,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   }
 }
 
+// 앨범 / 카메라 / 자주쓰는문구 / 장소
 _buildOptionButton(String label, IconData icon, Color color) {
   return Column(
     mainAxisSize: MainAxisSize.min,
@@ -238,6 +252,7 @@ _buildOptionButton(String label, IconData icon, Color color) {
   );
 }
 
+// 메시지 전송 시간
 _buildMessageTimestamp(bool isMyMessage, String timestamp) {
   return Visibility(
     visible: isMyMessage,
@@ -248,6 +263,7 @@ _buildMessageTimestamp(bool isMyMessage, String timestamp) {
   );
 }
 
+// 메시지 컨테이너
 _buildMessageContainer(bool isMyMessage, String message, context) {
   return Container(
     constraints: // 자식 영역 텍스트 줄바꿈을 위해 추가하였음
@@ -270,66 +286,48 @@ _buildMessageContainer(bool isMyMessage, String message, context) {
   );
 }
 
+// 상품 정보 섹션
 _buildProductCard(ProductCard productCard) {
-  return Container(
-    padding: EdgeInsets.all(16.0),
-    child: Row(
-      children: [
-        Image.network(
-          productCard.thumbnail_image,
-          width: 60,
-          height: 60,
-          fit: BoxFit.cover,
-        ),
-        SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  return Column(
+    children: [
+      const Divider(height: 1),
+      Container(
+        padding: EdgeInsets.all(16.0),
+        child: Row(
           children: [
-            Text(
-              productCard.name,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            Image.network(
+              productCard.thumbnail_image,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
             ),
-            Row(
+            SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${productCard.price}원',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  productCard.name,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
-                const SizedBox(width: 5),
-                Text(
-                  productCard.is_negotiable! ? '(가격제안가능)' : '(가격제안불가)',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                )
+                Row(
+                  children: [
+                    Text(
+                      '${productCard.price}원',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      productCard.is_negotiable! ? '(가격제안가능)' : '(가격제안불가)',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    )
+                  ],
+                ),
               ],
             ),
           ],
         ),
-      ],
-    ),
+      ),
+    ],
   );
-}
-
-String timeAgo(String dateTimeString) {
-  DateTime currentTime = DateTime.now();
-  DateTime inputTime = DateTime.parse(dateTimeString);
-
-  Duration diff = currentTime.difference(inputTime);
-
-  if (diff.inDays > 0) {
-    if (diff.inDays == 1) {
-      return '1일 전';
-    } else if (diff.inDays < 30) {
-      return '${diff.inDays}일 전';
-    } else if (diff.inDays >= 30 && diff.inDays < 365) {
-      return '${(diff.inDays / 30).floor()}개월 전';
-    } else {
-      return '${(diff.inDays / 365).floor()}년 전';
-    }
-  } else if (diff.inHours > 0) {
-    return '${diff.inHours}시간 전';
-  } else if (diff.inMinutes > 0) {
-    return '${diff.inMinutes}분 전';
-  } else {
-    return '방금 전';
-  }
 }

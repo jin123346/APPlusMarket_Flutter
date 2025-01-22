@@ -1,6 +1,6 @@
-import '../models/chat/chat_room.dart';
-import '../models/product_card.dart';
-import '../models/user_card.dart';
+import '../../models/chat/chat_room.dart';
+import '../../models/product_card.dart';
+import '../../models/user_card.dart';
 
 class ChatRoomViewModel {
   ChatRoom _chatRoom = ChatRoom(
@@ -46,7 +46,7 @@ class ChatRoomViewModel {
           isRead: false,
           created_at: "2025-01-20T15:05:00Z",
         ),
-      ],
+      ].reversed.toList(),
       isRead: false);
 
   ChatRoom get chatroom => _chatRoom;

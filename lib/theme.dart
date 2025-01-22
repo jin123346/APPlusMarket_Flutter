@@ -330,9 +330,13 @@ final CustomTextTheme = const TextTheme(
     color: APlusTheme.labelPrimary,
   ),
   titleMedium: TextStyle(
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
-    letterSpacing: -0.5,
+    color: APlusTheme.labelPrimary,
+  ),
+  titleSmall: TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
     color: APlusTheme.labelPrimary,
   ),
   bodyLarge: TextStyle(
