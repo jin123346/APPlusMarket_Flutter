@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import '../../models/chat/chatRoom.dart';
-import '../../models/productCard.dart';
-import '../components/time_ago.dart';
-
+import '../../models/chat/chat_room.dart';
+import '../../models/product_card.dart';
+import '../../view_models/chat_room_view_model.dart';
 /*
-* 2025.01.21 황수빈 : Chatting Room Page 구현
-*
+* 2025.01.21 황수빈 : ChatRoomPage 구현, 더미ㅇ 데이터 출력
+* 2025.01.22 황수빈 : chat view_models 구현, 채팅 입력 시 화면 재 build
 */
+
+// TODO : StatefulWidget과 StatelessWidget 분리
 
 class ChatRoomPage extends StatefulWidget {
   const ChatRoomPage({super.key});
@@ -17,14 +18,33 @@ class ChatRoomPage extends StatefulWidget {
 }
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
+  final ScrollController _scrollController = ScrollController();
+
+  ChatRoomViewModel chatRoomViewModel = ChatRoomViewModel();
   final TextEditingController _messageController = TextEditingController();
+
   bool _showOptions = false;
   final FocusNode _focusNode = FocusNode();
+
+  // 키보드가 올라가면 ListView의 최하단으로 스크롤하는 메서드
+  void scrollToBottom() {
+    print('ScrollToBottom 들어옴');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
 
   @override
   void dispose() {
     _messageController.dispose();
     _focusNode.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -43,13 +63,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    ChatRoom chatRoom = chatRoomExample;
-
-    // TODO : (채팅) 현재 아이디 하드코딩 - 로그인한 유저로 바꾸기
+    // TODO : 일단 myId 하드 코딩 - 로그인 유저 id로 수정 예정
     final int myId = 1;
-
+    final ChatRoom room = chatRoomViewModel.chatroom;
     final otherUser =
-        chatRoom.participants.firstWhere((user) => user.user_id != myId);
+        room.participants.firstWhere((user) => user.user_id != myId);
 
     return Scaffold(
       appBar: AppBar(
@@ -59,15 +77,18 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         children: [
           const Divider(height: 1),
           // 상품 카드 정보 표시
-          _buildProductCard(chatRoom.productCard),
+          _buildProductCard(room.productCard),
           const Divider(height: 1),
           const SizedBox(height: 16),
           // 메시지 목록 표시
           Expanded(
             child: ListView.builder(
-              itemCount: chatRoom.messages.length,
+              // 리스트를 드래그하면 키보드가 내려가도록 하는 코드ㅁㄴㅇ
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              controller: _scrollController,
+              itemCount: room.messages.length,
               itemBuilder: (context, index) {
-                final message = chatRoom.messages[index];
+                final message = room.messages[index];
                 final isMyMessage = message.sender_id == myId;
 
                 return Padding(
@@ -126,6 +147,14 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           cursorColor: Colors.grey[600],
                           cursorHeight: 17,
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: const Icon(
+                                CupertinoIcons.smiley,
+                                size: 25,
+                              ),
+                              onPressed: () {},
+                              color: Colors.grey[600],
+                            ),
                             hintText: '메시지 보내기',
                             hintStyle: TextStyle(
                                 fontSize: 15,
@@ -135,21 +164,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                             contentPadding: EdgeInsets.symmetric(vertical: 13),
                           ),
                         )),
-                    Positioned(
-                      right: 13,
-                      top: 2,
-                      child: SizedBox(
-                        width: 30,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.sentiment_satisfied_outlined,
-                            size: 27,
-                          ),
-                          onPressed: () {},
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ),
                   ]),
                 ),
                 const SizedBox(width: 8),
@@ -157,7 +171,17 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   width: 30,
                   child: IconButton(
                     icon: const Icon(CupertinoIcons.paperplane_fill),
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        // 메시지를 추가하는 비지니스 로직
+                        chatRoomViewModel.addMessage(
+                            myId, _messageController.text);
+                      });
+                      _messageController.clear();
+
+                      // 메시지 전송 후 스크롤 하단으로
+                      scrollToBottom();
+                    },
                     color: Colors.grey[600],
                   ),
                 ),
@@ -283,4 +307,29 @@ _buildProductCard(ProductCard productCard) {
       ],
     ),
   );
+}
+
+String timeAgo(String dateTimeString) {
+  DateTime currentTime = DateTime.now();
+  DateTime inputTime = DateTime.parse(dateTimeString);
+
+  Duration diff = currentTime.difference(inputTime);
+
+  if (diff.inDays > 0) {
+    if (diff.inDays == 1) {
+      return '1일 전';
+    } else if (diff.inDays < 30) {
+      return '${diff.inDays}일 전';
+    } else if (diff.inDays >= 30 && diff.inDays < 365) {
+      return '${(diff.inDays / 30).floor()}개월 전';
+    } else {
+      return '${(diff.inDays / 365).floor()}년 전';
+    }
+  } else if (diff.inHours > 0) {
+    return '${diff.inHours}시간 전';
+  } else if (diff.inMinutes > 0) {
+    return '${diff.inMinutes}분 전';
+  } else {
+    return '방금 전';
+  }
 }

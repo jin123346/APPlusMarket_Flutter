@@ -5,8 +5,8 @@
 
 // 채팅방 조회시 사용됨
 
-import 'package:applus_market/models/productCard.dart';
-import 'package:applus_market/models/userCard.dart';
+import 'package:applus_market/models/product_card.dart';
+import 'package:applus_market/models/user_card.dart';
 
 class ChatRoom {
   final int chat_room_id;

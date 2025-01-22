@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 String timeAgo(String dateTimeString) {
   DateTime currentTime = DateTime.now();
   DateTime inputTime = DateTime.parse(dateTimeString);
