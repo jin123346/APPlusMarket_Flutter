@@ -42,7 +42,11 @@ dependencies:
   google_fonts: ^6.2.1
   font_awesome_flutter: ^10.8.0
   flutter_svg: ^2.0.17
+
+  intl: ^0.18.0 # 2025.01.21 황수빈 - time_ago 함수에서 사용
   logger: ^2.5.0
+  animated_toggle_switch: ^0.8.4
+
 
 dev_dependencies:
   flutter_test:
@@ -53,7 +57,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -70,6 +74,9 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/images/      # 2025.01.21 - 김민희 : 이미지 경로 추가
+    - assets/images/pay/  # 2025.01.21 - 김민희 : 이미지 경로 추가
+    - assets/images/banner/  # 2025.01.21 - 황수빈 : 이미지 경로 추가
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

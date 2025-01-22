@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 final double appbarIconSize = 16.0;
-final double iconList = 15.0;
+final double iconList = 16.0;
 final double commonPadding = 16.0;
 final double halfPadding = 8.0;
 final double bottomIconSize = 20.0;

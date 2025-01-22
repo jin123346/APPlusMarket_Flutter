@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 class APlusTheme {
   APlusTheme._();
 
+  TextTheme get customText => lightTheme.textTheme;
+
   // Brand Colors
   static const Color primaryColor = Color(0xFFFF3B30); // Apple Red
   static const Color secondaryColor = Color(0xFFFF6B6B); // Light Red
@@ -192,29 +194,29 @@ class APlusTheme {
         // 배경색 제거 (밑줄 스타일을 위해)
         filled: false,
 
-        // 기본 밑줄 스타일
-        border: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: tertiarySystemBackground,
-            width: 1.0,
-          ),
-        ),
+        // // 기본 밑줄 스타일
+        // border: const UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     color: tertiarySystemBackground,
+        //     width: 1.0,
+        //   ),
+        // ),
 
-        // 비활성화된 상태의 밑줄
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: tertiarySystemBackground,
-            width: 1.0,
-          ),
-        ),
+        // // 비활성화된 상태의 밑줄
+        // enabledBorder: const UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     color: tertiarySystemBackground,
+        //     width: 1.0,
+        //   ),
+        // ),
 
         // 포커스 상태의 밑줄
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: primaryColor,
-            width: 2.0,
-          ),
-        ),
+        // focusedBorder: const UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     color: primaryColor,
+        //     width: 2.0,
+        //   ),
+        // ),
 
         // 에러 상태의 밑줄
         errorBorder: const UnderlineInputBorder(
@@ -309,3 +311,40 @@ class APlusTheme {
 TextTheme getTextTheme(BuildContext context) {
   return Theme.of(context).textTheme;
 }
+
+final CustomTextTheme = const TextTheme(
+  headlineLarge: TextStyle(
+    fontSize: 34,
+    fontWeight: FontWeight.bold,
+    letterSpacing: -0.5,
+    color: APlusTheme.labelPrimary,
+  ),
+  headlineMedium: TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    letterSpacing: -0.5,
+    color: APlusTheme.labelPrimary,
+  ),
+  titleLarge: TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.5,
+    color: APlusTheme.labelPrimary,
+  ),
+  titleMedium: TextStyle(
+    fontSize: 17,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.5,
+    color: APlusTheme.labelPrimary,
+  ),
+  bodyLarge: TextStyle(
+    fontSize: 17,
+    fontWeight: FontWeight.normal,
+    color: APlusTheme.labelPrimary,
+  ),
+  bodyMedium: TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.normal,
+    color: APlusTheme.labelSecondary,
+  ),
+);
