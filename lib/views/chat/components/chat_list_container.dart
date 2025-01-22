@@ -1,4 +1,3 @@
-import 'package:applus_market/screens/common/components/image_container.dart';
 import 'package:flutter/material.dart';
 import '../../../models/chat/chat_room_card.dart';
 import '../../common/components/image_container.dart';

@@ -14,7 +14,11 @@ class PayHomePage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Color(0xFFF0F1F6),
         appBar: AppBar(
-          leading: Icon(Icons.close),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.close)),
           title: Image.asset(
             'assets/images/pay/lushpay_logo.png',
             width: 100,
@@ -22,7 +26,7 @@ class PayHomePage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           actions: [
-            // actions를 AppBar 안으로 이동
+            // actions 를 AppBar 안으로 이동
             Icon(Icons.settings),
             SizedBox(width: commonPadding),
           ],
@@ -59,6 +63,7 @@ class PayHomePage extends StatelessWidget {
                             child: Text(
                               '내 계좌',
                               style: TextStyle(
+                                color: Colors.black,
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 0.5,
