@@ -1,14 +1,13 @@
-import 'package:applus_market/screens/my/my_logined_page.dart';
-
-import 'package:applus_market/screens/chat/chat_room_page.dart';
-
 import 'package:applus_market/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'screens/Login/login_page.dart';
-import 'screens/main_screen.dart';
-import 'screens/my/my_settings_page.dart';
+import 'views//Login/login_page.dart';
+import 'views/chat/chat_room_page.dart';
+import 'views/main_screen.dart';
+import 'views/my/my_logined_page.dart';
+import 'views/my/my_settings_page.dart';
+import 'views/my/pay_home_page.dart';
 
 void main() {
   runApp(
@@ -32,10 +31,10 @@ class MyApp extends StatelessWidget {
         '/home': (context) => MainScreen(),
         '/my': (context) => MyLoginedPage(),
         '/my/settings': (context) => MySettingsPage(),
-        // '/payHome' : (context) => PayHomePage(),
+        '/payHome': (context) => PayHomePage(),
         '/chatting_room': (context) => ChatRoomPage(),
       },
-      initialRoute: '/login',
+      initialRoute: '/my/settings',
     );
   }
 }

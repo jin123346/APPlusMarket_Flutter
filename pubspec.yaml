@@ -45,6 +45,7 @@ dependencies:
 
   intl: ^0.18.0 # 2025.01.21 황수빈 - time_ago 함수에서 사용
   logger: ^2.5.0
+  animated_toggle_switch: ^0.8.4
 
 
 dev_dependencies:

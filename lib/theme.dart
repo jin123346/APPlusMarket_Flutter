@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 class APlusTheme {
   APlusTheme._();
 
+  TextTheme get customText => lightTheme.textTheme;
+
   // Brand Colors
   static const Color primaryColor = Color(0xFFFF3B30); // Apple Red
   static const Color secondaryColor = Color(0xFFFF6B6B); // Light Red
