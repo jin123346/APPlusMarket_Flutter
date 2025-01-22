@@ -2,6 +2,9 @@ import 'package:applus_market/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+/*
+  2025.01.22 - 이도영 : 상품 정보 출력화면
+*/
 class ProductViewPage extends StatefulWidget {
   const ProductViewPage({super.key});
 

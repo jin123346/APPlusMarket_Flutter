@@ -1,4 +1,3 @@
-import 'package:applus_market/screens/my/pay_home_page.dart';
 import 'package:applus_market/views/product/product_view_page.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
             HomePage(),
             WishPage(),
             ProductRegisterPage(),
-            //ProductViewPage(),
+            ProductViewPage(),
             ChatListPage(),
             MyLoginedPage(),
             //PayHomePage(),
