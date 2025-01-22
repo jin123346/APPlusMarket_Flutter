@@ -1,4 +1,4 @@
-import 'package:applus_market/models/productCard.dart';
+import 'package:applus_market/models/product_card.dart';
 import 'package:applus_market/screens/common/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
