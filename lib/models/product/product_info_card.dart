@@ -15,7 +15,7 @@ class ProductInfoCard {
   final bool is_negotiable; // 네고 가능 여부
   final bool is_possible_meet_you; // 직거래 가능 여부
   final String category; // 카테고리
-
+  final String? brand; //브랜드
   // 생성자
   ProductInfoCard({
     required this.product_id,
@@ -30,6 +30,7 @@ class ProductInfoCard {
     required this.is_negotiable,
     required this.is_possible_meet_you,
     required this.category,
+    this.brand,
   });
 
   // 수정된 toString() 메서드
@@ -47,7 +48,8 @@ class ProductInfoCard {
         'seller_id: $seller_id, '
         'is_negotiable: $is_negotiable, '
         'is_possible_meet_you: $is_possible_meet_you, '
-        'category: $category}';
+        'category: $category,'
+        'brand: $brand}';
   }
 }
 
@@ -55,7 +57,10 @@ List<ProductInfoCard> products = [
   ProductInfoCard(
     product_id: 1,
     title: '맥북 프로 14 2024년형 새상품 팝니다',
-    images: ['https://picsum.photos/id/910/200/100'], // 이미지 리스트
+    images: [
+      'https://picsum.photos/id/910/300/300',
+      'https://picsum.photos/id/890/300/300',
+    ], // 이미지 리스트
     content: '새상품, 박스포장 그대로, 맥북 프로 14인치 2024년형',
     register_location: '서울시 강남구',
     updated_at: '2024-01-01',
@@ -65,6 +70,7 @@ List<ProductInfoCard> products = [
     is_negotiable: true,
     is_possible_meet_you: false,
     category: '노트북',
+    brand: '삼성',
   ),
   ProductInfoCard(
     product_id: 2,
