@@ -524,34 +524,30 @@ _buildInputContainer({
       horizontal: 16,
     ),
     decoration: _defaultBoxDecoration(),
-    child: Expanded(
-      child: TextFormField(
-        controller: controller,
-        keyboardType:
-            type == 'number' ? TextInputType.number : TextInputType.text,
-        cursorColor: Colors.grey[600],
-        cursorHeight: 20,
-        decoration: InputDecoration(
-          hintText: title == "제목" ? "글제목" : title,
-          hintStyle: TextStyle(
-              fontSize: 15,
-              color: Colors.grey[500],
-              fontWeight: FontWeight.w500),
-          border: UnderlineInputBorder(
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: EdgeInsets.symmetric(vertical: 9),
+    child: TextFormField(
+      controller: controller,
+      keyboardType:
+          type == 'number' ? TextInputType.number : TextInputType.text,
+      cursorColor: Colors.grey[600],
+      cursorHeight: 20,
+      decoration: InputDecoration(
+        hintText: title == "제목" ? "글제목" : title,
+        hintStyle: TextStyle(
+            fontSize: 15, color: Colors.grey[500], fontWeight: FontWeight.w500),
+        border: UnderlineInputBorder(
+          borderSide: BorderSide.none,
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return '${title}을 입력해주세요';
-          }
-          if (title == "가격" && int.tryParse(value) == null) {
-            return '유효한 숫자를 입력해주세요';
-          }
-          return null;
-        },
+        contentPadding: EdgeInsets.symmetric(vertical: 9),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '${title}을 입력해주세요';
+        }
+        if (title == "가격" && int.tryParse(value) == null) {
+          return '유효한 숫자를 입력해주세요';
+        }
+        return null;
+      },
     ),
   );
 }

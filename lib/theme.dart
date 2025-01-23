@@ -96,7 +96,7 @@ class APlusTheme {
           color: labelPrimary,
         ),
         headlineMedium: TextStyle(
-          fontSize: 28,
+          fontSize: 20,
           fontWeight: FontWeight.bold,
           letterSpacing: -0.5,
           color: labelPrimary,
@@ -320,7 +320,7 @@ final CustomTextTheme = const TextTheme(
     color: APlusTheme.labelPrimary,
   ),
   headlineMedium: TextStyle(
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: FontWeight.bold,
     letterSpacing: -0.5,
     color: APlusTheme.labelPrimary,
@@ -350,5 +350,10 @@ final CustomTextTheme = const TextTheme(
     fontSize: 15,
     fontWeight: FontWeight.normal,
     color: APlusTheme.labelSecondary,
+  ),
+  bodySmall: TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.normal,
+    color: Colors.grey,
   ),
 );
