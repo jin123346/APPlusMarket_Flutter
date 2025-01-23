@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../size.dart';
 import '../../theme.dart';
+import '../common/components/applus_text_logo.dart';
 import '../common/utils/logger.dart';
 import 'components/notification_toggle.dart';
 /*
@@ -65,26 +67,74 @@ class MySettingsPage extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text(
-                              '캐시 데이터 삭제',
-                              style: TextStyle(),
-                            ),
-                            content: const Text('캐시 데이터를 삭제하시겠습니까?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('취소'),
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero),
+                            title: Center(
+                              child: Text(
+                                '캐시 데이터를 삭제하시겠습니까?',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  // 여기에 캐시 삭제 로직 추가
-                                  Navigator.pop(context);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('캐시 데이터가 삭제되었습니다.')),
-                                  );
-                                },
-                                child: const Text('확인'),
+                            ),
+                            content:
+                                SizedBox(height: 0), // Removes extra padding
+                            actionsPadding: const EdgeInsets.all(0),
+                            actionsAlignment: MainAxisAlignment.center,
+                            actions: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text(
+                                      '취소',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.grey[200],
+                                      // minimumSize: Size(150, 40),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      // Add cookie deletion logic here
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text('캐시 데이터가 삭제되었습니다.'),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      '확인',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.black,
+                                      minimumSize: Size(150, 40),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -105,29 +155,108 @@ class MySettingsPage extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: const Text('쿠키 삭제'),
-                            content: const Text('쿠키 데이터를 삭제하시겠습니까?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('취소'),
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero),
+                            title: Center(
+                              child: Text(
+                                '쿠키 데이터를 삭제하시겠습니까?',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  // 여기에 쿠키 삭제 로직 추가
-                                  Navigator.pop(context);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('쿠키 데이터가 삭제되었습니다.')),
-                                  );
-                                },
-                                child: const Text('확인'),
+                            ),
+                            content:
+                                SizedBox(height: 0), // Removes extra padding
+                            actionsPadding: const EdgeInsets.all(0),
+                            actionsAlignment: MainAxisAlignment.center,
+                            actions: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text(
+                                      '취소',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.grey[200],
+                                      minimumSize: Size(150, 40),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      // Add cookie deletion logic here
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text('쿠키 데이터가 삭제되었습니다.'),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      '확인',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.black,
+                                      minimumSize: Size(150, 40),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         );
                       },
                     ),
+                    const SizedBox(height: space32),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(space8)),
+                                color: Colors.white,
+                              ),
+                              child: APPlusTextLogo(
+                                size: 18,
+                              ),
+                              padding: EdgeInsets.all(space8),
+                            ),
+                            const SizedBox(width: halfPadding),
+                            Text('현재버전 0.0.1'),
+                          ],
+                        ),
+                        Text(
+                          '최신 버전 사용중',
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ),

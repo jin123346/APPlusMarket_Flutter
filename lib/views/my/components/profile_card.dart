@@ -95,6 +95,7 @@ class ProfileCard extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         print('배송지 관리 클릭됨');
+                        Navigator.pushNamed(context, '/my/delivery');
                       },
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,

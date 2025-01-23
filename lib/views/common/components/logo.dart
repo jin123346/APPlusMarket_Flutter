@@ -17,7 +17,7 @@ class Logo extends StatelessWidget {
           child: Image.asset(
             width: 200,
             height: 150,
-            'assets/starbucks-logo.png',
+            'assets/applogo_logo_rd.png',
             fit: BoxFit.fitWidth,
           ),
         ),
