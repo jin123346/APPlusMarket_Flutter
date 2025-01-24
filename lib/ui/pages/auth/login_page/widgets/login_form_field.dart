@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:applus_market/_core/theme.dart';
 
 class LoginFormField extends StatefulWidget {
   final String label;
@@ -35,8 +36,10 @@ class _LoginFormFieldState extends State<LoginFormField> {
       decoration: InputDecoration(
         labelText: widget.label,
         border: UnderlineInputBorder(
-          borderRadius: BorderRadius.circular(5.0),
-        ),
+        borderSide: BorderSide(
+        color: APlusTheme.borderLightGrey,
+        width: 1.0,
+        ),),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {

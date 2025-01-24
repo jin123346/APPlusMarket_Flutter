@@ -84,13 +84,14 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           // 메시지 목록 표시
           Expanded(
             child: GestureDetector(
+
               onTap: () {
                 FocusScope.of(context).unfocus();
               },
               child: Align(
                 alignment: Alignment.topCenter,
                 child: ListView.builder(
-                  reverse: true,
+
                   shrinkWrap: true,
                   // 리스트를 드래그하면 키보드가 내려가도록 하는 코드
                   keyboardDismissBehavior:
