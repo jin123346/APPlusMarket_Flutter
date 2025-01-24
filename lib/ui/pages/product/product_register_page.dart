@@ -538,7 +538,9 @@ _buildInputContainer({
           borderSide: BorderSide.none,
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 9),
-      ),
+      )
+      ,
+
       validator: (value) {
         if (value == null || value.isEmpty) {
           return '${title}을 입력해주세요';
