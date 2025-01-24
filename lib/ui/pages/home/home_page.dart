@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../_core/logger.dart';
 import '../../../_core/theme.dart';
-import '../../../data/model/product/product_info_card.dart';
+import '../../../data/model/product/product_card.dart';
 import '../../widgets/productlist.dart';
 
 class HomePage extends StatelessWidget {

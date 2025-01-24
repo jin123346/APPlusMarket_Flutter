@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 * */
 
 class ProductContainer extends StatelessWidget {
-  final String price;
+  final int price;
   final String name;
 
   const ProductContainer({
@@ -43,7 +43,7 @@ class ProductContainer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  price,
+                  '$price',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
