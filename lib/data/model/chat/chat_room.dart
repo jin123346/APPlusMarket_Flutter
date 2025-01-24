@@ -5,7 +5,7 @@
 
 // 채팅방 조회시 사용됨
 
-import '../product_card.dart';
+import '../product/product_card.dart';
 import '../user_card.dart';
 
 class ChatRoom {

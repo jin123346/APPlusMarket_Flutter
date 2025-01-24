@@ -1,5 +1,5 @@
 import '../../../data/model/chat/chat_room.dart';
-import '../../../data/model/product_card.dart';
+import '../../../data/model/product/product_card.dart';
 import '../../../data/model/user_card.dart';
 
 class ChatRoomPageViewModel {
