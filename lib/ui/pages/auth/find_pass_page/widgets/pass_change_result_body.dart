@@ -2,8 +2,8 @@ import 'package:applus_market/_core/size.dart';
 import 'package:applus_market/_core/theme.dart';
 import 'package:flutter/material.dart';
 
-class FindIdResultBody extends StatelessWidget {
-  const FindIdResultBody({super.key});
+class PassChangeResultBody extends StatelessWidget {
+  PassChangeResultBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +22,14 @@ class FindIdResultBody extends StatelessWidget {
                 const SizedBox(height: space16),
                 Center(
                   child: Text(
-                    '김사장님의 아이디는 bznav****입니다.',
+                    '성공적으로 비밀번호가 변경되었습니다.',
                     style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: space8),
                 Center(
                   child: Text(
-                    '정보 보호를 위해 아이디의 일부만 보입니다.',
+                    '새로운 비밀번호로 로그인해보세요.',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey),
                   ),
@@ -47,13 +47,13 @@ class FindIdResultBody extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  //
+                  Navigator.pushNamed(context, '/login');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: APlusTheme.primaryColor, // 버튼 색상
                   padding: EdgeInsets.symmetric(vertical: 16), // 버튼 높이
                 ),
-                child: Text('계속 연결하기'),
+                child: Text('로그인'),
               ),
             ),
           ),
