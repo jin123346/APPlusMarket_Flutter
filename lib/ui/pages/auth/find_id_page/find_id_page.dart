@@ -10,7 +10,6 @@ class FindIdPage extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              // TODO : Navigator 참조
               Navigator.pushNamed(context, '/login');
             },
             icon: Icon(Icons.arrow_back_ios)),

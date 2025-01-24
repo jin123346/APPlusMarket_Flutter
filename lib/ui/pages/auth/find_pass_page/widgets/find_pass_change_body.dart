@@ -1,7 +1,8 @@
+import 'package:applus_market/_core/size.dart';
 import 'package:flutter/material.dart';
 
-class FindPassBody extends StatelessWidget {
-  FindPassBody({super.key});
+class FindPassChangeBody extends StatelessWidget {
+  FindPassChangeBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,8 @@ class FindPassBody extends StatelessWidget {
                 children: [
                   const SizedBox(height: 70),
                   Text(
-                    '이메일로 \n비밀번호를 재설정하세요',
+                    '새로운 \n비밀번호를 입력해주세요',
+
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 16),
@@ -26,7 +28,7 @@ class FindPassBody extends StatelessWidget {
                     cursorColor: Colors.grey[600],
                     cursorHeight: 20,
                     decoration: InputDecoration(
-                      labelText: ' 아이디*',
+                      labelText: ' 새 비밀번호*',
                       labelStyle: TextStyle(
                         color: Colors.grey.shade500,
                         fontSize: 16,
@@ -44,12 +46,12 @@ class FindPassBody extends StatelessWidget {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: space16),
                   TextFormField(
                     keyboardType: TextInputType.emailAddress, // 이메일 입력용 키보드 타입
                     cursorColor: Colors.grey[600],
                     decoration: InputDecoration(
-                      labelText: ' 이메일*',
+                      labelText: ' 새 비밀번호 확인*',
                       labelStyle: TextStyle(color: Colors.grey.shade500),
                       border: OutlineInputBorder(),
                       enabledBorder: OutlineInputBorder(
@@ -57,17 +59,7 @@ class FindPassBody extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '이메일을 입력해주세요';
-                      }
-                      // 이메일 형식 유효성 검사
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                          .hasMatch(value)) {
-                        return '유효한 이메일 주소를 입력해주세요';
-                      }
-                      return null;
-                    },
+
                   ),
                   const SizedBox(height: 16),
                   const Spacer(), // 남은 공간을 채우기 위해 Spacer 추가
@@ -83,10 +75,10 @@ class FindPassBody extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // TODO : 중간에 '이메일 인증완료 되었습니다' 페이지 넣을지 고민
-                    Navigator.pushNamed(context, '/find_pass_change');
+                    // 아이디 찾기 로직
+                    Navigator.pushNamed(context, '/pass_change_result');
                   },
-                  child: Text('비밀번호 재설정하기'),
+                  child: Text('비밀번호 변경'),
                 ),
               ),
             ),
