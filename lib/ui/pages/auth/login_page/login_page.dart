@@ -107,7 +107,7 @@ class LoginPage extends ConsumerWidget {
                               foregroundColor: Colors.grey,
                               padding: EdgeInsets.symmetric(
                                   vertical: 0, horizontal: 10)),
-                           onPressed: () {
+                          onPressed: () {
                             Navigator.pushNamed(context, '/find_id');
                           },
                           child: Text('아이디찾기')),
@@ -126,7 +126,7 @@ class LoginPage extends ConsumerWidget {
                       Container(height: 15, width: 1, color: Colors.grey),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/find_pass');
+                          Navigator.pushNamed(context, '/join');
                         },
                         child: Text('회원가입'),
                         style: TextButton.styleFrom(
