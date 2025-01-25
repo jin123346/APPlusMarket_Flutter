@@ -41,3 +41,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# MacOS에서 생성되는 불필요한 파일
+.DS_Store
+src/.DS_Store
