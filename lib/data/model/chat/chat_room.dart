@@ -7,7 +7,10 @@
 
 import '../product/product_card.dart';
 import '../user_card.dart';
-
+/**
+*  2025.01.24(금) - 황수빈 :  데이터 메시지 리스트 수정
+*
+* */
 class ChatRoom {
   final int chat_room_id;
   final ProductCard productCard;
@@ -92,6 +95,6 @@ ChatRoom chatRoomExample = ChatRoom(
       isRead: false,
       created_at: "2025-01-20T15:05:00Z",
     ),
-  ].reversed.toList(),
+  ],
   isRead: false,
 );

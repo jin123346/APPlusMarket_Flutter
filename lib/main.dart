@@ -1,3 +1,10 @@
+import 'package:applus_market/ui/pages/auth/find_id_page/find_id_page.dart';
+import 'package:applus_market/ui/pages/auth/find_id_page/find_id_result_page.dart';
+import 'package:applus_market/ui/pages/auth/find_pass_page/find_pass_page.dart';
+import 'package:applus_market/ui/pages/auth/find_pass_page/find_pass_change_page.dart';
+import 'package:applus_market/ui/pages/auth/find_pass_page/pass_change_result_page.dart';
+import 'package:applus_market/ui/pages/auth/find_pass_page/widgets/find_pass_change_body.dart';
+import 'package:applus_market/ui/pages/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,6 +21,7 @@ import 'ui/pages/splash/splash_screen.dart';
 
 /**
  * 2025.01.21 - 김민희 : 결제 홈 화면
+ * 2025.01.24 - 황수빈 : 아이디 찾기 라우터 추가
  */
 
 void main() async {
@@ -43,6 +51,13 @@ class MyApp extends StatelessWidget {
         '/my/delivery/register': (context) => DeliveryRegisterPage(),
         '/my/payHome': (context) => PayHomePage(), // 결제 홈 화면
         '/chatting_room': (context) => ChatRoomPage(),
+        '/find_id': (context) => FindIdPage(),
+        '/find_id_result': (context) => FindIdResultPage(),
+        '/find_pass': (context) => FindPassPage(),
+        '/find_pass_change': (context) => FindPassChangePage(),
+        '/pass_change_result': (context) => PassChangeResultPage(),
+
+
       },
       initialRoute: '/splash',
     );
