@@ -1,19 +1,18 @@
+import 'package:applus_market/data/repository/auth/signup_controller.dart';
 import 'package:applus_market/ui/pages/auth/login_page/widgets/login_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../_core/logger.dart';
+import '../../../../../_core/logger.dart';
 
-class InsertHpPage extends StatefulWidget {
+class InsertHpPage extends ConsumerStatefulWidget {
   InsertHpPage({super.key});
 
   @override
-  State<InsertHpPage> createState() => _InsertPasswordPageState();
+  ConsumerState<InsertHpPage> createState() => _InsertPasswordPageState();
 }
 
-class _InsertPasswordPageState extends State<InsertHpPage> {
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController phoneNumberController = TextEditingController();
-
+class _InsertPasswordPageState extends ConsumerState<InsertHpPage> {
   final List<String> carriers = [
     "SKT",
     "KT",
@@ -25,7 +24,8 @@ class _InsertPasswordPageState extends State<InsertHpPage> {
   String? selectedCarrier;
   bool selectOn = false;
 
-  void showCarrierSelectionBottomSheet(BuildContext context) {
+  void showCarrierSelectionBottomSheet(
+      BuildContext context, TextEditingController hpAgencyController) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -58,6 +58,7 @@ class _InsertPasswordPageState extends State<InsertHpPage> {
                     onTap: () {
                       setState(() {
                         selectedCarrier = carrier;
+                        hpAgencyController.text = carrier;
                         selectOn = true; // 선택 시 전화번호 입력창 표시
                       });
                       Navigator.pop(context); // 모달 닫기
@@ -72,6 +73,11 @@ class _InsertPasswordPageState extends State<InsertHpPage> {
 
   @override
   Widget build(BuildContext context) {
+    SignUpController controllerNotifier =
+        ref.read(SignUpControllerProvider.notifier);
+    final TextEditingController hpController = controllerNotifier.hpController;
+    final TextEditingController hpAgencyController =
+        controllerNotifier.hpAgencyController;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -105,7 +111,8 @@ class _InsertPasswordPageState extends State<InsertHpPage> {
                     ),
                     const SizedBox(height: 10),
                     GestureDetector(
-                      onTap: () => showCarrierSelectionBottomSheet(context),
+                      onTap: () => showCarrierSelectionBottomSheet(
+                          context, hpAgencyController),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 15),
@@ -134,7 +141,7 @@ class _InsertPasswordPageState extends State<InsertHpPage> {
                     const SizedBox(height: 20),
                     if (selectOn)
                       TextFormField(
-                        controller: phoneNumberController,
+                        controller: hpController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                           hintText: "010-1234-5678",

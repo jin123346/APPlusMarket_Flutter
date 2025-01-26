@@ -1,26 +1,22 @@
 import 'dart:async';
 
+import 'package:applus_market/ui/pages/auth/join_page/join_insert_page_model_view.dart';
 import 'package:applus_market/ui/pages/auth/login_page/widgets/login_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../_core/logger.dart';
+import '../../../../../_core/logger.dart';
+import '../../../../../data/model/auth/user.dart';
+import '../../../../../data/repository/auth/signup_controller.dart';
 
-class InsertEmailPage extends StatefulWidget {
+class InsertEmailPage extends ConsumerStatefulWidget {
   InsertEmailPage({super.key});
 
   @override
-  State<InsertEmailPage> createState() => _InsertEmailPageState();
+  ConsumerState<InsertEmailPage> createState() => _InsertEmailPageState();
 }
 
-class _InsertEmailPageState extends State<InsertEmailPage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController verificationCodeController =
-      TextEditingController();
-
-  final TextEditingController nicknameController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController birthDateController = TextEditingController();
-
+class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
   bool isSubmitted = false;
   bool isTimerRunning = false;
   int remainingSeconds = 180; // 3분
@@ -92,6 +88,14 @@ class _InsertEmailPageState extends State<InsertEmailPage> {
 
   @override
   Widget build(BuildContext context) {
+    SignUpController controllerNotifier =
+        ref.read(SignUpControllerProvider.notifier);
+    final TextEditingController emailController =
+        controllerNotifier.emailController;
+    final TextEditingController verificationCodeController =
+        controllerNotifier.verificationCodeController;
+
+    TextEditingController();
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -351,6 +355,10 @@ class _InsertEmailPageState extends State<InsertEmailPage> {
                         actions: [
                           TextButton(
                             onPressed: () {
+                              JoinInsertModelView notifier =
+                                  ref.read(joinUserProvider.notifier);
+                              User user = notifier.toUser(controllerNotifier);
+                              notifier.insertUser(user);
                               Navigator.pop(context); // 팝업 닫기
                               Navigator.pushNamed(
                                   context, '/login'); // 로그인 페이지로 이동

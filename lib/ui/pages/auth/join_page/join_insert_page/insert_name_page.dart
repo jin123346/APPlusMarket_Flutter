@@ -1,17 +1,19 @@
+import 'package:applus_market/data/repository/auth/signup_controller.dart';
 import 'package:applus_market/ui/pages/auth/login_page/widgets/login_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class InsertNamePage extends StatefulWidget {
+import '../../../../../services/DateInputFormatter.dart';
+
+class InsertNamePage extends ConsumerStatefulWidget {
   InsertNamePage({super.key});
 
   @override
-  State<InsertNamePage> createState() => _InsertNamePageState();
+  ConsumerState<InsertNamePage> createState() => _InsertNamePageState();
 }
 
-class _InsertNamePageState extends State<InsertNamePage> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController nicknameController = TextEditingController();
-  final TextEditingController birthDateController = TextEditingController();
+class _InsertNamePageState extends ConsumerState<InsertNamePage> {
   final FocusNode nameFocusNode = FocusNode();
   final FocusNode nicknameFocusNode = FocusNode();
   final FocusNode birthFocusNode = FocusNode();
@@ -21,6 +23,15 @@ class _InsertNamePageState extends State<InsertNamePage> {
 
   @override
   Widget build(BuildContext context) {
+    SignUpController signUpControllerNotifier =
+        ref.read(SignUpControllerProvider.notifier);
+    TextEditingController nameController =
+        signUpControllerNotifier.uidController;
+    TextEditingController nicknameController =
+        signUpControllerNotifier.nicknameController;
+    TextEditingController birthDateController =
+        signUpControllerNotifier.birthDateController;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -61,6 +72,12 @@ class _InsertNamePageState extends State<InsertNamePage> {
                             controller: birthDateController,
                             keyboardType: TextInputType.datetime,
                             cursorColor: Colors.grey[600],
+                            inputFormatters: [
+                              FilteringTextInputFormatter
+                                  .digitsOnly, // 숫자만 입력 허용
+                              LengthLimitingTextInputFormatter(8), // 최대 8자리 제한
+                              DateInputFormatter(), // 생년월일 포맷터 추가
+                            ],
                             decoration: InputDecoration(
                               hintText: 'YYYY-MM-DD',
                               labelText: ' 생년월일',
@@ -78,7 +95,32 @@ class _InsertNamePageState extends State<InsertNamePage> {
                             textInputAction: TextInputAction.newline,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
+                                birthDateController.clear();
                                 return '생년월일을 입력해주세요';
+                              }
+                              // 유효성 검사: 10자리 및 YYYY-MM-DD 형식 확인
+                              final regex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+                              if (!regex.hasMatch(value)) {
+                                birthDateController.clear();
+                                return '올바른 형식의 생년월일을 입력해주세요 (YYYY-MM-DD)';
+                              }
+                              // 날짜가 유효한지 확인
+                              try {
+                                final parts = value.split('-');
+                                final year = int.parse(parts[0]);
+                                final month = int.parse(parts[1]);
+                                final day = int.parse(parts[2]);
+
+                                if (month < 1 ||
+                                    month > 12 ||
+                                    day < 1 ||
+                                    day > 31) {
+                                  birthDateController.clear();
+                                  return '올바른 날짜를 입력해주세요';
+                                }
+                              } catch (e) {
+                                birthDateController.clear();
+                                return '유효한 생년월일을 입력해주세요';
                               }
                               return null;
                             },
