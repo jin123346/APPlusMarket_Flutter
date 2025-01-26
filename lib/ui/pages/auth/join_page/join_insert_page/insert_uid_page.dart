@@ -1,25 +1,14 @@
 import 'package:applus_market/ui/pages/auth/login_page/widgets/login_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class InsertPasswordPage extends StatelessWidget {
-  InsertPasswordPage({super.key});
+class InsertUidPage extends ConsumerWidget {
+  InsertUidPage({super.key});
 
   final TextEditingController uidController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController nicknameController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController birthDateController = TextEditingController();
-  void sendEmailVerification() {
-    // Logic to send email verification
-    print("Sending email verification to: ${emailController.text}");
-  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -41,17 +30,17 @@ class InsertPasswordPage extends StatelessWidget {
                   children: [
                     const SizedBox(height: 70),
                     Text(
-                      '비밀번호를 입력하세요',
+                      '사용하실 아이디를 입력하세요',
                       style:
                           TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 16),
                     TextFormField(
-                      controller: passwordController,
+                      controller: uidController,
                       cursorColor: Colors.grey[600],
                       cursorHeight: 20,
                       decoration: InputDecoration(
-                        labelText: ' 비밀번호*',
+                        labelText: ' 아이디*',
                         labelStyle: TextStyle(
                           color: Colors.grey.shade500,
                           fontSize: 16,
@@ -64,35 +53,12 @@ class InsertPasswordPage extends StatelessWidget {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '이름을 입력해주세요';
+                          return '아이디를 입력해주세요';
                         }
                         return null;
                       },
                     ),
                     SizedBox(height: 16),
-                    TextFormField(
-                      controller: confirmPasswordController,
-                      cursorColor: Colors.grey[600],
-                      cursorHeight: 20,
-                      decoration: InputDecoration(
-                        labelText: ' 비밀번호 확인*',
-                        labelStyle: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 16,
-                        ),
-                        border: OutlineInputBorder(),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '비밀번호를 확인해주세요 ';
-                        }
-                        return null;
-                      },
-                    ),
 
                     const Spacer(), // 남은 공간을 채우기 위해 Spacer 추가
                   ],
@@ -107,7 +73,7 @@ class InsertPasswordPage extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/join/insertHp');
+                      Navigator.pushNamed(context, '/join/insertPass');
                     },
                     child: Text('다음'),
                   ),
