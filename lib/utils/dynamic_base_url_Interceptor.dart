@@ -64,7 +64,8 @@ class DynamicBaseUrlInterceptor extends Interceptor {
     } else if (platform == 'iOS') {
       return 'http://127.0.0.1:8080'; // iOS 에뮬레이터
     } else if (platform == 'web') {
-      return 'http://127.0.0.1:8080';
+      String localIp = await getLocalIp();
+      return 'http://$localIp:8080';
     } else {
       String localIp = await getLocalIp(); // 기타 플랫폼
       return 'http://$localIp:8080';
