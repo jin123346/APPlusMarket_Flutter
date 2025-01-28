@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'widgets/join_body.dart';
 
 class JoinPage extends StatelessWidget {

@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:applus_market/ui/pages/auth/join_page/join_insert_page_model_view.dart';
-import 'package:applus_market/ui/pages/auth/login_page/widgets/login_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../_core/logger.dart';
 import '../../../../../data/model/auth/user.dart';
 import '../../../../../data/model/auth/signup_controller.dart';
+import '../join_insert_page_model_view.dart';
 
 class InsertEmailPage extends ConsumerStatefulWidget {
   InsertEmailPage({super.key});

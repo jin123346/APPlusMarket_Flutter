@@ -30,6 +30,7 @@ import 'ui/pages/splash/splash_screen.dart';
  * 2025.01.21 - 김민희 : 결제 홈 화면
  * 2025.01.24 - 황수빈 : 아이디 찾기 라우터 추가
  * 2025.01.25 - 하진희 : 회원가입화면 라우터 추가
+ * 2025.01.29 - 하진희 : dotenv 파일 로드 가능하도록 기능 추가
  */
 
 Future<void> main() async {
