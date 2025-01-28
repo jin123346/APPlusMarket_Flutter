@@ -1,5 +1,7 @@
+import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -11,11 +13,13 @@ import 'widgets/profile_card.dart';
 * 2025.01.21 하진희 : 마이페이지 구성
 * */
 
-class MyLoginedPage extends StatelessWidget {
+class MyLoginedPage extends ConsumerWidget {
   const MyLoginedPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    LoginController loginController =
+        ref.watch(LoginControllerProvider.notifier);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -178,7 +182,9 @@ class MyLoginedPage extends StatelessWidget {
                               minimumSize: const Size(44, 44),
                               shadowColor: Colors.transparent,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              loginController.logout(context);
+                            },
                             child: Text('로그아웃')),
                       ),
                     ),

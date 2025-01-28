@@ -1,11 +1,13 @@
 import 'package:applus_market/data/model/auth/user.dart';
-import 'package:applus_market/data/repository/auth/signup_controller.dart';
+import 'package:applus_market/data/model/auth/signup_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../data/repository/auth/user_dio.dart';
+import '../../../../_core/dio.dart';
+import '../../../../data/repository/auth/auth_repository.dart';
 
 class JoinInsertModelView extends Notifier<User> {
+  final AuthRepository authRepository = AuthRepository(dio: dio);
   @override
   User build() {
     return User();
@@ -45,7 +47,7 @@ class JoinInsertModelView extends Notifier<User> {
   }
 
   void insertUser(User user) {
-    apiInsertUser(user);
+    authRepository.apiInsertUser(user);
   }
 
   String dateTimeToString(DateTime dateTime) {

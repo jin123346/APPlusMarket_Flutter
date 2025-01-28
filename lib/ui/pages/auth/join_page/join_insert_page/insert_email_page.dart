@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../_core/logger.dart';
 import '../../../../../data/model/auth/user.dart';
-import '../../../../../data/repository/auth/signup_controller.dart';
+import '../../../../../data/model/auth/signup_controller.dart';
 
 class InsertEmailPage extends ConsumerStatefulWidget {
   InsertEmailPage({super.key});

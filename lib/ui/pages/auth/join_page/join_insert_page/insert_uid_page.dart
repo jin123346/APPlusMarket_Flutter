@@ -2,13 +2,16 @@ import 'package:applus_market/ui/pages/auth/login_page/widgets/login_form_field.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../data/model/auth/signup_controller.dart';
+
 class InsertUidPage extends ConsumerWidget {
   InsertUidPage({super.key});
 
-  final TextEditingController uidController = TextEditingController();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    SignUpController signUpControllerNotifier =
+        ref.read(SignUpControllerProvider.notifier);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -36,7 +39,7 @@ class InsertUidPage extends ConsumerWidget {
                     ),
                     SizedBox(height: 16),
                     TextFormField(
-                      controller: uidController,
+                      controller: signUpControllerNotifier.uidController,
                       cursorColor: Colors.grey[600],
                       cursorHeight: 20,
                       decoration: InputDecoration(
