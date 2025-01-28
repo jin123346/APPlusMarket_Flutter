@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../_core/size.dart';
 import '../../../_core/theme.dart';
 import 'widget/pay_money_card.dart';
+import 'widget/pay_send_page.dart';
 import 'widget/pay_transaction_item.dart';
-
 
 class PayHomePage extends StatelessWidget {
   const PayHomePage({super.key});
@@ -32,10 +32,34 @@ class PayHomePage extends StatelessWidget {
         children: [
           // 1. 애쁠머니
           PayMoneyCard(
+            // 잔액
             balance: 0,
+            // 🔁 초기화 아이콘
             onRefresh: () {},
+            // 충전
             onCharge: () {},
-            onTransfer: () {},
+            // 송금
+            // 송금 버튼 클릭시 iOS 스타일 전환 애니메이션 적용
+            onTransfer: () {
+              Navigator.of(context).push(
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      PaySendPage(), // 송금 페이지 이동
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(1.0, 0.0);
+                    const end = Offset.zero;
+                    const curve = Curves.easeInOut;
+                    var tween = Tween(begin: begin, end: end)
+                        .chain(CurveTween(curve: curve));
+                    var offsetAnimation = animation.drive(tween);
+                    return SlideTransition(
+                        position: offsetAnimation, child: child);
+                  },
+                  transitionDuration: const Duration(milliseconds: 300),
+                ),
+              );
+            },
           ),
           const SizedBox(height: APlusTheme.spacingM),
           // 2. 애쁠 체크카드 출시

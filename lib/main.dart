@@ -3,6 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '_core/theme.dart';
 import 'ui/main_screen.dart';
+import 'ui/pages/auth/find_id_page/find_id_page.dart';
+import 'ui/pages/auth/find_id_page/find_id_result_page.dart';
+import 'ui/pages/auth/find_pass_page/find_pass_change_page.dart';
+import 'ui/pages/auth/find_pass_page/find_pass_page.dart';
+import 'ui/pages/auth/find_pass_page/pass_change_result_page.dart';
+import 'ui/pages/auth/join_page/join_insert_page/insert_email_page.dart';
+
+import 'ui/pages/auth/join_page/join_insert_page/insert_hp_page.dart';
+import 'ui/pages/auth/join_page/join_insert_page/insert_name_page.dart';
+import 'ui/pages/auth/join_page/join_insert_page/insert_password_page.dart';
+import 'ui/pages/auth/join_page/join_insert_page/insert_uid_page.dart';
+import 'ui/pages/auth/join_page/join_insert_page/join_check_page.dart';
+import 'ui/pages/auth/join_page/join_page.dart';
 import 'ui/pages/auth/login_page/login_page.dart';
 import 'ui/pages/chat/chat_room_page.dart';
 import 'ui/pages/my/delivery_page.dart';
@@ -14,6 +27,8 @@ import 'ui/pages/splash/splash_screen.dart';
 
 /**
  * 2025.01.21 - 김민희 : 결제 홈 화면
+ * 2025.01.24 - 황수빈 : 아이디 찾기 라우터 추가
+ * 2025.01.25 - 하진희 : 회원가입화면 라우터 추가
  */
 
 void main() async {
@@ -36,6 +51,13 @@ class MyApp extends StatelessWidget {
       routes: {
         '/splash': (context) => SplashScreen(),
         '/login': (context) => LoginPage(),
+        '/join': (context) => JoinPage(),
+        '/join/emailLogin': (context) => InsertNamePage(),
+        '/join/insertUid': (context) => InsertUidPage(),
+        '/join/insertPass': (context) => InsertPasswordPage(),
+        '/join/insertHp': (context) => InsertHpPage(),
+        '/join/insertEmail': (context) => InsertEmailPage(),
+        '/join/check': (context) => JoinCheckPage(),
         '/home': (context) => MainScreen(),
         '/my': (context) => MyLoginedPage(),
         '/my/settings': (context) => MySettingsPage(),
@@ -43,6 +65,11 @@ class MyApp extends StatelessWidget {
         '/my/delivery/register': (context) => DeliveryRegisterPage(),
         '/my/payHome': (context) => PayHomePage(), // 결제 홈 화면
         '/chatting_room': (context) => ChatRoomPage(),
+        '/find_id': (context) => FindIdPage(),
+        '/find_id_result': (context) => FindIdResultPage(),
+        '/find_pass': (context) => FindPassPage(),
+        '/find_pass_change': (context) => FindPassChangePage(),
+        '/pass_change_result': (context) => PassChangeResultPage(),
       },
       initialRoute: '/splash',
     );

@@ -217,22 +217,22 @@ class APlusTheme {
         //     width: 2.0,
         //   ),
         // ),
-
-        // 에러 상태의 밑줄
-        errorBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: errorColor,
-            width: 1.0,
-          ),
-        ),
-
-        // 에러 상태에서 포커스된 밑줄
-        focusedErrorBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: errorColor,
-            width: 2.0,
-          ),
-        ),
+        //
+        // // 에러 상태의 밑줄
+        // errorBorder: const UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     color: errorColor,
+        //     width: 1.0,
+        //   ),
+        // ),
+        //
+        // // 에러 상태에서 포커스된 밑줄
+        // focusedErrorBorder: const UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     color: errorColor,
+        //     width: 2.0,
+        //   ),
+        // ),
 
         // 텍스트필드 내부 여백
         contentPadding: const EdgeInsets.symmetric(
