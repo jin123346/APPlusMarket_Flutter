@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SplashScreen extends StatefulWidget {
+import '../../../data/model/auth/login_state.dart';
+import '../auth/login_page/login_page.dart';
+import '../home/home_page.dart';
+
+class SplashScreen extends ConsumerWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loginState = ref.watch(LoginControllerProvider);
 
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/login');
+    // 앱 초기화 및 상태 확인
+    Future.delayed(Duration(seconds: 2), () {
+      if (loginState.isLoggedIn) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      }
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '_core/theme.dart';
@@ -31,7 +32,8 @@ import 'ui/pages/splash/splash_screen.dart';
  * 2025.01.25 - 하진희 : 회원가입화면 라우터 추가
  */
 
-void main() async {
+Future<void> main() async {
+  await dotenv.load(fileName: ".env"); // .env 파일 로드
   runApp(
     ProviderScope(
       child: MyApp(),

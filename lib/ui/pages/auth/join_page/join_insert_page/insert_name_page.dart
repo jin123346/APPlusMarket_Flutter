@@ -1,4 +1,4 @@
-import 'package:applus_market/data/repository/auth/signup_controller.dart';
+import 'package:applus_market/data/model/auth/signup_controller.dart';
 import 'package:applus_market/ui/pages/auth/login_page/widgets/login_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +26,7 @@ class _InsertNamePageState extends ConsumerState<InsertNamePage> {
     SignUpController signUpControllerNotifier =
         ref.read(SignUpControllerProvider.notifier);
     TextEditingController nameController =
-        signUpControllerNotifier.uidController;
+        signUpControllerNotifier.nameController;
     TextEditingController nicknameController =
         signUpControllerNotifier.nicknameController;
     TextEditingController birthDateController =

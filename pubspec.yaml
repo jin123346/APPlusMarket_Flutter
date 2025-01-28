@@ -41,7 +41,7 @@ dependencies:
   google_fonts: ^6.2.1
   font_awesome_flutter: ^10.8.0
   flutter_svg: ^2.0.17
-  flutter_dotenv: ^5.0.2
+  flutter_dotenv: ^5.2.1
 
   intl: ^0.18.0 # 2025.01.21 황수빈 - time_ago 함수에서 사용
   logger: ^2.5.0
@@ -51,6 +51,7 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   daum_postcode_search: ^0.0.3
   flutter_native_splash: ^2.4.4
+  shared_preferences: ^2.4.0
 
 
 dev_dependencies:
@@ -77,6 +78,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - .env
     - assets/
     - assets/icons/
     - assets/images/      # 2025.01.21 - 김민희 : 이미지 경로 추가
