@@ -1,4 +1,5 @@
 import 'package:applus_market/data/model/data_responseDTO.dart';
+import 'package:applus_market/utils/dynamic_base_url_Interceptor.dart';
 import 'package:dio/dio.dart';
 
 import '../../../_core/apiUrl.dart';
@@ -15,7 +16,7 @@ class AuthRepository {
     try {
       // 로그인 API 요청
       final response = await dio.post(
-        '$apiUrl/auth/login',
+        '/auth/login',
         data: {'uid': uid, 'password': password},
       );
 
@@ -38,10 +39,9 @@ class AuthRepository {
   }
 
   Future<void> apiInsertUser(User user) async {
-    String url = '$apiUrl/auth/register'; // API URL
     try {
       final response = await dio.post(
-        url,
+        '/auth/register',
         data: {
           "uid": user.uid,
           "password": user.password,
