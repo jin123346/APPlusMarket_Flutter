@@ -25,11 +25,14 @@ class DynamicBaseUrlInterceptor extends Interceptor {
   Future<String> getLocalIp() async {
     try {
       for (var interface in await NetworkInterface.list()) {
-        for (var addr in interface.addresses) {
-          // IPv4 타입이면서 루프백 주소가 아닌 경우
-          if (addr.type == InternetAddressType.IPv4 && !addr.isLoopback) {
-            print('Detected IP: ${addr.address}');
-            return addr.address;
+        // 네트워크 이름 확인 (Wi-Fi, Ethernet 등)
+        if (interface.name.contains("Wi-Fi") ||
+            interface.name.contains("Ethernet")) {
+          for (var addr in interface.addresses) {
+            if (addr.type == InternetAddressType.IPv4 && !addr.isLoopback) {
+              print('Detected IP from ${interface.name}: ${addr.address}');
+              return addr.address;
+            }
           }
         }
       }
@@ -61,7 +64,7 @@ class DynamicBaseUrlInterceptor extends Interceptor {
     } else if (platform == 'iOS') {
       return 'http://127.0.0.1:8080'; // iOS 에뮬레이터
     } else if (platform == 'web') {
-      return 'http://127.0.0.1:8080'; // web 에뮬레이터
+      return 'http://127.0.0.1:8080';
     } else {
       String localIp = await getLocalIp(); // 기타 플랫폼
       return 'http://$localIp:8080';
