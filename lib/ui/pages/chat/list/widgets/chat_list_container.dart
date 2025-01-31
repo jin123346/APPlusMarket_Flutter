@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../../data/model/chat/chat_room_card.dart';
-import '../../../widgets/image_container.dart';
-import '../../components/time_ago.dart';
+
+import '../../../../../data/model/chat/chat_room_card.dart';
+import '../../../../widgets/image_container.dart';
+import '../../../components/time_ago.dart';
 
 /*
-*
-* 2025.01.21 - 황수빈 : ChatRoomCardContainer 생성
+*  2025.01.21 - 황수빈 : ChatRoomCardContainer 생성
 *
 */
 
@@ -29,7 +29,7 @@ class ChatListContainer extends StatelessWidget {
               width: 50,
               child: ImageContainer(
                 borderRadius: 25,
-                imgUri: chatRoom.user_image,
+                imgUri: chatRoom.userImage,
                 width: 50,
                 height: 50,
               ),
@@ -43,7 +43,7 @@ class ChatListContainer extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        chatRoom.user_name, // 사용자 이름
+                        chatRoom.userName, // 사용자 이름
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 15),
                       ),
@@ -51,13 +51,13 @@ class ChatListContainer extends StatelessWidget {
                         width: 8,
                       ),
                       Text(
-                        timeAgo(chatRoom.message_created_at), // 최근 메시지 시간
+                        timeAgo(chatRoom.messageCreatedAt), // 최근 메시지 시간
                         style: TextStyle(fontSize: 12, color: Colors.black54),
                       )
                     ],
                   ),
                   Text(
-                    chatRoom.recent_message, // 최근 메시지
+                    chatRoom.recentMessage, // 최근 메시지
                     style: TextStyle(fontSize: 13.5, color: Colors.black54),
                     overflow: TextOverflow.ellipsis,
                     softWrap: true,
@@ -68,7 +68,7 @@ class ChatListContainer extends StatelessWidget {
             const SizedBox(width: 12),
             ImageContainer(
               borderRadius: 5,
-              imgUri: chatRoom.product_thumbnail,
+              imgUri: chatRoom.productThumbnail,
               width: 50,
               height: 50,
             )
