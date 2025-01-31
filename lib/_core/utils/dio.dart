@@ -5,7 +5,7 @@ import '../apiUrl.dart';
 
 final Dio dio = Dio(
   BaseOptions(
-    baseUrl: apiUrl,
+    baseUrl: 'http://192.168.0.145:8080',
     contentType: 'application/json; charset=utf-8',
     validateStatus: (status) => true,
   ),
