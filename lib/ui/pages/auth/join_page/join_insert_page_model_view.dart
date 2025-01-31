@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../_core/dio.dart';
+import '../../../../_core/utils/dio.dart';
 import '../../../../data/model/auth/signup_controller.dart';
 import '../../../../data/model/auth/user.dart';
 import '../../../../data/repository/auth/auth_repository.dart';

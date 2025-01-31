@@ -3,7 +3,7 @@ import 'package:applus_market/utils/dynamic_base_url_Interceptor.dart';
 import 'package:dio/dio.dart';
 
 import '../../../_core/apiUrl.dart';
-import '../../../_core/logger.dart';
+import '../../../_core/utils/logger.dart';
 import '../../model/auth/tokens.dart';
 import '../../model/auth/user.dart';
 
