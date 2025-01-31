@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'pages/chat/chat_list_page.dart';
+import 'pages/chat/list/widgets/chat_list_body.dart';
 import 'pages/home/home_page.dart';
 import 'pages/my/my_logined_page.dart';
 import 'pages/product/product_register_page.dart';
 import 'pages/wish/wish_page.dart';
-
+import 'pages/chat/list/chat_list_page.dart'; // 황수빈 리팩토링
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
