@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../_core/size.dart';
-import '../../../_core/theme.dart';
+import '../../../_core/components/size.dart';
+import '../../../../_core/components/theme.dart';
 import 'widget/pay_money_card.dart';
 import 'widget/pay_send_page.dart';
 import 'widget/pay_transaction_item.dart';

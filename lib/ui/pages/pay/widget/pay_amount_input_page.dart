@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../_core/theme.dart';
+import '../../../../_core/components/theme.dart';
 import '../../../../_core/utils/logger.dart';
 import 'pay_password_page.dart';
 

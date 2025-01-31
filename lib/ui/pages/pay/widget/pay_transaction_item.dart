@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../_core/theme.dart';
+import '../../../../_core/components/theme.dart';
 
 /**
  * 2025.01.22 - 김민희 : PayMoneyCard 컴포넌트 화

@@ -355,7 +355,8 @@ class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
                             onPressed: () {
                               JoinInsertModelView notifier =
                                   ref.read(joinUserProvider.notifier);
-                              User user = notifier.toUser(controllerNotifier);
+                              Map<String, dynamic> user =
+                                  notifier.toUser(controllerNotifier);
                               notifier.insertUser(user);
                               Navigator.pop(context); // 팝업 닫기
                               Navigator.pushNamed(

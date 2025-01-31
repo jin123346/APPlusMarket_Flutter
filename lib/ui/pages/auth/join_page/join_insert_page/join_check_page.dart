@@ -1,4 +1,4 @@
-import 'package:applus_market/_core/theme.dart';
+import 'package:applus_market/_core/components/theme.dart';
 import 'package:applus_market/ui/pages/auth/login_page/widgets/login_form_field.dart';
 import 'package:applus_market/ui/widgets/applus_text_logo.dart';
 import 'package:flutter/material.dart';

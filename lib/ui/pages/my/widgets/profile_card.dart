@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../_core/theme.dart';
+import '../../../../_core/components/theme.dart';
 import '../../../widgets/image_container.dart';
 
 /*
