@@ -1,4 +1,4 @@
-import 'package:applus_market/_core/size.dart';
+import 'package:applus_market/_core/components/size.dart';
 import 'package:flutter/material.dart';
 
 class FindPassChangeBody extends StatelessWidget {
@@ -20,7 +20,6 @@ class FindPassChangeBody extends StatelessWidget {
                   const SizedBox(height: 70),
                   Text(
                     '새로운 \n비밀번호를 입력해주세요',
-
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 16),
@@ -59,7 +58,6 @@ class FindPassChangeBody extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-
                   ),
                   const SizedBox(height: 16),
                   const Spacer(), // 남은 공간을 채우기 위해 Spacer 추가
@@ -68,7 +66,7 @@ class FindPassChangeBody extends StatelessWidget {
             ),
             Positioned(
               bottom:
-              MediaQuery.of(context).viewInsets.bottom + 16, // 키보드 위로 버튼 위치
+                  MediaQuery.of(context).viewInsets.bottom + 16, // 키보드 위로 버튼 위치
               left: 16,
               right: 16,
               child: SizedBox(

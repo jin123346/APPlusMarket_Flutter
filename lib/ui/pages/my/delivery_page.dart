@@ -1,8 +1,8 @@
-import 'package:applus_market/_core/size.dart';
+import 'package:applus_market/_core/components/size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../../../_core/theme.dart';
+import '../../../../_core/components/theme.dart';
 import 'widgets/custom_textfield.dart';
 import 'widgets/custom_two_button.dart';
 import 'widgets/delivery_address_page.dart';

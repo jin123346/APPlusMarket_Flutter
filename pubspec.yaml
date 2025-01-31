@@ -52,6 +52,7 @@ dependencies:
   daum_postcode_search: ^0.0.3
   flutter_native_splash: ^2.4.4
   shared_preferences: ^2.4.0
+  flutter_secure_storage: ^9.2.4
 
 
 dev_dependencies:

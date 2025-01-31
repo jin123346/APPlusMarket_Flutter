@@ -1,3 +1,4 @@
+import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,7 +11,7 @@ class SplashScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loginState = ref.watch(LoginControllerProvider);
+    final loginState = ref.watch(LoginProvider);
 
     // 앱 초기화 및 상태 확인
     Future.delayed(Duration(seconds: 2), () {

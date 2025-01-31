@@ -5,8 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../_core/size.dart';
-import '../../../_core/theme.dart';
+import '../../../_core/components/size.dart';
+import '../../../../_core/components/theme.dart';
+import '../../../data/gvm/session_gvm.dart';
 import 'widgets/profile_card.dart';
 
 /*
@@ -18,8 +19,8 @@ class MyLoginedPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    LoginController loginController =
-        ref.watch(LoginControllerProvider.notifier);
+    SessionGVM loginNotifier = ref.read(LoginProvider.notifier);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -183,7 +184,7 @@ class MyLoginedPage extends ConsumerWidget {
                               shadowColor: Colors.transparent,
                             ),
                             onPressed: () {
-                              loginController.logout(context);
+                              loginNotifier.logout();
                             },
                             child: Text('로그아웃')),
                       ),

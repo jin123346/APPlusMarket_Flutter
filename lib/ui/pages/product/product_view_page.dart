@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../../_core/theme.dart';
+import '../../../../_core/components/theme.dart';
 import '../../../data/model/product/product_info_card.dart';
 
 /*

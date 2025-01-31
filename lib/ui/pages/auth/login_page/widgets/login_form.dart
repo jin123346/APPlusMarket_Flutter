@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'login_form_field.dart';
 
 class LoginForm extends StatelessWidget {
-  final GlobalKey<FormState> formkey;
+  final GlobalKey<FormState> formKey;
   final TextEditingController uidController;
   final TextEditingController passwordController;
 
   LoginForm(
-      {required this.formkey,
+      {required this.formKey,
       required this.uidController,
       required this.passwordController,
       super.key});
@@ -17,7 +17,7 @@ class LoginForm extends StatelessWidget {
     String _uid = '';
     String _password = '';
     return Form(
-      key: formkey,
+      key: formKey,
       child: Column(
         children: [
           LoginFormField(

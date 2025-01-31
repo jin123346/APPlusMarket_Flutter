@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '_core/theme.dart';
+import '../../../../_core/components/theme.dart';
 import 'ui/main_screen.dart';
 import 'ui/pages/auth/find_id_page/find_id_page.dart';
 import 'ui/pages/auth/find_id_page/find_id_result_page.dart';
@@ -42,12 +42,15 @@ Future<void> main() async {
   );
 }
 
+GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigator,
       debugShowCheckedModeBanner: false,
       title: 'APPLUS Market',
       theme: APlusTheme.lightTheme,
