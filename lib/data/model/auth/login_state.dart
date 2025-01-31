@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../_core/dio.dart';
-import '../../../_core/logger.dart';
+import '../../../_core/utils/dio.dart';
+import '../../../_core/utils/logger.dart';
 import 'tokens.dart';
 /*
  2025.1.28 하진희 - 로그인 상태관리

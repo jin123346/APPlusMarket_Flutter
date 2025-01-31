@@ -1,7 +1,7 @@
-import 'package:applus_market/_core/logger.dart';
 import 'package:applus_market/ui/pages/chat/chat_room_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import '../../../_core/utils/logger.dart';
 import '../../../data/model/chat/chat_room.dart';
 import '../../../data/model/product/product_card.dart';
 

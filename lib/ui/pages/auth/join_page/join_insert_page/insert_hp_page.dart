@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../_core/logger.dart';
+import '../../../../../_core/utils/logger.dart';
 import '../../../../../data/model/auth/signup_controller.dart';
 
 class InsertHpPage extends ConsumerStatefulWidget {
