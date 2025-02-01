@@ -5,6 +5,7 @@ import 'package:applus_market/data/model/data_responseDTO.dart';
 import 'package:applus_market/utils/dynamic_base_url_Interceptor.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 import '../../../_core/utils/apiUrl.dart';
 import '../../../_core/utils/dio.dart';
@@ -34,6 +35,8 @@ class AuthRepository {
       accessToken = response.headers['Authorization']![0];
       Map<String, dynamic> responseBody = response.data;
 
+      checkCookies();
+
       logger.i('Login User 정보확인 : ${responseBody}');
 
       return (responseBody, accessToken);
@@ -60,15 +63,29 @@ class AuthRepository {
     }
   }
 
-  Future<void> refreshToken(String refreshToken) async {
+  Future<(Map<String, dynamic>, String?)> refreshAccessToken(
+      String refreshToken) async {
+    // ✅ `/auth/refresh` API 호출
+    setCookie(refreshToken);
+    checkCookies();
+
     try {
-      final response = await dio.post('/auth/refresh',
-          data: refreshToken,
-          options: Options(
-              headers: {'Cookie': 'refreshToken=${refreshToken}'},
-              followRedirects: false));
+      Response response = await dio.get("/auth/refresh");
+      Map<String, dynamic> responseBody = response.data;
+      if (response.statusCode == 200 && responseBody['code'] == 1000) {
+        String? newAccessToken = response.headers.value('Authorization');
+
+        // ✅ 새로운 Access Token 저장
+
+        logger.i("✅ Access Token 갱신 완료: $newAccessToken");
+        return (responseBody, newAccessToken);
+      }
+
+      logger.w("❌ Refresh Token 만료 또는 오류");
+      return (responseBody, '');
     } catch (e) {
-      logger.e(e);
+      logger.e("❌ Refresh Token을 통한 자동 로그인 실패: $e");
+      rethrow;
     }
   }
 
@@ -102,5 +119,21 @@ class AuthRepository {
       logger.e("❌ 로그아웃 요청 실패: $e");
       rethrow; // ✅ ViewModel에서 처리하도록 예외 던짐
     }
+  }
+
+  Future<void> checkCookies() async {
+    List<Cookie> cookies = await cookieJar.loadForRequest(Uri.parse(apiUrl));
+    print("✅ 저장된 쿠키 목록: $cookies"); // ✅ 쿠키가 유지되는지 확인
+  }
+
+  void setCookie(String refreshToken) {
+    logger.i('Cookie에 저장할 refreshToken $refreshToken');
+    cookieJar.saveFromResponse(
+      Uri.parse(apiUrl), // 요청 도메인과 맞춰야 함
+      [Cookie('refreshToken', refreshToken)],
+    );
+
+    // ✅ 쿠키 관리자를 Dio에 추가
+    dio.interceptors.add(CookieManager(cookieJar));
   }
 }

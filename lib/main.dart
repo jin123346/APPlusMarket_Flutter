@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../_core/components/theme.dart';
+import 'data/gvm/session_gvm.dart';
 import 'ui/main_screen.dart';
 import 'ui/pages/auth/find_id_page/find_id_page.dart';
 import 'ui/pages/auth/find_id_page/find_id_result_page.dart';
@@ -35,6 +36,7 @@ import 'ui/pages/splash/splash_screen.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env"); // .env 파일 로드
+
   runApp(
     ProviderScope(
       child: MyApp(),
