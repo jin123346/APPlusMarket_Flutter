@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:applus_market/data/model/auth/token_manager.dart';
 import 'package:applus_market/data/model/data_responseDTO.dart';
 import 'package:applus_market/utils/dynamic_base_url_Interceptor.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 
 import '../../../_core/utils/apiUrl.dart';
@@ -15,9 +19,11 @@ class AuthRepository {
       String uid, String password) async {
     try {
       // 로그인 API 요청
+      String deviceInfo = await getDeviceInfo();
+
       Response response = await dio.post(
         '/auth/login',
-        data: {'uid': uid, 'password': password},
+        data: {'uid': uid, 'password': password, 'deviceInfo': deviceInfo},
       );
 
       // 토큰 반환
@@ -30,10 +36,9 @@ class AuthRepository {
 
       logger.i('Login User 정보확인 : ${responseBody}');
 
-      if (responseBody['code'] == 1000) {}
-
       return (responseBody, accessToken);
     } catch (e) {
+      logger.e("❌ 로그인 요청 실패: $e");
       rethrow; // 호출한 곳에서 예외 처리
     }
   }
@@ -64,6 +69,38 @@ class AuthRepository {
               followRedirects: false));
     } catch (e) {
       logger.e(e);
+    }
+  }
+
+  Future<String> getDeviceInfo() async {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+
+      logger
+          .d('디바이스 정보 : ${androidInfo.version.sdkInt} - ${androidInfo.model}');
+
+      return "Android ${androidInfo.version.sdkInt} - ${androidInfo.model}";
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      return "iOS ${iosInfo.systemVersion} - ${iosInfo.utsname.machine}";
+    }
+    return "Unknown Device";
+  }
+
+  Future<Map<String, dynamic>> logout() async {
+    try {
+      Response response = await dio.post(
+        '/auth/logout',
+      );
+
+      Map<String, dynamic> responseBody = response.data;
+
+      return responseBody;
+    } catch (e) {
+      logger.e("❌ 로그아웃 요청 실패: $e");
+      rethrow; // ✅ ViewModel에서 처리하도록 예외 던짐
     }
   }
 }

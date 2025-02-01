@@ -43,6 +43,7 @@ class SessionGVM extends Notifier<SessionUser> {
 
     // 로그인 로직
     _setupDioInterceptor();
+    //입력필드값 없을때,
     if (uidController.text.isEmpty || passwordController.text.isEmpty) {
       showDialog(
         context: mContext!,
@@ -98,30 +99,44 @@ class SessionGVM extends Notifier<SessionUser> {
       try {
         _uid = uidController.text;
         _pass = passwordController.text;
-        (Map<String, dynamic>, String) Response =
+        (Map<String, dynamic>, String) response =
             await authRepository.login(_uid!, _pass!);
-        String accessToken = Response.$2;
+        String accessToken = response.$2;
+        Map<String, dynamic> responseDTO = response.$1;
 
+        tokenManager.saveAccessToken(accessToken);
         //state = // 상태 업데이트
-        resetUser();
+        state = state.copyWith(
+          id: responseDTO['data']['id'],
+          uid: responseDTO['data']['uid'],
+          isLoggedIn: true,
+        );
+        rebuild();
         Navigator.pushNamed(mContext!, '/home');
       } catch (e) {
-        showDialog(
-            context: mContext!,
-            builder: (context) => AlertDialog(
-                  title: Text('로그인 실패'),
-                  content: Text('로그인 중 오류가 발생했습니다: $e'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('확인'),
-                    ),
-                  ],
-                ));
+        logger.e("❌ 로그인 중 오류 발생: $e");
+        _showErrorDialog("로그인 실패", e.toString());
       }
     }
+  }
+
+  // ✅ 예외 발생 시 UI에 표시할 AlertDialog
+  void _showErrorDialog(String title, String message) {
+    showDialog(
+      context: mContext!,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('확인'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _setupDioInterceptor() {
@@ -144,7 +159,7 @@ class SessionGVM extends Notifier<SessionUser> {
     resetUser();
     clearControllers();
     logger.d('isLoggedIn 상태 ${state.isLoggedIn}');
-    rebuild();
+    Map<String, dynamic> response = await authRepository.logout();
     logger.d('로그아웃 되었습니다.');
 
     Navigator.pushNamed(mContext!, "/login");
