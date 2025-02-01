@@ -15,14 +15,13 @@ class SessionGVM extends Notifier<SessionUser> {
 
   TextEditingController uidController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  late final TokenManager tokenManager;
+  TokenManager tokenManager = TokenManager();
   String? _uid;
   String? _pass;
 
   @override
   SessionUser build() {
-    tokenManager = TokenManager();
-    _initializeAuthState();
+    // _initializeAuthState();
     return SessionUser(
       id: null,
       uid: null,
