@@ -1,7 +1,7 @@
-import 'package:applus_market/_core/utils/dio.dart';
 import 'package:applus_market/_core/utils/logger.dart';
 import 'package:dio/dio.dart';
 
+import '../../../_core/utils/dio.dart';
 import '../../model/chat/chat_room_card.dart'; // ChatRoomCard 모델 임포트
 
 class ChatRepository {

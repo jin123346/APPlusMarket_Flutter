@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  cookie_jar:
+    dependency: "direct main"
+    description:
+      name: cookie_jar
+      sha256: a6ac027d3ed6ed756bfce8f3ff60cb479e266f3b0fdabd6242b804b6765e52de
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.8"
   crypto:
     dependency: transitive
     description:
@@ -129,6 +137,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.7.0"
+  dio_cookie_manager:
+    dependency: "direct main"
+    description:
+      name: dio_cookie_manager
+      sha256: "47cacbf6a783c263bfa7cd7d08101e93127d87760ddb003ba289162f7be0f679"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
   dio_web_adapter:
     dependency: transitive
     description:
@@ -440,6 +456,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.7"
+  jwt_decoder:
+    dependency: "direct main"
+    description:
+      name: jwt_decoder
+      sha256: "54774aebf83f2923b99e6416b4ea915d47af3bde56884eb622de85feabbc559f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   leak_tracker:
     dependency: transitive
     description:

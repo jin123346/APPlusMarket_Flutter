@@ -1,32 +1,41 @@
 import 'package:applus_market/data/gvm/session_gvm.dart';
+import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../data/model/auth/login_state.dart';
-import '../auth/login_page/login_page.dart';
-import '../home/home_page.dart';
-
-class SplashScreen extends ConsumerWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final loginState = ref.read(LoginProvider);
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
 
-    // 앱 초기화 및 상태 확인
-    Future.delayed(Duration(seconds: 2), () {
-      if (loginState.isLoggedIn) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    // ✅ 로그인 상태 확인 후 자동 이동
+    Future.microtask(() async {
+      await ref.read(LoginProvider.notifier).initializeAuthState();
+    });
+
+    // ✅ 로그인 상태 변화를 감지하고 화면 이동
+    ref.listen<SessionUser>(LoginProvider, (previous, next) {
+      if (mounted) {
+        Future.delayed(Duration(seconds: 2), () {
+          if (next.isLoggedIn) {
+            Navigator.pushReplacementNamed(context, '/home');
+          } else {
+            Navigator.pushReplacementNamed(context, '/login');
+          }
+        });
       }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
