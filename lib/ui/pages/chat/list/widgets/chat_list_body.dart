@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:applus_market/ui/pages/chat/list/chat_list_page_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'chat_list_container.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:applus_market/ui/pages/chat/list/chat_list_page_view_model.dart';
 
+// ConsumerStateFulWidget <-- 이걸 사용
 class ChatListBody extends ConsumerWidget {
   const ChatListBody({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatList =
-        ref.watch(ChatListNotiProvider); // 뷰모델을 구독// 데이터가 로드되었는지 확인
+    final chatListState = ref.watch(chatListProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text('채 팅'),
+        title: const Text('채 팅'),
         actions: [
           Stack(
             children: [
@@ -28,7 +28,7 @@ class ChatListBody extends ConsumerWidget {
                 child: Container(
                   width: 6,
                   height: 6,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.deepOrange,
                     shape: BoxShape.circle,
                   ),
@@ -39,21 +39,17 @@ class ChatListBody extends ConsumerWidget {
           const SizedBox(width: 16),
         ],
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          Expanded(
-            // 로딩 중이면 로딩 UI 표시
-            child: ListView.builder(
-              itemCount: chatList.length,
-              itemBuilder: (context, index) {
-                return ChatListContainer(
-                  chatRoom: chatList[index],
-                );
-              },
-            ),
-          ),
-        ],
+      body: chatListState.when(
+        data: (chatList) => ListView.builder(
+          itemCount: chatList.length,
+          itemBuilder: (context, index) {
+            return ChatListContainer(chatRoom: chatList[index]);
+          },
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Text('에러 발생: $error'),
+        ),
       ),
     );
   }

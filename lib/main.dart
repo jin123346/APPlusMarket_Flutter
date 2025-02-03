@@ -19,7 +19,7 @@ import 'ui/pages/auth/join_page/join_insert_page/insert_uid_page.dart';
 import 'ui/pages/auth/join_page/join_insert_page/join_check_page.dart';
 import 'ui/pages/auth/join_page/join_page.dart';
 import 'ui/pages/auth/login_page/login_page.dart';
-import 'ui/pages/chat/chat_room_page.dart';
+import 'ui/pages/chat/room/chat_room_page.dart';
 import 'ui/pages/my/delivery_page.dart';
 import 'ui/pages/my/delivery_register_page.dart';
 import 'ui/pages/my/my_logined_page.dart';
