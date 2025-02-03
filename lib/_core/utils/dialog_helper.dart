@@ -14,7 +14,17 @@ class DialogHelper {
               backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
               title: Center(child: Text(title)),
-              content: Center(child: Text(content ?? '')),
+              content: content != null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      child: Text(
+                        content,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    )
+                  : null, // content가 없으면 공간을 차지하지 않도록 설정
               contentPadding: EdgeInsets.zero,
               actions: [
                 TextButton(
