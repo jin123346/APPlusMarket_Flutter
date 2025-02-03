@@ -14,9 +14,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
     // ✅ 로그인 상태 확인 후 자동 이동
-    Future.microtask(() async {
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Future<void>(() async {
       await ref.read(LoginProvider.notifier).initializeAuthState();
     });
 
@@ -27,15 +30,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           if (next.isLoggedIn) {
             Navigator.pushReplacementNamed(context, '/home');
           } else {
-            Navigator.pushReplacementNamed(context, '/login');
+            Navigator.popAndPushNamed(context, '/login');
           }
         });
       }
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(

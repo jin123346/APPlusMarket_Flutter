@@ -47,7 +47,9 @@ class SessionGVM extends Notifier<SessionUser> {
     // ✅ 2. Access Token이 없으면, Refresh Token을 사용하여 자동 로그인 시도
     logger.i("🔄 Access Token 없음, Refresh Token으로 재로그인 시도...");
     String? refreshToken = await tokenManager.getRefreshToken();
+    logger.i('refreshToken 존재X $refreshToken');
     if (refreshToken != null) {
+      logger.d('여기');
       (Map<String, dynamic>, String?) tuple =
           await authRepository.refreshAccessToken(refreshToken);
       Map<String, dynamic> responseBody = tuple.$1;
@@ -65,6 +67,8 @@ class SessionGVM extends Notifier<SessionUser> {
         Navigator.pushNamed(mContext!, "/login");
       }
     }
+    logger.i("refreshToken 없음 - 로그인 화면으로 이동");
+    Navigator.pushNamed(mContext!, "/login");
   }
 
   //로그인
