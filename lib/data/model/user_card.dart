@@ -6,11 +6,18 @@
 class UserCard {
   final int user_id;
   final String name;
-  final String ProfileImage;
+  final String? profileImage;
 
   UserCard({
     required this.user_id,
     required this.name,
-    required this.ProfileImage,
+    this.profileImage,
   });
+  factory UserCard.fromJson(Map<String, dynamic> json) {
+    return UserCard(
+      user_id: json['userId'],
+      name: json['userName'],
+      profileImage: json['profileImage'] ?? '',
+    );
+  }
 }
