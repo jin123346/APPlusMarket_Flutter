@@ -23,7 +23,7 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
       return;
     }
 
-    // 새로운 메시지를 추가한 ChatRoom 객체 생성
+    // 새로운 메시지를 추가한 ChatRoom 객체https://discord.com/channels/1279969462262698078/1279969462262698082 생성
     final updatedChatRoom = currentChatRoom.copyWith(
       messages: [
         ...currentChatRoom.messages,
@@ -38,6 +38,7 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
     );
 
     // 상태 갱신
+    state = AsyncData(updatedChatRoom);
   }
 }
 
