@@ -1,24 +1,22 @@
+import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../_core/size.dart';
-import '../../../../../_core/theme.dart';
+import '../../../../../_core/components/size.dart';
+import '../../../../../_core/components/theme.dart';
 import 'login_form.dart';
 
 class LoginBody extends ConsumerWidget {
-  final TextEditingController uidController;
-  final TextEditingController passwordController;
-  final GlobalKey<FormState> formKey;
-  LoginBody(
-      {required this.formKey,
-      required this.uidController,
-      required this.passwordController,
-      super.key});
+  GlobalKey<FormState> formKey; // ✅ 추가
+
+  LoginBody({required this.formKey, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    SessionGVM loginNotifier = ref.read(LoginProvider.notifier);
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(), // 화면 터치 시 키보드 닫기
       child: SingleChildScrollView(
@@ -64,9 +62,9 @@ class LoginBody extends ConsumerWidget {
               // Logo(),
               const SizedBox(height: 20),
               LoginForm(
-                formkey: formKey,
-                uidController: uidController,
-                passwordController: passwordController,
+                formKey: formKey,
+                uidController: loginNotifier.uidController,
+                passwordController: loginNotifier.passwordController,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

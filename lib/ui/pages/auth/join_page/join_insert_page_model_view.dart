@@ -7,7 +7,7 @@ import '../../../../data/model/auth/user.dart';
 import '../../../../data/repository/auth/auth_repository.dart';
 
 class JoinInsertModelView extends Notifier<User> {
-  final AuthRepository authRepository = AuthRepository(dio: dio);
+  final AuthRepository authRepository = AuthRepository();
   @override
   User build() {
     return User();
@@ -32,22 +32,22 @@ class JoinInsertModelView extends Notifier<User> {
 
   void resetUser() => state = User();
 
-  User toUser(SignUpController signProvider) {
-    User user = User(
-      uid: signProvider.uidController.text,
-      password: signProvider.passwordController.text,
-      nickName: signProvider.nicknameController.text,
-      name: signProvider.nameController.text,
-      email: signProvider.emailController.text,
-      hp: signProvider.hpController.text,
-      birthday: stringToDateTime(signProvider.birthDateController.text),
-    );
+  Map<String, dynamic> toUser(SignUpController signProvider) {
+    Map<String, dynamic> user = {
+      "uid": signProvider.uidController.text,
+      "password": signProvider.passwordController.text,
+      "nickName": signProvider.nicknameController.text,
+      "name": signProvider.nameController.text, // 공백 제거
+      "email": signProvider.emailController.text,
+      "hp": signProvider.hpController.text,
+      "birthday": stringToDateTime(signProvider.birthDateController.text),
+    };
 
     return user;
   }
 
-  void insertUser(User user) {
-    authRepository.apiInsertUser(user);
+  void insertUser(Map<String, dynamic> UserData) {
+    authRepository.apiInsertUser(UserData);
   }
 
   String dateTimeToString(DateTime dateTime) {

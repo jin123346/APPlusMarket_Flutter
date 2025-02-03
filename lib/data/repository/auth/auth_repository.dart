@@ -1,61 +1,56 @@
+import 'dart:io';
+
+import 'package:applus_market/data/model/auth/token_manager.dart';
 import 'package:applus_market/data/model/data_responseDTO.dart';
 import 'package:applus_market/utils/dynamic_base_url_Interceptor.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
-import '../../../_core/apiUrl.dart';
+import '../../../_core/utils/apiUrl.dart';
+import '../../../_core/utils/dio.dart';
 import '../../../_core/utils/logger.dart';
 import '../../model/auth/tokens.dart';
 import '../../model/auth/user.dart';
 
 class AuthRepository {
-  final Dio dio;
+  AuthRepository();
 
-  AuthRepository({required this.dio});
-
-  Future<Tokens> login(String uid, String password) async {
+  Future<(Map<String, dynamic>, String)> login(
+      String uid, String password) async {
     try {
       // 로그인 API 요청
-      final response = await dio.post(
+      String deviceInfo = await getDeviceInfo();
+
+      Response response = await dio.post(
         '/auth/login',
-        data: {'uid': uid, 'password': password},
+        data: {'uid': uid, 'password': password, 'deviceInfo': deviceInfo},
       );
 
       // 토큰 반환
-      DataResponseDTO<Tokens> responseDTO =
-          DataResponseDTO.fromJson(response.data, (data) {
-        return Tokens.fromJson(data);
-      });
+      logger.e('response Header ${response.headers}');
+      String? accessToken = response.headers.value('Authorization');
 
-      if (responseDTO.code == 1000) {
-        logger.d('responseDTO ${responseDTO.message}');
-        return responseDTO.data!;
-      } else {
-        throw Exception(responseDTO.message);
-      }
+      // logger.i('jwt 토큰 확인 : ${response.headers['Authorization']?[0]}');
+      accessToken = response.headers['Authorization']![0];
+      Map<String, dynamic> responseBody = response.data;
+
+      checkCookies();
+
+      logger.i('Login User 정보확인 : ${responseBody}');
+
+      return (responseBody, accessToken);
     } catch (e) {
-      print('Login API error: $e');
+      logger.e("❌ 로그인 요청 실패: $e");
       rethrow; // 호출한 곳에서 예외 처리
     }
   }
 
-  Future<void> apiInsertUser(User user) async {
+  Future<void> apiInsertUser(Map<String, dynamic> reqData) async {
     try {
       final response = await dio.post(
         '/auth/register',
-        data: {
-          "uid": user.uid,
-          "password": user.password,
-          "hp": user.hp,
-          "name": user.name,
-          "email": user.email,
-          "nickName": user.nickName,
-          "birthday": user.birthday?.toIso8601String(), // DateTime -> String 변환
-        },
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-          },
-        ),
+        data: reqData,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -66,5 +61,79 @@ class AuthRepository {
     } catch (e) {
       print("Error occurred while inserting user: $e");
     }
+  }
+
+  Future<(Map<String, dynamic>, String?)> refreshAccessToken(
+      String refreshToken) async {
+    // ✅ `/auth/refresh` API 호출
+    setCookie(refreshToken);
+    checkCookies();
+
+    try {
+      Response response = await dio.get("/auth/refresh");
+      Map<String, dynamic> responseBody = response.data;
+      if (response.statusCode == 200 && responseBody['code'] == 1000) {
+        String? newAccessToken = response.headers.value('Authorization');
+
+        // ✅ 새로운 Access Token 저장
+
+        logger.i("✅ Access Token 갱신 완료: $newAccessToken");
+        return (responseBody, newAccessToken);
+      }
+
+      logger.w("❌ Refresh Token 만료 또는 오류");
+      return (responseBody, '');
+    } catch (e) {
+      logger.e("❌ Refresh Token을 통한 자동 로그인 실패: $e");
+      rethrow;
+    }
+  }
+
+  Future<String> getDeviceInfo() async {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+
+      logger
+          .d('디바이스 정보 : ${androidInfo.version.sdkInt} - ${androidInfo.model}');
+
+      return "Android ${androidInfo.version.sdkInt} - ${androidInfo.model}";
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      return "iOS ${iosInfo.systemVersion} - ${iosInfo.utsname.machine}";
+    }
+    return "Unknown Device";
+  }
+
+  Future<Map<String, dynamic>> logout() async {
+    try {
+      Response response = await dio.post(
+        '/auth/logout',
+      );
+
+      Map<String, dynamic> responseBody = response.data;
+
+      return responseBody;
+    } catch (e) {
+      logger.e("❌ 로그아웃 요청 실패: $e");
+      rethrow; // ✅ ViewModel에서 처리하도록 예외 던짐
+    }
+  }
+
+  Future<void> checkCookies() async {
+    List<Cookie> cookies = await cookieJar.loadForRequest(Uri.parse(apiUrl));
+    print("✅ 저장된 쿠키 목록: $cookies"); // ✅ 쿠키가 유지되는지 확인
+  }
+
+  void setCookie(String refreshToken) {
+    logger.i('Cookie에 저장할 refreshToken $refreshToken');
+    cookieJar.saveFromResponse(
+      Uri.parse(apiUrl), // 요청 도메인과 맞춰야 함
+      [Cookie('refreshToken', refreshToken)],
+    );
+
+    // ✅ 쿠키 관리자를 Dio에 추가
+    dio.interceptors.add(CookieManager(cookieJar));
   }
 }

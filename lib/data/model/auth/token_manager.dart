@@ -1,32 +1,36 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:applus_market/main.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class TokenManager {
-  static const String _accessTokenKey = 'accessToken';
-  static const String _refreshTokenKey = 'refreshToken';
+  String? _accessToken;
+  String? _refreshToken;
 
-  // Save tokens
-  Future<void> saveTokens(String accessToken, String refreshToken) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_accessTokenKey, accessToken);
-    await prefs.setString(_refreshTokenKey, refreshToken);
+  final FlutterSecureStorage storage = FlutterSecureStorage();
+  final mContext = navigator.currentContext;
+
+  // Save refreshToken
+  void saveAccessToken(String accessToken) {
+    _accessToken = accessToken;
   }
 
-  // Get access token
-  Future<String?> getAccessToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_accessTokenKey);
+  Future<void> saveRefreshToken(String refreshToken) async {
+    await storage.write(key: 'refreshToken', value: refreshToken);
   }
 
-  // Get refresh token
+  String? getAccessToken() {
+    return _accessToken;
+  }
+
   Future<String?> getRefreshToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_refreshTokenKey);
+    return await storage.read(key: 'refreshToken');
   }
 
+  //로그아웃시
   // Delete tokens
-  Future<void> clearTokens() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_accessTokenKey);
-    await prefs.remove(_refreshTokenKey);
+  Future<void> clearToken() async {
+    _accessToken = null;
+    await storage.delete(key: 'refreshToken');
+    Navigator.pushNamed(mContext!, '/login');
   }
 }

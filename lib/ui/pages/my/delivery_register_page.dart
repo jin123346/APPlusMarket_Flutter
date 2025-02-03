@@ -1,7 +1,7 @@
-import 'package:applus_market/_core/size.dart';
+import 'package:applus_market/_core/components/size.dart';
 import 'package:flutter/material.dart';
 
-import '../../../_core/theme.dart';
+import '../../../../_core/components/theme.dart';
 import 'widgets/custom_textfield.dart';
 import 'widgets/delivery_address_page.dart';
 import 'widgets/delivery_body.dart';

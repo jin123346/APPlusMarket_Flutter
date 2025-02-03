@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import '../_core/apiUrl.dart';
+import '../_core/utils/apiUrl.dart';
 
 String? globalBaseUrl;
 

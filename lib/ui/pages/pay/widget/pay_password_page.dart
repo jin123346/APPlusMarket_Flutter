@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../_core/utils/logger.dart';
-import '../../../../_core/theme.dart';
+import '../../../../_core/components/theme.dart';
 
 /**
  * 2025.01.27 - 김민희 : 송금 비밀번호 입력 화면 구현

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../_core/theme.dart';
+import '../../../../_core/components/theme.dart';
 
 class APPlusTextLogo extends StatelessWidget {
   double size;

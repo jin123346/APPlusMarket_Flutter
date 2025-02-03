@@ -1,5 +1,5 @@
-import 'package:applus_market/_core/size.dart';
-import 'package:applus_market/_core/theme.dart';
+import 'package:applus_market/_core/components/size.dart';
+import 'package:applus_market/_core/components/theme.dart';
 import 'package:flutter/material.dart';
 
 class PassChangeResultBody extends StatelessWidget {
@@ -40,7 +40,7 @@ class PassChangeResultBody extends StatelessWidget {
           ),
           Positioned(
             bottom:
-            MediaQuery.of(context).viewInsets.bottom + 16, // 키보드 위로 버튼 위치
+                MediaQuery.of(context).viewInsets.bottom + 16, // 키보드 위로 버튼 위치
             left: 16,
             right: 16,
             child: SizedBox(

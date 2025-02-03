@@ -1,4 +1,4 @@
-import 'package:applus_market/_core/size.dart';
+import 'package:applus_market/_core/components/size.dart';
 import 'package:flutter/material.dart';
 import '../../../../data/model/product/product_card.dart';
 import '../../my/widgets/product_container.dart';

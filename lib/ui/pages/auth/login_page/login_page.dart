@@ -3,19 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../_core/size.dart';
-import '../../../../_core/theme.dart';
-import '../../../../services/api/login_api.dart';
+import '../../../../_core/components/size.dart';
+import '../../../../_core/components/theme.dart';
+import '../../../../data/gvm/session_gvm.dart';
 import 'widgets/login_body.dart';
 import 'widgets/login_form.dart';
 
 class LoginPage extends ConsumerWidget {
   LoginPage({super.key});
 
+  GlobalKey<FormState> formKey = GlobalKey<FormState>(); // ✅ 추가
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final LoginController loginNotifier =
-        ref.read(LoginControllerProvider.notifier);
+    SessionGVM loginNotifier = ref.read(LoginProvider.notifier);
 
     return SafeArea(
         child: Scaffold(
@@ -29,9 +30,7 @@ class LoginPage extends ConsumerWidget {
       ),
       resizeToAvoidBottomInset: false, // 키보드와 bottomNavigationBar 충돌 방지
       body: LoginBody(
-        passwordController: loginNotifier.passwordController,
-        uidController: loginNotifier.uidController,
-        formKey: loginNotifier.formKey,
+        formKey: formKey,
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(halfPadding),
@@ -39,7 +38,7 @@ class LoginPage extends ConsumerWidget {
           height: 50,
           child: ElevatedButton(
             onPressed: () {
-              loginNotifier.login(context);
+              loginNotifier.login(formKey);
             },
             child: const Text('로그인'),
           ),

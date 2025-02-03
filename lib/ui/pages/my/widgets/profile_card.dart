@@ -1,7 +1,8 @@
+import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../_core/theme.dart';
+import '../../../../_core/components/theme.dart';
 import '../../../widgets/image_container.dart';
 
 /*
@@ -9,7 +10,8 @@ import '../../../widgets/image_container.dart';
 * */
 
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({super.key});
+  final SessionUser sessionUser;
+  const ProfileCard({required this.sessionUser, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,8 @@ class ProfileCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      Text('김민희 님', style: CustomTextTheme.titleMedium),
+                      Text('${sessionUser.nickname}님',
+                          style: CustomTextTheme.titleMedium),
                       const SizedBox(height: 3),
                       InkWell(
                           onDoubleTap: () {
