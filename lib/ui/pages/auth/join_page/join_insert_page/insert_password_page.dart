@@ -1,6 +1,8 @@
+import 'package:applus_market/_core/utils/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../data/model/auth/sign_up_state.dart';
 import '../../../../../data/model/auth/signup_controller.dart';
 
 class InsertPasswordPage extends ConsumerWidget {
@@ -8,12 +10,9 @@ class InsertPasswordPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    SignUpController signUpControllerNotifier =
+    SignUpController signUpNotifier =
         ref.read(SignUpControllerProvider.notifier);
-    TextEditingController passwordController =
-        signUpControllerNotifier.passwordController;
-    TextEditingController confirmPasswordController =
-        signUpControllerNotifier.confirmPasswordController;
+    SignUpState signUpState = ref.watch(SignUpControllerProvider);
 
     return SafeArea(
       child: Scaffold(
@@ -42,7 +41,7 @@ class InsertPasswordPage extends ConsumerWidget {
                     ),
                     SizedBox(height: 16),
                     TextFormField(
-                      controller: passwordController,
+                      controller: signUpState.passwordController,
                       cursorColor: Colors.grey[600],
                       cursorHeight: 20,
                       decoration: InputDecoration(
@@ -57,16 +56,10 @@ class InsertPasswordPage extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '이름을 입력해주세요';
-                        }
-                        return null;
-                      },
                     ),
                     SizedBox(height: 16),
                     TextFormField(
-                      controller: confirmPasswordController,
+                      controller: signUpState.confirmPasswordController,
                       cursorColor: Colors.grey[600],
                       cursorHeight: 20,
                       decoration: InputDecoration(
@@ -81,12 +74,6 @@ class InsertPasswordPage extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '비밀번호를 확인해주세요 ';
-                        }
-                        return null;
-                      },
                     ),
 
                     const Spacer(), // 남은 공간을 채우기 위해 Spacer 추가
@@ -102,7 +89,33 @@ class InsertPasswordPage extends ConsumerWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/join/insertHp');
+                      bool isValid = true;
+                      if (signUpState.passwordController!.text.isNotEmpty) {
+                        String? password = signUpNotifier.passwordValidation();
+                        if (password != null) {
+                          CustomSnackbar.showSnackBar(password);
+                          isValid = false;
+                        }
+                      }
+                      if (signUpState
+                          .confirmPasswordController!.text.isNotEmpty) {
+                        String? confirm =
+                            signUpNotifier.confirmPasswordValidation();
+
+                        if (confirm != null) {
+                          CustomSnackbar.showSnackBar(confirm);
+                          isValid = false;
+                        } else {
+                          isValid = true;
+                        }
+                      }
+
+                      if (isValid &&
+                          signUpState
+                              .confirmPasswordController!.text.isNotEmpty &&
+                          signUpState.passwordController!.text.isNotEmpty) {
+                        Navigator.pushNamed(context, '/join/insertHp');
+                      }
                     },
                     child: Text('다음'),
                   ),
