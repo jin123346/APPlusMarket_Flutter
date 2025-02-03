@@ -1,3 +1,5 @@
+import 'package:applus_market/_core/utils/dialog_helper.dart';
+import 'package:applus_market/_core/utils/exception_handler.dart';
 import 'package:applus_market/data/repository/auth/auth_repository.dart';
 import 'package:applus_market/main.dart';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -13,7 +15,7 @@ import '../model/auth/login_state.dart';
 import '../model/auth/token_manager.dart';
 
 class SessionGVM extends Notifier<SessionUser> {
-  final mContext = navigatorkey.currentContext;
+  final mContext = navigatorkey.currentContext!;
   final AuthRepository authRepository = AuthRepository();
 
   TextEditingController uidController = TextEditingController();
@@ -64,11 +66,12 @@ class SessionGVM extends Notifier<SessionUser> {
         }
       } else {
         logger.w("❌ 자동 로그인 실패 - 로그인 화면으로 이동");
-        Navigator.pushNamed(mContext!, "/login");
+        Navigator.pushNamed(mContext, "/login");
       }
+    } else {
+      logger.w("❌ refreshToken 존재 X  - 로그인 화면으로 이동");
+      Navigator.pushNamed(mContext, "/login");
     }
-    logger.i("refreshToken 없음 - 로그인 화면으로 이동");
-    Navigator.pushNamed(mContext!, "/login");
   }
 
   //로그인
@@ -77,54 +80,13 @@ class SessionGVM extends Notifier<SessionUser> {
     // 로그인 로직
     //입력필드값 없을때,
     if (uidController.text.isEmpty || passwordController.text.isEmpty) {
-      showDialog(
-        context: mContext!,
-        builder: (context) => AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          title: Center(
-            child: Text(
-              '로그인에 실패했습니다.',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-          ),
-          content: SizedBox(height: 0),
-          // Removes extra padding
-          actionsPadding: const EdgeInsets.all(0),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    // Add cookie deletion logic here
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    '확인',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    minimumSize: Size(150, 40),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+      DialogHelper.showAlertDialog(
+        context: mContext,
+        title: '로그인 실패',
+        content: '아이디 및 비밀번호를 입력해주세요.',
+        onConfirm: () {
+          Navigator.pop(mContext);
+        },
       );
       return;
     } else if (formKey.currentState?.validate() ?? false) {
@@ -153,13 +115,32 @@ class SessionGVM extends Notifier<SessionUser> {
             isLoggedIn: true,
           );
           clearControllers();
-          Navigator.pushNamed(mContext!, '/home');
+          Navigator.pushNamed(mContext, '/home');
         } else {
-          _showErrorDialog("로그인 실패", responseDTO['message']);
+          ExceptionHandler.handleException(
+              responseDTO['message'], StackTrace.current);
+
+          DialogHelper.showAlertDialog(
+            context: mContext,
+            title: '로그인 실패',
+            content: responseDTO['message'],
+            onConfirm: () {
+              Navigator.pop(mContext);
+            },
+          );
+          return;
+          //_showErrorDialog("로그인 실패", responseDTO['message']);
         }
-      } catch (e) {
+      } catch (e, stackTrace) {
         logger.e("❌ 로그인 중 오류 발생: $e");
-        _showErrorDialog("로그인 실패", e.toString());
+        ExceptionHandler.handleException('로그인 통신 오류', stackTrace);
+        DialogHelper.showAlertDialog(
+            context: mContext,
+            title: '로그인 실패',
+            content: '통신 에러 ',
+            onConfirm: () {
+              Navigator.pop(mContext);
+            });
       }
     }
   }
@@ -167,7 +148,7 @@ class SessionGVM extends Notifier<SessionUser> {
   // ✅ 예외 발생 시 UI에 표시할 AlertDialog
   void _showErrorDialog(String title, String message) {
     showDialog(
-      context: mContext!,
+      context: mContext,
       builder: (context) => AlertDialog(
         title: Text(title),
         content: Text(message),
@@ -198,23 +179,49 @@ class SessionGVM extends Notifier<SessionUser> {
   }
 
   void logout() async {
-    await tokenManager.clearToken();
+    try {
+      await tokenManager.clearToken();
 
-    logger.d('isLoggedIn 상태 ${state.isLoggedIn}');
-    Map<String, dynamic> response = await authRepository.logout();
+      logger.d('isLoggedIn 상태 ${state.isLoggedIn}');
+      Map<String, dynamic> response = await authRepository.logout();
 
-    if (!response['code'] == 1009) {
-      _showErrorDialog('로그아웃 중 에러', response['message']);
-      return;
+      if (!response['code'] == 1009) {
+        _showErrorDialog('로그아웃 중 에러', response['message']);
+        return;
+      }
+      ;
+      resetUser();
+      tokenManager.clearToken();
+      // ✅ 쿠키 삭제 (Refresh Token 제거)
+      await cookieJar.deleteAll();
+      logger.i('로그아웃 되었습니다.');
+
+      Navigator.pushNamed(mContext!, "/login");
+    } catch (e, stackTrace) {}
+  }
+
+  // 회원가입
+
+  Future<void> join() async {
+    try {
+      final body = {
+        "uid": 'abc',
+        'password': 1234,
+        'email': 'hajhi789@gmail.com',
+        'hp': '01055958375',
+        'name': '하지니',
+        'nickName': '지니',
+        'birthday': '1111-11-11',
+      };
+      Map<String, dynamic> responseBody =
+          await authRepository.apiInsertUser(body);
+      if (responseBody['code'] == 1100) {
+        logger.i('회원가입 성공!');
+        Navigator.popAndPushNamed(mContext, '/home');
+      }
+    } catch (e, stackTrace) {
+      ExceptionHandler.handleException('회원가입 실패', stackTrace);
     }
-    ;
-    resetUser();
-    tokenManager.clearToken();
-    // ✅ 쿠키 삭제 (Refresh Token 제거)
-    await cookieJar.deleteAll(); // 🚀 쿠키 초기화하여 Refresh Token 삭제
-    logger.d('로그아웃 되었습니다.');
-
-    Navigator.pushNamed(mContext!, "/login");
   }
 
   void clearControllers() {
@@ -241,17 +248,17 @@ class SessionGVM extends Notifier<SessionUser> {
   bool decodeAccessToken(String token) {
     Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
 
-    String uid = decodedToken['sub']; // ✅ 유저 ID
+    String uid = decodedToken['sub']; // 유저 ID
     int? userId = decodedToken['id'] is int
         ? decodedToken['id']
         : int.tryParse(decodedToken['id'].toString());
     if (uid == null || userId == null) {
-      logger.e("❌ JWT 토큰 파싱 오류: 필수 정보가 없습니다.");
+      logger.e("JWT 토큰 파싱 오류: 필수 정보가 없습니다.");
       return false;
     }
 
-    DateTime expiryDate = JwtDecoder.getExpirationDate(token); // ✅ 만료 시간
-    logger.i("✅ 토큰 만료 시간: $expiryDate, 현재 시간: ${DateTime.now()}");
+    DateTime expiryDate = JwtDecoder.getExpirationDate(token); //  만료 시간
+    logger.i(" 토큰 만료 시간: $expiryDate, 현재 시간: ${DateTime.now()}");
     if (expiryDate.isBefore(DateTime.now())) {
       return false;
     }
