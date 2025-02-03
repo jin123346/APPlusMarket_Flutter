@@ -13,17 +13,40 @@ import '../user_card.dart';
 **/
 
 class ChatRoom {
-  final int chat_room_id;
+  final int? chat_room_id;
   final ProductCard productCard;
   final List<UserCard> participants;
   final List<ChatMessage> messages;
 
   ChatRoom({
-    required this.chat_room_id,
+    this.chat_room_id,
     required this.productCard,
     required this.participants,
     required this.messages,
   });
+
+  factory ChatRoom.fromJson(Map<String, dynamic> json) {
+    return ChatRoom(
+      chat_room_id: json['chatRoomId'],
+      productCard: ProductCard.fromJson(json['productCard']),
+      participants: (json['participants'] as List)
+          .map((item) => UserCard.fromJson(item))
+          .toList(),
+      messages: (json['messages'] as List)
+          .map((item) => ChatMessage.fromJson(item))
+          .toList(),
+    );
+  }
+
+  // 메시지를 추가할 때마다 새로 상태를 반환
+  ChatRoom copyWith({List<ChatMessage>? messages}) {
+    return ChatRoom(
+      chat_room_id: this.chat_room_id,
+      productCard: this.productCard,
+      participants: this.participants,
+      messages: messages ?? this.messages,
+    );
+  }
 
   @override
   String toString() {
@@ -32,19 +55,29 @@ class ChatRoom {
 }
 
 class ChatMessage {
-  final int chat_message_id;
+  final int? chat_message_id;
   final int sender_id;
   final String message;
-  final bool isRead;
+  final bool? isRead;
   final String created_at;
 
   ChatMessage(
-      {required this.chat_message_id,
+      {this.chat_message_id,
       required this.sender_id,
       required this.message,
-      required this.isRead,
+      this.isRead = false,
       required this.created_at});
 
+  factory ChatMessage.fromJson(Map<String, dynamic> json) {
+    return ChatMessage(
+      chat_message_id: json['chatMessageId'],
+      sender_id: json['userId'], // JSON의 userId를 sender_id로 사용
+      message: json['content'],
+      // isRead가 null이면 false로 처리
+      isRead: json['isRead'] ?? false,
+      created_at: json['createdAt'],
+    );
+  }
   @override
   String toString() {
     return 'ChatMessage{chat_message_id: $chat_message_id, sender_id: $sender_id, message: $message, isRead: $isRead, created_at: $created_at}';
@@ -57,12 +90,12 @@ ChatRoom chatRoomExample = ChatRoom(
       UserCard(
         user_id: 1,
         name: "나",
-        ProfileImage: "https://example.com/images/alice.png",
+        profileImage: "https://example.com/images/alice.png",
       ),
       UserCard(
         user_id: 2,
         name: "나는야멋쟁이",
-        ProfileImage: "https://example.com/images/bob.png",
+        profileImage: "https://example.com/images/bob.png",
       ),
     ],
     productCard: ProductCard(
