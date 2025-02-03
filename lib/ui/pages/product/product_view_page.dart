@@ -72,10 +72,11 @@ class _ProductViewState extends State<ProductViewPage> {
                           // 이미지 가로 스크롤
                           PageView.builder(
                             controller: _pageController,
-                            itemCount: product.images.length, // 이미지 리스트의 길이를 사용
+                            itemCount:
+                                product.images?.length, // 이미지 리스트의 길이를 사용
                             itemBuilder: (context, index) {
                               return Image.network(
-                                product.images[index], // 동적으로 각 이미지 표시
+                                product.images![index], // 동적으로 각 이미지 표시
                                 fit: BoxFit.cover,
                               );
                             },
@@ -89,7 +90,7 @@ class _ProductViewState extends State<ProductViewPage> {
                                   horizontal: 12, vertical: 4),
                               color: Colors.black.withOpacity(0.5),
                               child: Text(
-                                '${_currentPage + 1} / ${product.images.length}', // 페이지 인덱스 (1부터 시작하도록 +1)
+                                '${_currentPage + 1} / ${product.images?.length}', // 페이지 인덱스 (1부터 시작하도록 +1)
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -254,7 +255,7 @@ class _ProductViewState extends State<ProductViewPage> {
                     const SizedBox(height: 4),
                     // is_negotiable 값에 따라 가격 제안 가능/불가 텍스트 출력
                     Text(
-                      product.is_negotiable ? '가격 제안 가능' : '가격 제안 불가',
+                      product.is_negotiable! ? '가격 제안 가능' : '가격 제안 불가',
                     ),
                   ],
                 ),
