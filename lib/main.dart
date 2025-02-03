@@ -44,7 +44,7 @@ Future<void> main() async {
   );
 }
 
-GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> navigatorkey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigator,
+      navigatorKey: navigatorkey,
       debugShowCheckedModeBanner: false,
       title: 'APPLUS Market',
       theme: APlusTheme.lightTheme,

@@ -13,7 +13,7 @@ import '../model/auth/login_state.dart';
 import '../model/auth/token_manager.dart';
 
 class SessionGVM extends Notifier<SessionUser> {
-  final mContext = navigator.currentContext;
+  final mContext = navigatorkey.currentContext;
   final AuthRepository authRepository = AuthRepository();
 
   TextEditingController uidController = TextEditingController();
@@ -67,6 +67,7 @@ class SessionGVM extends Notifier<SessionUser> {
     }
   }
 
+  //로그인
   void login(GlobalKey<FormState> formKey) async {
     AuthRepository authRepository = AuthRepository();
     // 로그인 로직

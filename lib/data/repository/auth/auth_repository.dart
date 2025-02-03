@@ -16,79 +16,58 @@ import '../../model/auth/user.dart';
 class AuthRepository {
   AuthRepository();
 
+  // 로그인
   Future<(Map<String, dynamic>, String)> login(
       String uid, String password) async {
-    try {
-      // 로그인 API 요청
-      String deviceInfo = await getDeviceInfo();
+    // 로그인 API 요청
+    String deviceInfo = await getDeviceInfo();
 
-      Response response = await dio.post(
-        '/auth/login',
-        data: {'uid': uid, 'password': password, 'deviceInfo': deviceInfo},
-      );
-
-      // 토큰 반환
-      logger.e('response Header ${response.headers}');
-      String? accessToken = response.headers.value('Authorization');
-
-      // logger.i('jwt 토큰 확인 : ${response.headers['Authorization']?[0]}');
-      accessToken = response.headers['Authorization']![0];
-      Map<String, dynamic> responseBody = response.data;
-
-      checkCookies();
-
-      logger.i('Login User 정보확인 : ${responseBody}');
-
-      return (responseBody, accessToken);
-    } catch (e) {
-      logger.e("❌ 로그인 요청 실패: $e");
-      rethrow; // 호출한 곳에서 예외 처리
-    }
+    Response response = await dio.post(
+      '/auth/login',
+      data: {'uid': uid, 'password': password, 'deviceInfo': deviceInfo},
+    );
+    // 토큰 반환
+    logger.d('response Header ${response.headers}');
+    String? accessToken = response.headers.value('Authorization');
+    accessToken = response.headers['Authorization']?[0] ?? '';
+    Map<String, dynamic> responseBody = response.data;
+    checkCookies();
+    logger.i('Login User 정보확인 : ${responseBody}');
+    return (responseBody, accessToken);
   }
 
-  Future<void> apiInsertUser(Map<String, dynamic> reqData) async {
-    try {
-      final response = await dio.post(
-        '/auth/register',
-        data: reqData,
-      );
+  //회원가입
+  Future<Map<String, dynamic>> apiInsertUser(
+      Map<String, dynamic> reqData) async {
+    final response = await dio.post(
+      '/auth/register',
+      data: reqData,
+    );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        print("User successfully inserted: ${response.data}");
-      } else {
-        print("Failed to insert user: ${response.statusCode}");
-      }
-    } catch (e) {
-      print("Error occurred while inserting user: $e");
-    }
+    Map<String, dynamic> responseBody = response.data;
+    return responseBody;
   }
 
+  //accessToken 재발급
   Future<(Map<String, dynamic>, String?)> refreshAccessToken(
       String refreshToken) async {
     // ✅ `/auth/refresh` API 호출
     setCookie(refreshToken);
     checkCookies();
 
-    try {
-      Response response = await dio.get("/auth/refresh");
-      Map<String, dynamic> responseBody = response.data;
-      if (response.statusCode == 200 && responseBody['code'] == 1000) {
-        String? newAccessToken = response.headers.value('Authorization');
-
-        // ✅ 새로운 Access Token 저장
-
-        logger.i("✅ Access Token 갱신 완료: $newAccessToken");
-        return (responseBody, newAccessToken);
-      }
-
-      logger.w("❌ Refresh Token 만료 또는 오류");
-      return (responseBody, '');
-    } catch (e) {
-      logger.e("❌ Refresh Token을 통한 자동 로그인 실패: $e");
-      rethrow;
+    Response response = await dio.get("/auth/refresh");
+    Map<String, dynamic> responseBody = response.data;
+    if (response.statusCode == 200 && responseBody['code'] == 1000) {
+      String? newAccessToken = response.headers.value('Authorization');
+      logger.i("✅ Access Token 갱신 완료: $newAccessToken");
+      return (responseBody, newAccessToken);
     }
+
+    logger.w("❌ Refresh Token 만료 또는 오류");
+    return (responseBody, '');
   }
 
+  //device 정보
   Future<String> getDeviceInfo() async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
@@ -106,19 +85,13 @@ class AuthRepository {
     return "Unknown Device";
   }
 
+  //로그아웃
   Future<Map<String, dynamic>> logout() async {
-    try {
-      Response response = await dio.post(
-        '/auth/logout',
-      );
-
-      Map<String, dynamic> responseBody = response.data;
-
-      return responseBody;
-    } catch (e) {
-      logger.e("❌ 로그아웃 요청 실패: $e");
-      rethrow; // ✅ ViewModel에서 처리하도록 예외 던짐
-    }
+    Response response = await dio.post(
+      '/auth/logout',
+    );
+    Map<String, dynamic> responseBody = response.data;
+    return responseBody;
   }
 
   Future<void> checkCookies() async {

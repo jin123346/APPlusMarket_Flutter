@@ -7,7 +7,7 @@ class TokenManager {
   String? _refreshToken;
 
   final FlutterSecureStorage storage = FlutterSecureStorage();
-  final mContext = navigator.currentContext;
+  final mContext = navigatorkey.currentContext;
 
   // Save refreshToken
   void saveAccessToken(String accessToken) {
