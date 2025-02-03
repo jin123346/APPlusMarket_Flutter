@@ -45,6 +45,7 @@ class AuthRepository {
     );
 
     Map<String, dynamic> responseBody = response.data;
+    logger.i('respondBody $responseBody');
     return responseBody;
   }
 

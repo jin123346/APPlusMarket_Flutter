@@ -1,3 +1,4 @@
+import 'package:applus_market/data/model/auth/sign_up_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,22 +33,33 @@ class JoinInsertModelView extends Notifier<User> {
 
   void resetUser() => state = User();
 
-  Map<String, dynamic> toUser(SignUpController signProvider) {
-    Map<String, dynamic> user = {
-      "uid": signProvider.uidController.text,
-      "password": signProvider.passwordController.text,
-      "nickName": signProvider.nicknameController.text,
-      "name": signProvider.nameController.text, // 공백 제거
-      "email": signProvider.emailController.text,
-      "hp": signProvider.hpController.text,
-      "birthday": stringToDateTime(signProvider.birthDateController.text),
-    };
+  Map<String, dynamic> toUser(SignUpState signUpState) {
+    // Map<String, dynamic> user = {
+    //   "uid": signUpState.uidController!.text,
+    //   "password": signUpState.passwordController!.text,
+    //   "nickName": signUpState.nicknameController!.text,
+    //   "name": signUpState.nameController!.text, // 공백 제거
+    //   "email": signUpState.emailController!.text,
+    //   "hp": signUpState.hpController!.text,
+    //   "birthday": stringToDateTime(signUpState.birthDateController!.text),
+    // };
 
-    return user;
+    User saveUser = User(
+      uid: signUpState.uidController!.text,
+      nickName: signUpState.nicknameController!.text,
+      birthday: stringToDateTime(signUpState.birthDateController!.text),
+      hp: signUpState.hpController!.text,
+      email: signUpState.emailController!.text,
+      name: signUpState.nameController!.text,
+      password: signUpState.passwordController!.text,
+    );
+
+    return saveUser.toJson();
   }
 
-  void insertUser(Map<String, dynamic> UserData) {
-    authRepository.apiInsertUser(UserData);
+  void insertUser(Map<String, dynamic> UserData) async {
+    Map<String, dynamic> responseBody =
+        await authRepository.apiInsertUser(UserData);
   }
 
   String dateTimeToString(DateTime dateTime) {

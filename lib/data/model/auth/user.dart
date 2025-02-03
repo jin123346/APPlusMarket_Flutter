@@ -47,6 +47,7 @@ class User {
       "id": id,
       "uid": uid,
       "password": password,
+      "email": email,
       "hp": hp,
       "name": name,
       "nickName": nickName,
