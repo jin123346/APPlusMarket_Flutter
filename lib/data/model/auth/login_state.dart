@@ -15,12 +15,14 @@ import 'tokens.dart';
 class SessionUser {
   int? id;
   String? uid;
+  String? nickname;
   bool isLoggedIn;
   String? accessToken;
 
   SessionUser({
     required this.id,
     required this.uid,
+    required this.nickname,
     required this.isLoggedIn,
     required this.accessToken,
   });
@@ -28,11 +30,13 @@ class SessionUser {
   SessionUser copyWith({
     int? id,
     String? uid,
+    String? nickname,
     bool? isLoggedIn,
   }) {
     return SessionUser(
       id: id ?? this.id,
       uid: uid ?? this.uid,
+      nickname: nickname ?? this.nickname,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       accessToken: accessToken ?? this.accessToken,
     );

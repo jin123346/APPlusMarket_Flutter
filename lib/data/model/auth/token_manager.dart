@@ -4,23 +4,33 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class TokenManager {
   String? _accessToken;
+  String? _refreshToken;
 
   final FlutterSecureStorage storage = FlutterSecureStorage();
-  final mContext = navigator.currentContext;
+  final mContext = navigatorkey.currentContext;
 
   // Save refreshToken
-  Future<void> saveAccessToken(String accessToken) async {
-    await storage.write(key: 'accessToken', value: accessToken);
+  void saveAccessToken(String accessToken) {
+    _accessToken = accessToken;
   }
 
-  Future<String?> getAccessToken() async {
-    return await storage.read(key: 'accessToken');
+  Future<void> saveRefreshToken(String refreshToken) async {
+    await storage.write(key: 'refreshToken', value: refreshToken);
+  }
+
+  String? getAccessToken() {
+    return _accessToken;
+  }
+
+  Future<String?> getRefreshToken() async {
+    return await storage.read(key: 'refreshToken');
   }
 
   //로그아웃시
   // Delete tokens
   Future<void> clearToken() async {
-    await storage.delete(key: 'accessToken');
+    _accessToken = null;
+    await storage.delete(key: 'refreshToken');
     Navigator.pushNamed(mContext!, '/login');
   }
 }
