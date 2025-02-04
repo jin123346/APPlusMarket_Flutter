@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:applus_market/data/gvm/product_gvm.dart';
+import 'package:applus_market/data/gvm/product/product_gvm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -505,6 +505,20 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                               selectedCategory, // 카테고리
                               imageFiles, // 이미지 파일 리스트
                             );
+                        // 등록 성공 후 입력 데이터 초기화
+                        titleController.clear();
+                        productNameController.clear();
+                        priceController.clear();
+                        descriptionController.clear();
+                        tradeLocationController.clear();
+
+                        // 이미지 목록 초기화
+                        ref.read(imagePathsProvider.notifier).state = [];
+
+                        // 선택된 카테고리, 브랜드도 초기값으로 설정 (필요한 경우)
+                        ref.read(selectedCategoryProvider.notifier).state =
+                            "카테고리";
+                        ref.read(selectedBrandProvider.notifier).state = "브랜드";
                       }
                     },
                     style: ElevatedButton.styleFrom(

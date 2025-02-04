@@ -1,13 +1,14 @@
 import 'dart:io';
 
+import 'package:applus_market/data/gvm/product/productlist_gvm.dart';
 import 'package:applus_market/data/model/product/product_info_card.dart';
 import 'package:applus_market/data/repository/product/product_repository.dart';
 import 'package:applus_market/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../_core/utils/exception_handler.dart';
-import '../../_core/utils/logger.dart';
+import '../../../_core/utils/exception_handler.dart';
+import '../../../_core/utils/logger.dart';
 
 class ProductGvm extends Notifier<ProductInfoCard> {
   final mContext = navigatorkey.currentContext!;
@@ -27,6 +28,9 @@ class ProductGvm extends Notifier<ProductInfoCard> {
       is_negotiable: null,
       is_possible_meet_you: null,
       category: null,
+      register_ip: null,
+      created_at: null,
+      brand: null,
     );
   }
 
@@ -62,12 +66,14 @@ class ProductGvm extends Notifier<ProductInfoCard> {
         imageFiles: imageFiles, // 이미지 파일 리스트 전달
       );
       logger.i('API 응답: $responseBody'); // 추가된 로그
-      if (!responseBody['success']) {
+      if (responseBody['status'] != 'success') {
         ExceptionHandler.handleException(
             responseBody['errorMessage'], StackTrace.current);
         return; // 실행의 제어건 반납
       }
-      Navigator.popAndPushNamed(mContext, '/home');
+
+      Navigator.pop(mContext);
+      ref.read(productListProvider.notifier).fetchProducts(isRefresh: true);
     } catch (e, stackTrace) {
       ExceptionHandler.handleException('서버 연결 실패', stackTrace);
     }
