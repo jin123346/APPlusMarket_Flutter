@@ -1,9 +1,6 @@
-import 'package:applus_market/_core/utils/custom_snackbar.dart';
-import 'package:applus_market/_core/utils/exception_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../data/model/auth/sign_up_state.dart';
 import '../../../../../data/model/auth/signup_controller.dart';
 
 class InsertUidPage extends ConsumerWidget {
@@ -11,11 +8,8 @@ class InsertUidPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    SignUpController signUpNotifier =
+    SignUpController signUpControllerNotifier =
         ref.read(SignUpControllerProvider.notifier);
-    SignUpState signUpState = ref.watch(SignUpControllerProvider);
-
-    bool _isValidated = false;
 
     return SafeArea(
       child: Scaffold(
@@ -44,7 +38,7 @@ class InsertUidPage extends ConsumerWidget {
                     ),
                     SizedBox(height: 16),
                     TextFormField(
-                      controller: signUpState.uidController,
+                      controller: signUpControllerNotifier.uidController,
                       cursorColor: Colors.grey[600],
                       cursorHeight: 20,
                       decoration: InputDecoration(
@@ -59,6 +53,12 @@ class InsertUidPage extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '아이디를 입력해주세요';
+                        }
+                        return null;
+                      },
                     ),
                     SizedBox(height: 16),
 
@@ -75,15 +75,7 @@ class InsertUidPage extends ConsumerWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (signUpState.uidController!.text.isNotEmpty) {
-                        String? checkUid = signUpNotifier.checkUid();
-                        if (checkUid != null) {
-                          CustomSnackbar.showSnackBar(checkUid);
-                        } else {
-                          Navigator.pushNamed(context, '/join/insertPass');
-                          return;
-                        }
-                      }
+                      Navigator.pushNamed(context, '/join/insertPass');
                     },
                     child: Text('다음'),
                   ),

@@ -1,9 +1,7 @@
-import 'package:applus_market/_core/utils/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../_core/utils/logger.dart';
-import '../../../../../data/model/auth/sign_up_state.dart';
 import '../../../../../data/model/auth/signup_controller.dart';
 
 class InsertHpPage extends ConsumerStatefulWidget {
@@ -74,10 +72,11 @@ class _InsertPasswordPageState extends ConsumerState<InsertHpPage> {
 
   @override
   Widget build(BuildContext context) {
-    SignUpController signUpNotifier =
+    SignUpController controllerNotifier =
         ref.read(SignUpControllerProvider.notifier);
-    SignUpState signUpState = ref.watch(SignUpControllerProvider);
-
+    final TextEditingController hpController = controllerNotifier.hpController;
+    final TextEditingController hpAgencyController =
+        controllerNotifier.hpAgencyController;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -112,7 +111,7 @@ class _InsertPasswordPageState extends ConsumerState<InsertHpPage> {
                     const SizedBox(height: 10),
                     GestureDetector(
                       onTap: () => showCarrierSelectionBottomSheet(
-                          context, signUpState.hpAgencyController!),
+                          context, hpAgencyController),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 15),
@@ -141,7 +140,7 @@ class _InsertPasswordPageState extends ConsumerState<InsertHpPage> {
                     const SizedBox(height: 20),
                     if (selectOn)
                       TextFormField(
-                        controller: signUpState.hpController,
+                        controller: hpController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                           hintText: "010-1234-5678",
@@ -162,15 +161,7 @@ class _InsertPasswordPageState extends ConsumerState<InsertHpPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (signUpState.hpController!.text.isNotEmpty) {
-                        String? hpValidation = signUpNotifier.phoneValidation();
-
-                        if (hpValidation != null) {
-                          CustomSnackbar.showSnackBar(hpValidation);
-                        } else {
-                          Navigator.pushNamed(context, '/join/insertEmail');
-                        }
-                      }
+                      Navigator.pushNamed(context, '/join/insertEmail');
                     },
                     child: Text('다음'),
                   ),

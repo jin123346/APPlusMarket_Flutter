@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../data/model/auth/sign_up_state.dart';
 import '../../../../../data/model/auth/user.dart';
 import '../../../../../data/model/auth/signup_controller.dart';
 import '../join_insert_page_model_view.dart';
@@ -87,9 +86,13 @@ class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
 
   @override
   Widget build(BuildContext context) {
-    SignUpController signUpNotifier =
+    SignUpController controllerNotifier =
         ref.read(SignUpControllerProvider.notifier);
-    SignUpState signUpState = ref.watch(SignUpControllerProvider);
+    final TextEditingController emailController =
+        controllerNotifier.emailController;
+    final TextEditingController verificationCodeController =
+        controllerNotifier.verificationCodeController;
+
     TextEditingController();
     return SafeArea(
       child: Scaffold(
@@ -124,7 +127,7 @@ class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        controller: signUpState.emailController,
+                        controller: emailController,
                         cursorColor: Colors.grey[600],
                         cursorHeight: 20,
                         decoration: InputDecoration(
@@ -140,8 +143,10 @@ class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
                           ),
                         ),
                         validator: (value) {
-                          String? checkEmail = signUpNotifier.checkEmail();
-                          return checkEmail;
+                          if (value == null || value.isEmpty) {
+                            return '이메일을 입력해주세요';
+                          }
+                          return null;
                         },
                       ),
                     ),
@@ -177,7 +182,7 @@ class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
                   child: Column(
                     children: [
                       TextFormField(
-                        controller: signUpState.verificationCodeController,
+                        controller: verificationCodeController,
                         cursorColor: Colors.grey[600],
                         onChanged: (value) {
                           if (value.length == 6) {
@@ -205,8 +210,10 @@ class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
                           ),
                         ),
                         validator: (value) {
-                          String? emailValidation = signUpNotifier.checkEmail();
-                          return emailValidation;
+                          if (value == null || value.isEmpty) {
+                            return '인증번호를 입력해주세요';
+                          }
+                          return '인증번호를 전송했습니다.';
                         },
                         onSaved: (newValue) {},
                       ),
@@ -349,7 +356,7 @@ class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
                               JoinInsertModelView notifier =
                                   ref.read(joinUserProvider.notifier);
                               Map<String, dynamic> user =
-                                  notifier.toUser(signUpState);
+                                  notifier.toUser(controllerNotifier);
                               notifier.insertUser(user);
                               Navigator.pop(context); // 팝업 닫기
                               Navigator.pushNamed(
