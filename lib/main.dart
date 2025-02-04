@@ -24,9 +24,7 @@ import 'ui/pages/my/delivery_page.dart';
 import 'ui/pages/my/delivery_register_page.dart';
 import 'ui/pages/my/my_logined_page.dart';
 import 'ui/pages/my/my_settings_page.dart';
-import 'ui/pages/pay/charge_page/charge_page.dart';
 import 'ui/pages/pay/pay_home_page.dart';
-import 'ui/pages/pay/widgets/pay_send_page.dart';
 import 'ui/pages/splash/splash_screen.dart';
 
 /**
@@ -34,7 +32,6 @@ import 'ui/pages/splash/splash_screen.dart';
  * 2025.01.24 - 황수빈 : 아이디 찾기 라우터 추가
  * 2025.01.25 - 하진희 : 회원가입화면 라우터 추가
  * 2025.01.29 - 하진희 : dotenv 파일 로드 가능하도록 기능 추가
- * 2025.02.04 - 김민희 : 결제 > 충전 첫 화면 라우터 추가
  */
 
 Future<void> main() async {
@@ -74,8 +71,6 @@ class MyApp extends StatelessWidget {
         '/my/delivery': (context) => DeliveryPage(),
         '/my/delivery/register': (context) => DeliveryRegisterPage(),
         '/my/payHome': (context) => PayHomePage(), // 결제 홈 화면
-        '/pay/charge': (context) => ChargePage(), // 충전 화면
-        '/pay/send': (context) => PaySendPage(), // 송금 화면
         '/chatting_room': (context) => ChatRoomPage(),
         '/find_id': (context) => FindIdPage(),
         '/find_id_result': (context) => FindIdResultPage(),

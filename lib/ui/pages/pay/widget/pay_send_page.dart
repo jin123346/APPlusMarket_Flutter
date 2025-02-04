@@ -6,7 +6,7 @@ import 'pay_amount_input_page.dart';
 /**
  * 2025.01.24 - 김민희 : 송금 화면 구현
  * 2025.01.26 - 김민희 : 은행 선택 -> 모달 위젯 ()
- * 2025.01.27 - 김민희 : StatefulWidget 변환 및 컨트롤러 추가
+ * 2025.01.27 - 클로드 : StatefulWidget 변환 및 컨트롤러 추가
  */
 
 class PaySendPage extends StatefulWidget {

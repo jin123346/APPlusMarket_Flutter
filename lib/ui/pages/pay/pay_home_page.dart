@@ -1,12 +1,10 @@
-import 'package:applus_market/ui/pages/pay/widgets/pay_transaction_item.dart';
 import 'package:flutter/material.dart';
 
 import '../../../_core/components/size.dart';
 import '../../../../_core/components/theme.dart';
-
-import '../../../_core/utils/logger.dart';
-import 'widgets/pay_money_card.dart';
-import 'widgets/pay_send_page.dart';
+import 'widget/pay_money_card.dart';
+import 'widget/pay_send_page.dart';
+import 'widget/pay_transaction_item.dart';
 
 class PayHomePage extends StatelessWidget {
   const PayHomePage({super.key});
@@ -38,11 +36,8 @@ class PayHomePage extends StatelessWidget {
             balance: 0,
             // 🔁 초기화 아이콘
             onRefresh: () {},
-            // 충전 - chargePage
-            onCharge: () {
-              logger.i('충전 버튼');
-              Navigator.pushNamed(context, '/pay/charge');
-            },
+            // 충전
+            onCharge: () {},
             // 송금
             // 송금 버튼 클릭시 iOS 스타일 전환 애니메이션 적용
             onTransfer: () {
