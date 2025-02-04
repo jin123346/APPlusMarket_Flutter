@@ -32,4 +32,17 @@ class ProductRepository {
     logger.i(responseBody);
     return responseBody;
   }
+
+  Future<Map<String, dynamic>> getProductsPage({required int page}) async {
+    try {
+      Response response = await dio.get(
+        '/product/listpage',
+        queryParameters: {'page': page},
+      );
+      return response.data;
+    } catch (e) {
+      logger.e('상품 목록 불러오기 실패: $e');
+      return {'status': 'fail', 'message': '상품 목록을 불러올 수 없습니다.'};
+    }
+  }
 }
