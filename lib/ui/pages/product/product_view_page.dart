@@ -23,14 +23,14 @@ class _ProductViewState extends State<ProductViewPage> {
   @override
   void initState() {
     super.initState();
-    // product =
-    //     //products.firstWhere((prod) => prod.product_id == widget.productId);
-    //     // 페이지 변경을 감지하여 현재 페이지 인덱스를 업데이트
-    //     _pageController.addListener(() {
-    //   setState(() {
-    //     _currentPage = _pageController.page?.round() ?? 0; // 페이지 인덱스 업데이트
-    //   });
-    // });
+    product =
+        products.firstWhere((prod) => prod.product_id == widget.productId);
+    // 페이지 변경을 감지하여 현재 페이지 인덱스를 업데이트
+    _pageController.addListener(() {
+      setState(() {
+        _currentPage = _pageController.page?.round() ?? 0; // 페이지 인덱스 업데이트
+      });
+    });
   }
 
   @override

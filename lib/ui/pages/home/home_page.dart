@@ -1,20 +1,20 @@
+
 import 'package:applus_market/ui/widgets/productlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../_core/components/theme.dart';
 import '../../../_core/utils/logger.dart';
-import '../../../data/gvm/product/productlist_gvm.dart';
 import '../../../data/model/product/product_card.dart';
+import '../../widgets/productlist.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    //logger.d(products);
+    logger.d(products);
 
     final brands = [
       'ZARA',
@@ -192,23 +192,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           // 상품 목록화면 -> 여기서 ProductList 사용
-          Consumer(
-            builder: (context, ref, child) {
-              final products = ref.watch(productListProvider);
-
-              if (products.isEmpty) {
-                return const SliverToBoxAdapter(
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: CircularProgressIndicator(), // 🔄 로딩 UI
-                    ),
-                  ),
-                );
-              }
-              return ProductList(products: products);
-            },
-          ),
+          ProductList(products: products),
         ],
       ),
     );

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'pages/chat/list/widgets/chat_list_body.dart';
 import 'pages/home/home_page.dart';
 import 'pages/my/my_logined_page.dart';
 import 'pages/product/product_register_page.dart';
