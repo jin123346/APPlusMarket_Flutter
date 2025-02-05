@@ -1,8 +1,11 @@
+import 'package:applus_market/_core/utils/custom_snackbar.dart';
 import 'package:applus_market/data/model/auth/signup_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../_core/utils/logger.dart';
+import '../../../../../data/model/auth/sign_up_state.dart';
 import '../../../../../services/DateInputFormatter.dart';
 
 class InsertNamePage extends ConsumerStatefulWidget {
@@ -22,14 +25,9 @@ class _InsertNamePageState extends ConsumerState<InsertNamePage> {
 
   @override
   Widget build(BuildContext context) {
-    SignUpController signUpControllerNotifier =
+    SignUpController signUpNotifier =
         ref.read(SignUpControllerProvider.notifier);
-    TextEditingController nameController =
-        signUpControllerNotifier.nameController;
-    TextEditingController nicknameController =
-        signUpControllerNotifier.nicknameController;
-    TextEditingController birthDateController =
-        signUpControllerNotifier.birthDateController;
+    SignUpState signUpState = ref.watch(SignUpControllerProvider);
 
     return SafeArea(
       child: Scaffold(
@@ -68,7 +66,7 @@ class _InsertNamePageState extends ConsumerState<InsertNamePage> {
                           TextFormField(
                             autofocus: true,
                             focusNode: birthFocusNode,
-                            controller: birthDateController,
+                            controller: signUpState.birthDateController,
                             keyboardType: TextInputType.datetime,
                             cursorColor: Colors.grey[600],
                             inputFormatters: [
@@ -92,37 +90,6 @@ class _InsertNamePageState extends ConsumerState<InsertNamePage> {
                               ),
                             ),
                             textInputAction: TextInputAction.newline,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                birthDateController.clear();
-                                return '생년월일을 입력해주세요';
-                              }
-                              // 유효성 검사: 10자리 및 YYYY-MM-DD 형식 확인
-                              final regex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-                              if (!regex.hasMatch(value)) {
-                                birthDateController.clear();
-                                return '올바른 형식의 생년월일을 입력해주세요 (YYYY-MM-DD)';
-                              }
-                              // 날짜가 유효한지 확인
-                              try {
-                                final parts = value.split('-');
-                                final year = int.parse(parts[0]);
-                                final month = int.parse(parts[1]);
-                                final day = int.parse(parts[2]);
-
-                                if (month < 1 ||
-                                    month > 12 ||
-                                    day < 1 ||
-                                    day > 31) {
-                                  birthDateController.clear();
-                                  return '올바른 날짜를 입력해주세요';
-                                }
-                              } catch (e) {
-                                birthDateController.clear();
-                                return '유효한 생년월일을 입력해주세요';
-                              }
-                              return null;
-                            },
                           ),
                         ],
                       ),
@@ -136,7 +103,7 @@ class _InsertNamePageState extends ConsumerState<InsertNamePage> {
                           TextFormField(
                             autofocus: true,
                             focusNode: nicknameFocusNode,
-                            controller: nicknameController,
+                            controller: signUpState.nicknameController,
                             cursorColor: Colors.grey[600],
                             decoration: InputDecoration(
                               labelText: ' 닉네임',
@@ -151,12 +118,6 @@ class _InsertNamePageState extends ConsumerState<InsertNamePage> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return '닉네임을 입력해주세요';
-                              }
-                              return null;
-                            },
                           ),
                         ],
                       ),
@@ -167,7 +128,7 @@ class _InsertNamePageState extends ConsumerState<InsertNamePage> {
                     TextFormField(
                       autofocus: true,
                       focusNode: nameFocusNode,
-                      controller: nameController,
+                      controller: signUpState.nameController,
                       cursorColor: Colors.grey[600],
                       cursorHeight: 20,
                       decoration: InputDecoration(
@@ -182,12 +143,6 @@ class _InsertNamePageState extends ConsumerState<InsertNamePage> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '이름을 입력해주세요';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16), // 닉네임과 생일 필드 간격
 
@@ -205,17 +160,56 @@ class _InsertNamePageState extends ConsumerState<InsertNamePage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (!isInsertedName) {
-                        setState(() {
-                          isInsertedName = true;
+                      bool isValid = true;
+
+                      if (signUpState.nameController!.text.isNotEmpty) {
+                        String? nameValidation = signUpNotifier.checkName();
+                        if (nameValidation != null) {
+                          CustomSnackbar.showSnackBar(nameValidation);
+                          nameFocusNode.requestFocus();
+                          isValid = false;
+                        } else {
+                          setState(() {
+                            isInsertedName = true;
+                            nicknameFocusNode.requestFocus();
+                          });
+                        }
+                      }
+
+                      if (isInsertedName &&
+                          signUpState.nicknameController!.text.isNotEmpty) {
+                        String? nickValidation =
+                            signUpNotifier.nickNameValidation();
+                        if (nickValidation != null) {
+                          CustomSnackbar.showSnackBar(nickValidation);
                           nicknameFocusNode.requestFocus();
-                        });
-                      } else if (!isInsertedNickname) {
-                        setState(() {
-                          isInsertedNickname = true;
+                          isValid = false;
+                        } else {
+                          setState(() {
+                            isInsertedNickname = true;
+                            birthFocusNode.requestFocus();
+                          });
+                        }
+                      }
+
+                      if (isInsertedNickname &&
+                          signUpState.birthDateController!.text.isNotEmpty) {
+                        String? birthValidate =
+                            signUpNotifier.birthDateValidation();
+                        logger.i('birthday!! $birthValidate');
+                        if (birthValidate != null) {
+                          CustomSnackbar.showSnackBar(birthValidate);
                           birthFocusNode.requestFocus();
-                        });
-                      } else if (birthDateController.text.isNotEmpty) {
+
+                          isValid = false;
+                        } else {
+                          setState(() {
+                            isInsertedBirth = true;
+                          });
+                        }
+                      }
+
+                      if (isValid && isInsertedBirth) {
                         Navigator.pushNamed(context, '/join/insertUid');
                       }
                     },
