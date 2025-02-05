@@ -20,4 +20,9 @@ class UserCard {
       profileImage: json['profileImage'] ?? '',
     );
   }
+
+  @override
+  String toString() {
+    return 'UserCard{user_id: $user_id, name: $name, profileImage: $profileImage}';
+  }
 }

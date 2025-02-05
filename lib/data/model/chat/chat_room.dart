@@ -55,76 +55,33 @@ class ChatRoom {
 }
 
 class ChatMessage {
-  final int? chat_message_id;
-  final int sender_id;
-  final String message;
+  final int? messageId;
+  final int senderId;
+  final String content;
   final bool? isRead;
-  final String created_at;
+  final String createdAt;
+  final String? deletedAt;
 
   ChatMessage(
-      {this.chat_message_id,
-      required this.sender_id,
-      required this.message,
+      {this.messageId,
+      required this.senderId,
+      required this.content,
       this.isRead = false,
-      required this.created_at});
+      required this.createdAt,
+      this.deletedAt});
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
     return ChatMessage(
-      chat_message_id: json['chatMessageId'],
-      sender_id: json['userId'], // JSON의 userId를 sender_id로 사용
-      message: json['content'],
-      // isRead가 null이면 false로 처리
-      isRead: json['isRead'] ?? false,
-      created_at: json['createdAt'],
-    );
+        messageId: json['messageId'] ?? 0,
+        senderId: json['senderId'],
+        content: json['content'],
+        isRead: json['isRead'] ?? false,
+        createdAt: json['createdAt'],
+        deletedAt: json['deletedAt'] ?? '');
   }
+
   @override
   String toString() {
-    return 'ChatMessage{chat_message_id: $chat_message_id, sender_id: $sender_id, message: $message, isRead: $isRead, created_at: $created_at}';
+    return 'ChatMessage{chatMessageId: $messageId, senderId: $senderId, message: $content, isRead: $isRead, createdAt: $createdAt}';
   }
 }
-
-ChatRoom chatRoomExample = ChatRoom(
-    chat_room_id: 12345,
-    participants: [
-      UserCard(
-        user_id: 1,
-        name: "나",
-        profileImage: "https://example.com/images/alice.png",
-      ),
-      UserCard(
-        user_id: 2,
-        name: "나는야멋쟁이",
-        profileImage: "https://example.com/images/bob.png",
-      ),
-    ],
-    productCard: ProductCard(
-        is_negotiable: true,
-        product_id: 1,
-        name: '맥북 프로 14 2024년형 새상품 팝니다',
-        price: 3000000,
-        thumbnail_image: 'https://picsum.photos/id/910/200/100'),
-    messages: [
-      ChatMessage(
-        chat_message_id: 1,
-        sender_id: 1,
-        message:
-            "안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.안녕하세요! 만나서 반가워요.",
-        isRead: true,
-        created_at: "2025-01-20T15:01:00Z",
-      ),
-      ChatMessage(
-        chat_message_id: 2,
-        sender_id: 2,
-        message: "네, 반갑습니다! 어떻게 도와드릴까요?",
-        isRead: true,
-        created_at: "2025-01-20T15:02:00Z",
-      ),
-      ChatMessage(
-        chat_message_id: 3,
-        sender_id: 1,
-        message: "이 앱에 대해 궁금한 게 있어서요.",
-        isRead: false,
-        created_at: "2025-01-20T15:05:00Z",
-      ),
-    ]);

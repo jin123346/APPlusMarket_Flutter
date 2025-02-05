@@ -6,8 +6,8 @@ import '../../../_core/utils/dio.dart';
 import '../../model/chat/chat_room_card.dart'; // ChatRoomCard 모델 임포트
 
 class ChatRepository {
-  Future<List<ChatRoomCard>> selectChatRoomCards(int currentUserId) async {
-    logger.e('selectChatRoomCards 들어옴');
+  Future<List<ChatRoomCard>> getChatRoomCards(int currentUserId) async {
+    logger.e('getChatRoomCards 들어옴');
     logger.e(dio);
     try {
       // Dio의 Response 객체 사용
@@ -31,22 +31,18 @@ class ChatRepository {
     }
   }
 
-  // selectChatRoomDetail
-  Future<ChatRoom> selectChatRoomDetail(int chatRoomId) async {
-    logger.e('selectChatRoomDetail 들어옴');
-
+  // getChatRoomDetail
+  Future<ChatRoom> getChatRoomDetail(int chatRoomId) async {
     try {
       Response response = await dio.get('/chat-rooms/$chatRoomId');
 
-      // 응답에서 'data' 부분 추출
       Map<String, dynamic> responseBody = response.data;
       Map<String, dynamic> data = responseBody['data'];
-      ChatRoom chatRoom = ChatRoom.fromJson(data);
-      logger.d('채팅방 정보 : $chatRoom');
-      return chatRoom;
+      logger.e('채팅방 목록 : 🎇 $data');
+
+      return ChatRoom.fromJson(data);
     } catch (e) {
-      logger.e('Error: $e');
-      throw Exception('Error fetching chat room cards');
+      throw Exception('채팅방 정보 불러오는 중 오류 발생 : $e');
     }
   }
 }
