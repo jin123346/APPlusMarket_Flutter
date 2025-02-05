@@ -84,9 +84,7 @@ class ProductInfoCard {
       category: json['category'] as String?,
       brand: json['brand'] as String?,
       images: json['productImage'] != null
-          ? [
-              "$apiUrl/uploads/${json['id']}/${json['productImage']}"
-            ] // ✅ 동적 BASE_URL 적용
+          ? ["$apiUrl/uploads/${json['id']}/${json['productImage']}"]
           : [],
     );
   }
