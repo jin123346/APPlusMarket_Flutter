@@ -1,21 +1,46 @@
 import 'package:applus_market/ui/widgets/productlist.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../_core/components/theme.dart';
 import '../../../_core/utils/logger.dart';
 import '../../../data/gvm/product/productlist_gvm.dart';
-import '../../../data/model/product/product_card.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    //logger.d(products);
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends ConsumerState<HomePage> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    // ScrollController를 초기화하고 리스너 등록
+    _scrollController = ScrollController()..addListener(_scrollListener);
+  }
+
+  // 스크롤 위치가 하단 근처에 도달하면 추가 데이터 요청
+  void _scrollListener() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(productListProvider.notifier).fetchProducts();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // 컨트롤러 dispose
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 브랜드 목록 예시
     final brands = [
       'ZARA',
       'H&M',
@@ -31,9 +56,14 @@ class HomePage extends StatelessWidget {
       'Uniqlo'
     ];
 
+    // productListProvider 상태 구독
+    final products = ref.watch(productListProvider);
+
     return Scaffold(
       body: CustomScrollView(
+        controller: _scrollController, // 스크롤 컨트롤러 적용
         slivers: [
+          // 상단 AppBar
           SliverAppBar(
             floating: true,
             titleSpacing: 0,
@@ -54,6 +84,7 @@ class HomePage extends StatelessWidget {
               ],
             ),
             actions: [
+              // 알림 아이콘
               Stack(
                 children: [
                   IconButton(
@@ -77,16 +108,14 @@ class HomePage extends StatelessWidget {
                       child: const Center(
                         child: Text(
                           '2',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 10),
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
+              // 장바구니 아이콘
               Stack(
                 children: [
                   IconButton(
@@ -110,10 +139,7 @@ class HomePage extends StatelessWidget {
                       child: const Center(
                         child: Text(
                           '2',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 10),
                         ),
                       ),
                     ),
@@ -122,6 +148,7 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
+          // 검색창 영역
           SliverToBoxAdapter(
             child: Padding(
               padding:
@@ -131,9 +158,10 @@ class HomePage extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: '검색어를 입력해주세요',
                   hintStyle: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: Colors.black54),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
                   filled: true,
                   fillColor: Colors.grey[100],
@@ -146,17 +174,17 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
+          // 배너 영역
           SliverToBoxAdapter(
             child: Column(
               children: [
                 const SizedBox(height: 5),
-                Image.asset(
-                  'assets/images/banner/main_banner_1.jpg',
-                ),
+                Image.asset('assets/images/banner/main_banner_1.jpg'),
                 const SizedBox(height: 20),
               ],
             ),
           ),
+          // 브랜드 리스트 영역
           SliverToBoxAdapter(
             child: SizedBox(
               height: 90,
@@ -180,9 +208,7 @@ class HomePage extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text(
                           brands[index],
-                          style: const TextStyle(
-                            fontSize: 12,
-                          ),
+                          style: const TextStyle(fontSize: 12),
                         ),
                       ],
                     ),
@@ -191,24 +217,17 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-          // 상품 목록화면 -> 여기서 ProductList 사용
-          Consumer(
-            builder: (context, ref, child) {
-              final products = ref.watch(productListProvider);
-
-              if (products.isEmpty) {
-                return const SliverToBoxAdapter(
+          // 상품 목록 영역
+          products.isEmpty
+              ? const SliverToBoxAdapter(
                   child: Center(
                     child: Padding(
                       padding: EdgeInsets.all(20),
-                      child: CircularProgressIndicator(), // 🔄 로딩 UI
+                      child: CircularProgressIndicator(),
                     ),
                   ),
-                );
-              }
-              return ProductList(products: products);
-            },
-          ),
+                )
+              : ProductList(products: products),
         ],
       ),
     );
