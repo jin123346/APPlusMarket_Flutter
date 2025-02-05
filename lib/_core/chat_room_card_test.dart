@@ -6,6 +6,6 @@ import 'package:flutter/material.dart';
 void main() async {
   ChatRepository chatRepository = ChatRepository();
 
-  List<ChatRoomCard> responseBody = await chatRepository.selectChatRoomCards(1);
+  List<ChatRoomCard> responseBody = await chatRepository.getChatRoomCards(1);
   logger.d(responseBody);
 }
