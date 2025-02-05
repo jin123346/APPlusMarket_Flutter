@@ -58,7 +58,8 @@ dependencies:
   dio_cookie_manager: ^3.2.0
   cookie_jar: ^4.0.8
   jwt_decoder: ^2.0.1
-
+  image_picker: ^1.1.2
+  page_transition: ^2.2.1 # 2025.02.04 김민희 - 페이지 전환 애니메이션 (왼→오, 오→왼, 위→아래, 아래→위)
 
 dev_dependencies:
   flutter_test:
@@ -90,6 +91,7 @@ flutter:
     - assets/images/      # 2025.01.21 - 김민희 : 이미지 경로 추가
     - assets/images/pay/  # 2025.01.21 - 김민희 : 이미지 경로 추가
     - assets/images/banner/  # 2025.01.21 - 황수빈 : 이미지 경로 추가
+    - assets/images/sample/ # 2025.02.04 - 이도영 : 셈플 이미지 경로 추가
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
