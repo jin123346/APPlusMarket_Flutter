@@ -110,4 +110,11 @@ class AuthRepository {
     // ✅ 쿠키 관리자를 Dio에 추가
     dio.interceptors.add(CookieManager(cookieJar));
   }
+
+  //나의 정보 가져오기
+  Future<Map<String, dynamic>> getMyInfo() async {
+    Response response = await dio.post("/auth/myInfo");
+
+    return response.data;
+  }
 }

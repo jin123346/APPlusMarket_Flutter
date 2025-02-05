@@ -72,6 +72,7 @@ class ProfileCard extends StatelessWidget {
                       InkWell(
                           onDoubleTap: () {
                             print('회원정보클릭!');
+                            Navigator.pushNamed(context, '/my/info');
                           },
                           child: Text(
                             '회원정보 변경',
