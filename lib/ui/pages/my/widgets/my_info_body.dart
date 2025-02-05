@@ -8,19 +8,25 @@ import '../../../../data/model/auth/user.dart';
 
 class MyInfoBody extends ConsumerStatefulWidget {
   final GlobalKey<FormState> formKey;
-  MyInfoBody({required this.formKey, super.key});
+  final TextEditingController nameController;
+  final TextEditingController nicknameController;
+  final TextEditingController birthDateController;
+  final TextEditingController phoneNumberController;
+  final TextEditingController emailController;
+  MyInfoBody(
+      {required this.formKey,
+      required this.nameController,
+      required this.birthDateController,
+      required this.emailController,
+      required this.nicknameController,
+      required this.phoneNumberController,
+      super.key});
 
   @override
   ConsumerState<MyInfoBody> createState() => _MyInfoBodyState();
 }
 
 class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _nicknameController = TextEditingController();
-  TextEditingController _birthDateController = TextEditingController();
-  TextEditingController _phoneNumberController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-
   @override
   void initState() {
     // TODO: implement initState
@@ -41,18 +47,19 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
     User user = ref.read(myInfoProvider);
     logger.i(user.toString());
     setState(() {
-      _nameController.text = user.name ?? '';
-      _birthDateController.text = user.birthday != null
+      widget.nameController.text = user.name ?? '';
+      widget.birthDateController.text = user.birthday != null
           ? _formattedDate(user.birthday!) // 🎯 null 체크 후 변환
           : '';
-      _emailController.text = user.email ?? '';
-      _nicknameController.text = user.nickName ?? '';
-      _phoneNumberController.text = user.hp ?? '';
+      widget.emailController.text = user.email ?? '';
+      widget.nicknameController.text = user.nickName ?? '';
+      widget.phoneNumberController.text = user.hp ?? '';
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    MyInfoVM myInfoVM = ref.read(myInfoProvider.notifier);
     return Form(
       key: widget.formKey,
       child: ListView(
@@ -62,7 +69,7 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
           SizedBox(height: 24),
           _buildTextField(
               label: '이름',
-              controller: _nameController,
+              controller: widget.nameController,
               onChanged: (value) {}
               //ref.read(userProfileProvider.notifier).updateName(value),
               ,
@@ -70,27 +77,34 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
           SizedBox(height: 16),
           _buildTextField(
               label: '닉네임',
-              controller: _nicknameController,
-              onChanged: (value) {}
-              //ref.read(userProfileProvider.notifier).updateNickname(value),
+              controller: widget.nicknameController,
+              onChanged: (value) {
+                logger.i(value);
+                myInfoVM.updateNickName(value);
+              }),
+          SizedBox(height: 16),
+          _buildTextField(
+              label: '생년월일',
+              controller: widget.birthDateController,
+              readOnly: true,
+              onTap: () {}
+              // _selectDate(context),
               ),
           SizedBox(height: 16),
           _buildTextField(
-            label: '생년월일',
-            controller: _birthDateController,
-            readOnly: true,
-            onTap: () => _selectDate(context),
-          ),
-          SizedBox(height: 16),
-          _buildTextField(
             label: '휴대폰 번호',
-            controller: _phoneNumberController,
-            onChanged: (value) {},
+            controller: widget.phoneNumberController,
+            onChanged: (value) {
+              myInfoVM.updateHp(value);
+            },
             //  ref.read(userProfileProvider.notifier).updatePhoneNumber(value),
           ),
           SizedBox(height: 16),
           _buildTextField(
-            label: '이메일', controller: _emailController, onChanged: (value) {},
+            label: '이메일', controller: widget.emailController,
+            onChanged: (value) {
+              myInfoVM.updateEmail(value);
+            },
             //      ref.read(userProfileProvider.notifier).updateEmail(value),
           ),
         ],
@@ -167,7 +181,7 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
     );
     if (picked != null) {
       String formattedDate = _formattedDate(picked);
-      _birthDateController.text = formattedDate;
+      widget.birthDateController.text = formattedDate;
       //  ref.read(userProfileProvider.notifier).updateBirthDate(formattedDate);
     }
   }

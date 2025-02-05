@@ -74,7 +74,7 @@ class JoinInsertModelView extends Notifier<User> {
       Map<String, dynamic> responseBody =
           await authRepository.apiInsertUser(UserData);
 
-      if (responseBody['status'] == 'fail') {
+      if (responseBody['status'] == 'failed') {
         ExceptionHandler.handleException(
             responseBody['message'], StackTrace.current);
         return;

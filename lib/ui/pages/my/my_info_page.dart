@@ -1,12 +1,20 @@
+import 'package:applus_market/data/model_view/user/my_info_vm.dart';
 import 'package:applus_market/ui/pages/my/widgets/my_info_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MyInfoPage extends StatelessWidget {
+class MyInfoPage extends ConsumerWidget {
   MyInfoPage({super.key});
   final formKey = GlobalKey<FormState>();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController nicknameController = TextEditingController();
+  TextEditingController birthDateController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    MyInfoVM myInfoNotifier = ref.read(myInfoProvider.notifier);
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -32,12 +40,24 @@ class MyInfoPage extends StatelessWidget {
                 }
               }
             },
-            child: Text('저장'),
+            child: InkWell(
+                onTap: () {
+                  myInfoNotifier.updateMyInfo(
+                      nickName: nicknameController.text,
+                      hp: phoneNumberController.text,
+                      email: emailController.text);
+                },
+                child: Text('저장')),
           ),
         ],
       ),
       body: MyInfoBody(
         formKey: formKey,
+        nameController: nameController,
+        birthDateController: birthDateController,
+        emailController: emailController,
+        nicknameController: nicknameController,
+        phoneNumberController: phoneNumberController,
       ),
     ));
   }

@@ -93,8 +93,8 @@ class SessionGVM extends Notifier<SessionUser> {
       return;
     } else if (formKey.currentState?.validate() ?? false) {
       try {
-        _uid = uidController.text;
-        _pass = passwordController.text;
+        _uid = uidController.text.trim();
+        _pass = passwordController.text.trim();
         (Map<String, dynamic>, String) response =
             await authRepository.login(_uid!, _pass!);
         String accessToken = response.$2;
