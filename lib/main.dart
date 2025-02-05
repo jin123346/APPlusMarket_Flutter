@@ -1,3 +1,4 @@
+import 'package:applus_market/ui/pages/my/my_info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,6 +72,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => MainScreen(),
         '/my': (context) => MyLoginedPage(),
         '/my/settings': (context) => MySettingsPage(),
+        '/my/info': (context) => MyInfoPage(),
         '/my/delivery': (context) => DeliveryPage(),
         '/my/delivery/register': (context) => DeliveryRegisterPage(),
         '/my/payHome': (context) => PayHomePage(), // 결제 홈 화면
