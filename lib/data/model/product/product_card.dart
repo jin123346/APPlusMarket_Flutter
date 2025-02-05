@@ -17,10 +17,19 @@ class ProductCard {
       required this.thumbnail_image,
       this.is_negotiable});
 
-  @override
-  String toString() {
-    return 'ProductCard{product_id: $product_id, name: $name, price: $price, thumbnail_image: $thumbnail_image, is_negotiable: $is_negotiable}';
+  factory ProductCard.fromJson(Map<String, dynamic> json) {
+    return ProductCard(
+      product_id: json['productId'],
+      name: json['productName'],
+      price: json['price'],
+      thumbnail_image: json['thumbnailImage'],
+      is_negotiable: json['isNegotiable'] ?? '',
+    );
   }
+  // @override
+  // String toString() {
+  //   return 'ProductCard{product_id: $product_id, name: $name, price: $price, thumbnail_image: $thumbnail_image, is_negotiable: $is_negotiable}';
+  // }
 }
 
 List<ProductCard> products = [

@@ -56,9 +56,9 @@ class _PayPasswordPageState extends State<PayPasswordPage> {
   //     context,
   //     MaterialPageRoute(
   //       builder: (context) => TransferProgressPage(
-  //         accountNumber: widget.accountNumber,
-  //         bankName: widget.bankName,
-  //         amount: widget.amount,
+  //         accountNumber: widgets.accountNumber,
+  //         bankName: widgets.bankName,
+  //         amount: widgets.amount,
   //       ),
   //     ),
   //   );

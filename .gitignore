@@ -47,4 +47,4 @@ app.*.map.json
 src/.DS_Store
 
 #.env
-.env
+!**/.env
