@@ -11,7 +11,6 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   @override
   Future<ChatRoom> build() async {
     chatRoomId = 1; // TODO: 실제 채팅방 ID로 변경
-    chatService.connect();
     setupMessageListener();
     return await getChatRoomDetail(chatRoomId); // 초기 데이터 로드
   }

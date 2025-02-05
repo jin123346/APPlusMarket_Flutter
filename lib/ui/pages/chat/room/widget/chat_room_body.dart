@@ -19,13 +19,10 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
   @override
   void initState() {
     super.initState();
-    // ViewModel의 chatService 사용
-    final viewModel = ref.read(chatRoomProvider.notifier);
-    viewModel.chatService.connect();
   }
 
   final ScrollController _scrollController = ScrollController();
-  ChatService chatService = ChatService();
+
   ChatRoomPageViewModel chatRoomViewModel = ChatRoomPageViewModel();
 
   final TextEditingController _messageController = TextEditingController();
@@ -70,7 +67,8 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
     final int myId = 2;
 
     final chatRoomState = ref.watch(chatRoomProvider);
-    chatService.connect();
+    final viewModel = ref.read(chatRoomProvider.notifier);
+
     return chatRoomState.when(
       data: (room) {
         final otherUser =
@@ -187,7 +185,7 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                         icon: const Icon(CupertinoIcons.paperplane_fill),
                         onPressed: () {
                           setState(() {
-                            chatService.sendMessage(
+                            viewModel.chatService.sendMessage(
                                 chatRoomId, _messageController.text, myId);
                           });
                           _messageController.clear();
