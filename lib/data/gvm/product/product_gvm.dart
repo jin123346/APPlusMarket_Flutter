@@ -65,7 +65,7 @@ class ProductGvm extends Notifier<ProductInfoCard> {
         body,
         imageFiles: imageFiles, // 이미지 파일 리스트 전달
       );
-      logger.i('API 응답: $responseBody'); // 추가된 로그
+      logger.i('API 응답: $responseBody');
       if (responseBody['status'] != 'success') {
         ExceptionHandler.handleException(
             responseBody['errorMessage'], StackTrace.current);
@@ -76,6 +76,25 @@ class ProductGvm extends Notifier<ProductInfoCard> {
       ref.read(productListProvider.notifier).fetchProducts(isRefresh: true);
     } catch (e, stackTrace) {
       ExceptionHandler.handleException('서버 연결 실패', stackTrace);
+    }
+  }
+
+  Future<ProductInfoCard?> selectProduct(int productId) async {
+    try {
+      final responseBody = await productRepository.selectProduct(id: productId);
+
+      if (responseBody['status'] == 'success') {
+        state = ProductInfoCard.todata(responseBody['data']);
+
+        logger.e("Updated State: $state");
+      } else {
+        throw Exception(responseBody['message']);
+      }
+    } catch (e) {
+      print('상품 정보 불러오기 실패: $e');
+      Navigator.pop(mContext);
+      ref.read(productListProvider.notifier).fetchProducts(isRefresh: true);
+      return null;
     }
   }
 }

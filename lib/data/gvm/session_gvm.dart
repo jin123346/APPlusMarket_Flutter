@@ -62,6 +62,8 @@ class SessionGVM extends Notifier<SessionUser> {
         bool isDecode = decodeAccessToken(newAccessToken);
         if (isDecode) {
           logger.i("✅ 자동 로그인 성공");
+
+          _setupDioInterceptor(newAccessToken);
           Navigator.pushNamed(mContext!, "/home");
         }
       } else {
@@ -91,8 +93,8 @@ class SessionGVM extends Notifier<SessionUser> {
       return;
     } else if (formKey.currentState?.validate() ?? false) {
       try {
-        _uid = uidController.text;
-        _pass = passwordController.text;
+        _uid = uidController.text.trim();
+        _pass = passwordController.text.trim();
         (Map<String, dynamic>, String) response =
             await authRepository.login(_uid!, _pass!);
         String accessToken = response.$2;
@@ -114,6 +116,7 @@ class SessionGVM extends Notifier<SessionUser> {
             nickname: responseDTO['data']['nickName'],
             isLoggedIn: true,
           );
+          _setupDioInterceptor(accessToken);
           clearControllers();
           Navigator.pushNamed(mContext, '/home');
         } else {
@@ -164,13 +167,14 @@ class SessionGVM extends Notifier<SessionUser> {
     );
   }
 
-  void _setupDioInterceptor() {
+  void _setupDioInterceptor(String accessToken) {
+    logger.w('dio에 accessToken 넣기 : $accessToken');
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
           // 토큰이 있는 경우 헤더에 추가
-          if (state.isLoggedIn && state.accessToken != null) {
-            options.headers['Authorization'] = 'Bearer ${state.accessToken}';
+          if (state.isLoggedIn) {
+            options.headers['Authorization'] = '${accessToken}';
           }
           return handler.next(options); // 다음 단계로 요청 전달
         },
@@ -213,17 +217,8 @@ class SessionGVM extends Notifier<SessionUser> {
 
   // 회원가입
 
-  Future<void> join() async {
+  Future<void> join(Map<String, dynamic> body) async {
     try {
-      final body = {
-        "uid": 'abc',
-        'password': 1234,
-        'email': 'hajhi789@gmail.com',
-        'hp': '01055958375',
-        'name': '하지니',
-        'nickName': '지니',
-        'birthday': '1111-11-11',
-      };
       Map<String, dynamic> responseBody =
           await authRepository.apiInsertUser(body);
       if (responseBody['code'] == 1100) {

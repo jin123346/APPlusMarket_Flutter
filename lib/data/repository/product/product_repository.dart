@@ -45,4 +45,10 @@ class ProductRepository {
       return {'status': 'fail', 'message': '상품 목록을 불러올 수 없습니다.'};
     }
   }
+
+  Future<Map<String, dynamic>> selectProduct({required int id}) async {
+    Response response = await dio.get('/product/$id');
+    logger.e("Updated State: $response");
+    return response.data;
+  }
 }

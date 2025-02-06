@@ -23,7 +23,8 @@ class User {
   });
 
   User copyWith(
-      {String? uid,
+      {int? id,
+      String? uid,
       String? password,
       String? hp,
       String? name,
@@ -53,5 +54,10 @@ class User {
       "nickName": nickName,
       "birthday": birthday?.toIso8601String(),
     };
+  }
+
+  @override
+  String toString() {
+    return 'User{id: $id, uid: $uid, password: $password, hp: $hp, name: $name, nickName: $nickName, email: $email, birthday: $birthday}';
   }
 }
