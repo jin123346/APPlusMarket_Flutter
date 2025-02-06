@@ -17,6 +17,7 @@ class SessionUser {
   String? uid;
   String? nickname;
   bool isLoggedIn;
+  String profileImg;
   String? accessToken;
 
   SessionUser({
@@ -24,6 +25,7 @@ class SessionUser {
     required this.uid,
     required this.nickname,
     required this.isLoggedIn,
+    this.profileImg = "assets/images/default-profile.png",
     required this.accessToken,
   });
 
@@ -32,12 +34,14 @@ class SessionUser {
     String? uid,
     String? nickname,
     bool? isLoggedIn,
+    String? profileImg,
   }) {
     return SessionUser(
       id: id ?? this.id,
       uid: uid ?? this.uid,
       nickname: nickname ?? this.nickname,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
+      profileImg: profileImg ?? this.profileImg,
       accessToken: accessToken ?? this.accessToken,
     );
   }

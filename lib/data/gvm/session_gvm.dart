@@ -191,7 +191,7 @@ class SessionGVM extends Notifier<SessionUser> {
 
       // logger.e('! [] ==  이용시 : ${!response['code'] == 1009}'); 런타임 시 여기서 에러
 
-      if (response['code'] != 1009) {
+      if (response['code'] != 1010) {
         _showErrorDialog('로그아웃 API 요청 에러', response['message']);
         return;
       }

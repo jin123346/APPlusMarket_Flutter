@@ -89,6 +89,9 @@ class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
   Widget build(BuildContext context) {
     SignUpController signUpNotifier =
         ref.read(SignUpControllerProvider.notifier);
+    JoinInsertModelView joinInsertModelView =
+        ref.read(joinUserProvider.notifier);
+    final (user, isSuccess) = ref.watch(joinUserProvider);
     SignUpState signUpState = ref.watch(SignUpControllerProvider);
     TextEditingController();
     return SafeArea(
@@ -336,35 +339,15 @@ class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
             child: ElevatedButton(
               onPressed: () {
                 if (individualConsents[0] && individualConsents[1]) {
-                  // 필수 동의 항목을 체크했는지 확인
-                  signUpNotifier.clearControllers();
-                  signUpNotifier.dispose();
+                  Map<String, dynamic> body =
+                      joinInsertModelView.toUser(signUpState);
+                  joinInsertModelView.insertUser(body);
 
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("회원가입 완료"),
-                        content: Text("회원가입이 완료되었습니다."),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              JoinInsertModelView notifier =
-                                  ref.read(joinUserProvider.notifier);
-                              Map<String, dynamic> user =
-                                  notifier.toUser(signUpState);
-                              notifier.insertUser(user);
-                              Navigator.pop(context); // 팝업 닫기
-                              Navigator.pushNamed(
-                                  context, '/login'); // 로그인 페이지로 이동
-                            },
-                            child: Text("확인"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  // Navigator.pushNamed(context, '/login');
+                  if (!isSuccess!) {
+                    return;
+                  }
+
+                  //signUpNotifier.dispose();
                 } else {
                   showDialog(
                     context: context,
