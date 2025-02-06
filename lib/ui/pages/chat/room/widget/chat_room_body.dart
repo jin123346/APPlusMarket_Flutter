@@ -1,9 +1,9 @@
+import 'package:applus_market/_core/utils/logger.dart';
+import 'package:applus_market/data/service/chat_websocket_service.dart';
 import 'package:applus_market/ui/pages/chat/room/chat_room_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../../_core/utils/logger.dart';
-import '../../../../../data/model/chat/chat_room.dart';
 import '../../../../../data/model/product/product_card.dart';
 
 import '../../../components/time_ago.dart';
@@ -16,11 +16,16 @@ class ChatRoomBody extends ConsumerStatefulWidget {
 }
 
 class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   final ScrollController _scrollController = ScrollController();
 
   ChatRoomPageViewModel chatRoomViewModel = ChatRoomPageViewModel();
-  final TextEditingController _messageController = TextEditingController();
 
+  final TextEditingController _messageController = TextEditingController();
   bool _showOptions = false;
   final FocusNode _focusNode = FocusNode();
 
@@ -57,9 +62,12 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
 
   @override
   Widget build(BuildContext context) {
-    final int myId = 1;
+    // TODO : 하드 코딩 고치기
+    final int chatRoomId = 1;
+    final int myId = 2;
+
     final chatRoomState = ref.watch(chatRoomProvider);
-    final chatRoomViewModel = ref.read(chatRoomProvider.notifier);
+    final viewModel = ref.read(chatRoomProvider.notifier);
 
     return chatRoomState.when(
       data: (room) {
@@ -90,7 +98,7 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                       itemCount: room.messages.length,
                       itemBuilder: (context, index) {
                         final message = room.messages[index];
-                        final isMyMessage = message.sender_id == myId;
+                        final isMyMessage = message.senderId == myId;
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -100,13 +108,13 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                                 : MainAxisAlignment.start,
                             children: [
                               _buildMessageTimestamp(
-                                  isMyMessage, message.created_at),
+                                  isMyMessage, message.createdAt),
                               SizedBox(width: isMyMessage ? 5 : 0),
                               _buildMessageContainer(
-                                  isMyMessage, message.message, context),
+                                  isMyMessage, message.content, context),
                               SizedBox(width: !isMyMessage ? 5 : 0),
                               _buildMessageTimestamp(
-                                  !isMyMessage, message.created_at),
+                                  !isMyMessage, message.createdAt),
                             ],
                           ),
                         );
@@ -177,8 +185,8 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                         icon: const Icon(CupertinoIcons.paperplane_fill),
                         onPressed: () {
                           setState(() {
-                            chatRoomViewModel.addMessage(
-                                myId, _messageController.text);
+                            viewModel.chatService.sendMessage(
+                                chatRoomId, _messageController.text, myId);
                           });
                           _messageController.clear();
                           scrollToBottom();

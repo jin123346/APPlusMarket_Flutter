@@ -113,8 +113,31 @@ class AuthRepository {
 
   //나의 정보 가져오기
   Future<Map<String, dynamic>> getMyInfo() async {
-    Response response = await dio.post("/auth/myInfo");
+    Response response = await dio.get("/auth/myInfo");
 
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> updateMyInfo(
+      Map<String, dynamic> reqData) async {
+    Response response = await dio.post("/auth/myInfo", data: reqData);
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> findUidByNameAndEmail(
+      Map<String, dynamic> reqData) async {
+    Response response = await dio.post("/find/uid", data: reqData);
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> findPassByUidAndEmail(
+      Map<String, dynamic> reqData) async {
+    Response response = await dio.post("/find/pass", data: reqData);
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> changePass(Map<String, dynamic> reqData) async {
+    Response response = await dio.put("/find/pass/change", data: reqData);
     return response.data;
   }
 }

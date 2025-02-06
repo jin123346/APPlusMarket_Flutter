@@ -337,6 +337,9 @@ class _InsertEmailPageState extends ConsumerState<InsertEmailPage> {
               onPressed: () {
                 if (individualConsents[0] && individualConsents[1]) {
                   // 필수 동의 항목을 체크했는지 확인
+                  signUpNotifier.clearControllers();
+                  signUpNotifier.dispose();
+
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {

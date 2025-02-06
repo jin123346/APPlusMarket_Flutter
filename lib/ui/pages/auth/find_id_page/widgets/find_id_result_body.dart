@@ -1,13 +1,18 @@
 import 'package:applus_market/_core/components/size.dart';
+import 'package:applus_market/data/model/auth/find_user_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../_core/components/theme.dart';
+import '../../../../../data/model_view/user/find_user_vm.dart';
 
-class FindIdResultBody extends StatelessWidget {
+class FindIdResultBody extends ConsumerWidget {
   const FindIdResultBody({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final FindUserState findUserState = ref.watch(findUserProvider);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -23,7 +28,7 @@ class FindIdResultBody extends StatelessWidget {
                 const SizedBox(height: space16),
                 Center(
                   child: Text(
-                    '김사장님의 아이디는 bznav****입니다.',
+                    '김사장님의 아이디는 ${findUserState.uid} 입니다.',
                     style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                   ),
                 ),

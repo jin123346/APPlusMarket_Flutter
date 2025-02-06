@@ -11,7 +11,7 @@ class ChatListPageViewModel extends AsyncNotifier<List<ChatRoomCard>> {
   }
 
   Future<List<ChatRoomCard>> selectChatRooms(int currentUserId) async {
-    return await chatRepository.selectChatRoomCards(currentUserId);
+    return await chatRepository.getChatRoomCards(currentUserId);
   }
 }
 

@@ -1,11 +1,19 @@
 import 'package:applus_market/_core/components/size.dart';
+import 'package:applus_market/data/model_view/user/find_user_vm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FindPassChangeBody extends StatelessWidget {
-  FindPassChangeBody({super.key});
+class FindPassChangeBody extends ConsumerWidget {
+  final TextEditingController newController;
+  final TextEditingController confirmController;
+  FindPassChangeBody(
+      {super.key,
+      required this.newController,
+      required this.confirmController});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final FindUserVm = ref.read(findUserProvider.notifier);
     return Scaffold(
       resizeToAvoidBottomInset: true, // 키보드가 올라왔을 때 화면 조정
       body: GestureDetector(
@@ -24,6 +32,7 @@ class FindPassChangeBody extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   TextFormField(
+                    controller: newController,
                     cursorColor: Colors.grey[600],
                     cursorHeight: 20,
                     decoration: InputDecoration(
@@ -47,6 +56,7 @@ class FindPassChangeBody extends StatelessWidget {
                   ),
                   const SizedBox(height: space16),
                   TextFormField(
+                    controller: confirmController,
                     keyboardType: TextInputType.emailAddress, // 이메일 입력용 키보드 타입
                     cursorColor: Colors.grey[600],
                     decoration: InputDecoration(
@@ -72,7 +82,15 @@ class FindPassChangeBody extends StatelessWidget {
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    bool result = await FindUserVm.chagePassword(
+                        newController.text.trim(),
+                        confirmController.text.trim());
+
+                    if (!result) {
+                      return;
+                    }
+
                     // 아이디 찾기 로직
                     Navigator.pushNamed(context, '/pass_change_result');
                   },
