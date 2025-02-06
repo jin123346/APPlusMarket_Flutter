@@ -1,3 +1,4 @@
+import 'package:applus_market/ui/pages/chat/list/chat_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,6 +29,7 @@ import 'ui/pages/pay/charge_page/charge_page.dart';
 import 'ui/pages/pay/pay_home_page.dart';
 import 'ui/pages/pay/widgets/pay_send_page.dart';
 import 'ui/pages/splash/splash_screen.dart';
+import 'data/gvm/session_gvm.dart'; // 로그인 상태를 관리하는 GVM을 import
 
 /**
  * 2025.01.21 - 김민희 : 결제 홈 화면
@@ -76,7 +78,8 @@ class MyApp extends StatelessWidget {
         '/my/payHome': (context) => PayHomePage(), // 결제 홈 화면
         '/pay/charge': (context) => ChargePage(), // 충전 화면
         '/pay/send': (context) => PaySendPage(), // 송금 화면
-        '/chatting_room': (context) => ChatRoomPage(),
+        '/chat/list': (context) => ChatListPage(),
+        '/chat/room': (context) => ChatRoomPage(),
         '/find_id': (context) => FindIdPage(),
         '/find_id_result': (context) => FindIdResultPage(),
         '/find_pass': (context) => FindPassPage(),
