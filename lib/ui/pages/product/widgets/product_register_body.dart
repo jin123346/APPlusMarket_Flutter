@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../_core/components/size.dart';
+import '../../../../_core/utils/apiUrl.dart';
+import '../../../../data/gvm/session_gvm.dart';
+import '../../../../data/model/auth/login_state.dart';
 import '../selection_page.dart';
 import '../../../../_core/components/theme.dart';
 
@@ -179,10 +182,10 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
     final isPossibleMeetYou = ref.watch(isPossibleMeetYouProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final selectedBrand = ref.watch(selectedBrandProvider);
-
     final SizedBox height16Box = const SizedBox(height: commonPadding);
     final SizedBox height8Box = const SizedBox(height: halfPadding);
-
+    SessionUser sessionUser = ref.watch(LoginProvider);
+    int userid = sessionUser.id!;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -497,12 +500,12 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                               productNameController.text, // 제품명
                               descriptionController.text, // 내용 (설명)
                               "서울", // registerLocation
-                              "192.168.219.10", // registerIp
+                              env!, // registerIp
                               int.parse(priceController.text), // 가격
-                              "1000", // sellerId
                               isNegotiable, // 가격 제안 받기 여부
                               isPossibleMeetYou, // 직거래 가능 여부
                               selectedCategory, // 카테고리
+                              userid,
                               imageFiles, // 이미지 파일 리스트
                             );
                         // 등록 성공 후 입력 데이터 초기화
