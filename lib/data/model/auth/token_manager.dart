@@ -31,6 +31,5 @@ class TokenManager {
   Future<void> clearToken() async {
     _accessToken = null;
     await storage.delete(key: 'refreshToken');
-    Navigator.pushNamed(mContext!, '/login');
   }
 }

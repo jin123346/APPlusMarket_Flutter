@@ -185,23 +185,34 @@ class SessionGVM extends Notifier<SessionUser> {
   void logout() async {
     try {
       await tokenManager.clearToken();
-
       logger.d('isLoggedIn 상태 ${state.isLoggedIn}');
+
       Map<String, dynamic> response = await authRepository.logout();
 
-      if (!response['code'] == 1009) {
-        _showErrorDialog('로그아웃 중 에러', response['message']);
+      // logger.e('! [] ==  이용시 : ${!response['code'] == 1009}'); 런타임 시 여기서 에러
+
+      if (response['code'] != 1009) {
+        _showErrorDialog('로그아웃 API 요청 에러', response['message']);
         return;
       }
-      ;
-      resetUser();
-      tokenManager.clearToken();
-      // ✅ 쿠키 삭제 (Refresh Token 제거)
-      await cookieJar.deleteAll();
-      logger.i('로그아웃 되었습니다.');
 
-      Navigator.pushNamed(mContext!, "/login");
-    } catch (e, stackTrace) {}
+      resetUser();
+      await tokenManager.clearToken();
+
+      // 쿠키 삭제 - Refresh Token 제거
+      await cookieJar.deleteAll();
+      logger.e('로그아웃 되었습니다.');
+
+      // 이전 화면 다 파괴
+      Navigator.pushNamedAndRemoveUntil(
+        mContext,
+        '/login',
+        (route) => false,
+      );
+    } catch (e, stackTrace) {
+      logger.e('로그아웃 처리 중 오류 발생 $e, $stackTrace');
+      throw Exception(e);
+    }
   }
 
   // 회원가입

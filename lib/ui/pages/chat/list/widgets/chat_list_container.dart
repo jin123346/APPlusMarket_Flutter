@@ -5,8 +5,7 @@ import '../../../../widgets/image_container.dart';
 import '../../../components/time_ago.dart';
 
 /*
-*  2025.01.21 - 황수빈 : ChatRoomCardContainer 생성
-*
+*  2025.01.21 - 황수빈 : ChatListContainer 생성
 */
 
 class ChatListContainer extends StatelessWidget {
@@ -17,7 +16,7 @@ class ChatListContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/chatting_room');
+        Navigator.pushNamed(context, '/chat/room');
       },
       child: Container(
         height: 90.0,
