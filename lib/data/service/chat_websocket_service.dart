@@ -3,6 +3,20 @@ import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/model/chat/chat_room.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
+/*
+ * packageName    : lib/ui/pages/chat/room/chat_room_page_view_model.dart
+ * fileName       : chat_room_view_model.dart
+ * author         : 황수빈
+ * date           : 2024/02/03
+ * description    : 채팅 웹소켓 서비스
+ *
+ * =============================================================
+ *   DATE         AUTHOR             NOTE
+ * -------------------------------------------------------------
+ * 2024/02/05     황수빈    setupMessageListener() 추가
+ *                          받은 메시지 화면 반영을 위하여
+ */
+
 class ChatService {
   StompClient? stompClient;
   final Set<String> subscribedDestinations = {};
@@ -27,6 +41,7 @@ class ChatService {
   }
 
   void onConnect(StompFrame frame) {
+    // TODO : 로그인한 회원이 참여하고 있는 채팅방 ID 전체 구독 - main에서
     // 예시로 1번 방을 구독하는 코드
     subscribeToChatRoom("1");
   }

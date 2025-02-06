@@ -1,3 +1,4 @@
+import 'package:applus_market/ui/pages/chat/list/chat_list_page.dart';
 import 'package:applus_market/ui/pages/my/my_info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -78,7 +79,8 @@ class MyApp extends StatelessWidget {
         '/my/payHome': (context) => PayHomePage(), // 결제 홈 화면
         '/pay/charge': (context) => ChargePage(), // 충전 화면
         '/pay/send': (context) => PaySendPage(), // 송금 화면
-        '/chatting_room': (context) => ChatRoomPage(),
+        '/chat/list': (context) => ChatListPage(),
+        '/chat/room': (context) => ChatRoomPage(),
         '/find_id': (context) => FindIdPage(),
         '/find_id_result': (context) => FindIdResultPage(),
         '/find_pass': (context) => FindPassPage(),

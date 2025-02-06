@@ -1,4 +1,6 @@
 import 'package:applus_market/_core/utils/logger.dart';
+import 'package:applus_market/data/gvm/session_gvm.dart';
+import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/service/chat_websocket_service.dart';
 import 'package:applus_market/ui/pages/chat/room/chat_room_page_view_model.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../data/model/product/product_card.dart';
 
 import '../../../components/time_ago.dart';
+
+/*
+ * packageName    : lib/ui/pages/chat/room/widget/chat_room_body.dart
+ * fileName       : chat_room_body.dart
+ * author         : 황수빈
+ * date           : 2024/01/21
+ * description    : 채팅방 Widget 사용
+ *
+ * =============================================================
+ * DATE              AUTHOR             NOTE
+ * -------------------------------------------------------------
+ * 2024/02/06       황수빈      MyId sessionUser에서 받아옴
+ */
 
 class ChatRoomBody extends ConsumerStatefulWidget {
   const ChatRoomBody({super.key});
@@ -63,11 +78,14 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
   @override
   Widget build(BuildContext context) {
     // TODO : 하드 코딩 고치기
-    final int chatRoomId = 1;
-    final int myId = 2;
+    int chatRoomId = 1;
 
+    SessionUser sessionUser = ref.watch(LoginProvider);
+    int myId = sessionUser.id!;
     final chatRoomState = ref.watch(chatRoomProvider);
     final viewModel = ref.read(chatRoomProvider.notifier);
+
+    viewModel.chatService.connect();
 
     return chatRoomState.when(
       data: (room) {
