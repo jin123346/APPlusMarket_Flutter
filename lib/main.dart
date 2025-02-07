@@ -1,4 +1,6 @@
 import 'package:applus_market/ui/pages/chat/list/chat_list_page.dart';
+import 'package:applus_market/ui/pages/my/my_info_page.dart';
+import 'package:applus_market/ui/pages/my/withdrawal_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +27,7 @@ import 'ui/pages/my/delivery_page.dart';
 import 'ui/pages/my/delivery_register_page.dart';
 import 'ui/pages/my/my_logined_page.dart';
 import 'ui/pages/my/my_settings_page.dart';
+import 'ui/pages/my/widgets/withdrawal_warning_dialog.dart';
 import 'ui/pages/pay/charge_page/charge_page.dart';
 import 'ui/pages/pay/pay_home_page.dart';
 import 'ui/pages/pay/widgets/pay_send_page.dart';
@@ -70,7 +73,10 @@ class MyApp extends StatelessWidget {
         '/join/insertEmail': (context) => InsertEmailPage(),
         '/join/check': (context) => JoinCheckPage(),
         '/home': (context) => MainScreen(),
+        '/withdrawal': (context) => WithdrawalPage(),
+        '/withdrawal/confirm': (context) => WithdrawalWarningDialog(),
         '/my': (context) => MyLoginedPage(),
+        '/my/info': (context) => MyInfoPage(),
         '/my/settings': (context) => MySettingsPage(),
         '/my/delivery': (context) => DeliveryPage(),
         '/my/delivery/register': (context) => DeliveryRegisterPage(),

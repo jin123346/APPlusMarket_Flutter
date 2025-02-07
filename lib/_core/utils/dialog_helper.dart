@@ -6,7 +6,9 @@ class DialogHelper {
     required String title,
     String? content,
     String confirmText = '확인',
+    bool isCanceled = false,
     VoidCallback? onConfirm,
+    VoidCallback? onCancel,
   }) {
     showDialog(
         context: context,
@@ -27,6 +29,15 @@ class DialogHelper {
                   : null, // content가 없으면 공간을 차지하지 않도록 설정
               contentPadding: EdgeInsets.zero,
               actions: [
+                Visibility(
+                  visible: isCanceled,
+                  child: TextButton(
+                      onPressed: onCancel ??
+                          () {
+                            Navigator.pop(context);
+                          },
+                      child: Text('취소')),
+                ),
                 TextButton(
                     onPressed: onConfirm ??
                         () {

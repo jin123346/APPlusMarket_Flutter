@@ -46,6 +46,7 @@ class MyInfoPage extends ConsumerWidget {
                       nickName: nicknameController.text,
                       hp: phoneNumberController.text,
                       email: emailController.text);
+                  FocusScope.of(context).unfocus();
                 },
                 child: Text('저장')),
           ),
