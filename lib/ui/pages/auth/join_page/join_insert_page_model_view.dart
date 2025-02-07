@@ -1,3 +1,5 @@
+import 'package:applus_market/_core/utils/dialog_helper.dart';
+import 'package:applus_market/_core/utils/exception_handler.dart';
 import 'package:applus_market/data/model/auth/sign_up_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,12 +8,15 @@ import '../../../../_core/utils/dio.dart';
 import '../../../../data/model/auth/signup_controller.dart';
 import '../../../../data/model/auth/user.dart';
 import '../../../../data/repository/auth/auth_repository.dart';
+import '../../../../main.dart';
 
-class JoinInsertModelView extends Notifier<User> {
+class JoinInsertModelView extends Notifier<(User, bool? isSuccess)> {
   final AuthRepository authRepository = AuthRepository();
+  final mContext = navigatorkey.currentContext!;
+
   @override
-  User build() {
-    return User();
+  (User, bool) build() {
+    return (User(), false);
   }
 
   int _year = 0000;
@@ -20,19 +25,30 @@ class JoinInsertModelView extends Notifier<User> {
 
   // 특정 필드 업데이트
   // 상태 업데이트 메서드 예제
-  void updateUid(String uid) => state = state.copyWith(uid: uid);
+  void updateUid(String uid) => state = (state.$1.copyWith(uid: uid), state.$2);
+
   void updatePassword(String password) =>
-      state = state.copyWith(password: password);
-  void updateHp(String hp) => state = state.copyWith(hp: hp);
-  void updateName(String name) => state = state.copyWith(name: name);
+      state = (state.$1.copyWith(password: password), state.$2);
+
+  void updateHp(String hp) => state = (state.$1.copyWith(hp: hp), state.$2);
+
+  void updateName(String name) =>
+      state = (state.$1.copyWith(name: name), state.$2);
+
   void updateNickname(String nickname) =>
-      state = state.copyWith(nickName: nickname);
+      state = (state.$1.copyWith(nickName: nickname), state.$2);
+
   void updateBirthday(DateTime birthday) {
-    state = state.copyWith(birthday: birthday);
+    state = (state.$1.copyWith(birthday: birthday), state.$2);
   }
 
-  void resetUser() => state = User();
+  void updateSuccess() {
+    state = (User(), true);
+  }
 
+  void resetUser() => state = (User(), false);
+
+  //객체 -> map 처리
   Map<String, dynamic> toUser(SignUpState signUpState) {
     // Map<String, dynamic> user = {
     //   "uid": signUpState.uidController!.text,
@@ -57,9 +73,30 @@ class JoinInsertModelView extends Notifier<User> {
     return saveUser.toJson();
   }
 
+  //회원가입 요청
   void insertUser(Map<String, dynamic> UserData) async {
-    Map<String, dynamic> responseBody =
-        await authRepository.apiInsertUser(UserData);
+    try {
+      Map<String, dynamic> responseBody =
+          await authRepository.apiInsertUser(UserData);
+
+      if (responseBody['status'] == 'failed') {
+        ExceptionHandler.handleException(
+            responseBody['message'], StackTrace.current);
+        return;
+      }
+      updateSuccess();
+      DialogHelper.showAlertDialog(
+          context: mContext,
+          title: '회원가입 성공',
+          onConfirm: () {
+            resetUser();
+            ref.invalidate(SignUpControllerProvider);
+
+            Navigator.popAndPushNamed(mContext, '/login');
+          });
+    } catch (e, stackTrace) {
+      ExceptionHandler.handleException('회원가입 중 오류 발생', stackTrace);
+    }
   }
 
   String dateTimeToString(DateTime dateTime) {
@@ -75,7 +112,7 @@ class JoinInsertModelView extends Notifier<User> {
   }
 }
 
-final joinUserProvider = NotifierProvider<JoinInsertModelView, User>(
+final joinUserProvider = NotifierProvider<JoinInsertModelView, (User, bool?)>(
   () {
     return JoinInsertModelView();
   },

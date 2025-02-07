@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:applus_market/data/gvm/product/productlist_gvm.dart';
+import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/model/product/product_info_card.dart';
 import 'package:applus_market/data/repository/product/product_repository.dart';
 import 'package:applus_market/main.dart';
@@ -25,6 +26,7 @@ class ProductGvm extends Notifier<ProductInfoCard> {
       price: null,
       status: null,
       seller_id: null,
+      nickname: null,
       is_negotiable: null,
       is_possible_meet_you: null,
       category: null,
@@ -41,10 +43,10 @@ class ProductGvm extends Notifier<ProductInfoCard> {
     String registerlocation,
     String registerip,
     int price,
-    String sellerid,
     bool isnegotiable,
     bool ispossiblemeetyou,
     String category,
+    int userid,
     List<File> imageFiles,
   ) async {
     try {
@@ -55,27 +57,46 @@ class ProductGvm extends Notifier<ProductInfoCard> {
         'registerLocation': registerlocation,
         'registerIp': registerip,
         'price': price,
-        'sellerId': sellerid,
         'isNegotiable': isnegotiable,
         'isPossibleMeetYou': ispossiblemeetyou,
+        'sellerId': userid,
         'category': category,
       };
-      logger.i('productName : ${productname}');
+      logger.i('productName : ${body}');
       final responseBody = await productRepository.insertProduct(
         body,
         imageFiles: imageFiles, // 이미지 파일 리스트 전달
       );
-      logger.i('API 응답: $responseBody'); // 추가된 로그
+      logger.i('API 응답: $responseBody');
       if (responseBody['status'] != 'success') {
         ExceptionHandler.handleException(
             responseBody['errorMessage'], StackTrace.current);
         return; // 실행의 제어건 반납
       }
 
-      Navigator.pop(mContext);
+      Navigator.popAndPushNamed(mContext, '/home');
       ref.read(productListProvider.notifier).fetchProducts(isRefresh: true);
     } catch (e, stackTrace) {
       ExceptionHandler.handleException('서버 연결 실패', stackTrace);
+    }
+  }
+
+  Future<ProductInfoCard?> selectProduct(int productId) async {
+    try {
+      final responseBody = await productRepository.selectProduct(id: productId);
+      logger.e("responseBody: $responseBody['status']");
+      if (responseBody['status'] == 'success') {
+        state = ProductInfoCard.todata(responseBody['data']);
+
+        logger.e("Updated State: $state");
+      } else {
+        throw Exception(responseBody['message']);
+      }
+    } catch (e) {
+      print('상품 정보 불러오기 실패: $e');
+      Navigator.pop(mContext);
+      ref.read(productListProvider.notifier).fetchProducts(isRefresh: true);
+      return null;
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/model/auth/token_manager.dart';
 import 'package:dio/dio.dart';
@@ -19,8 +20,9 @@ final Dio dio = Dio(
   ..interceptors.add(CookieManager(cookieJar)) // ✅ 쿠키 관리 추가
   ..interceptors.add(InterceptorsWrapper(
     onRequest: (options, handler) async {
-      String? token = await TokenManager().getAccessToken(); // ✅ 비동기 처리
+      String? token = TokenManager().getAccessToken(); // ✅ 비동기 처리
       if (token != null) {
+        logger.d('여기에 또 셋팅되나?');
         options.headers["Authorization"] = "Bearer $token";
       }
       return handler.next(options);

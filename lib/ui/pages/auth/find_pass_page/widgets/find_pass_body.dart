@@ -1,10 +1,19 @@
+import 'package:applus_market/data/model_view/user/find_user_vm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FindPassBody extends StatelessWidget {
-  FindPassBody({super.key});
+import '../../../../../_core/utils/custom_snackbar.dart';
+
+class FindPassBody extends ConsumerWidget {
+  TextEditingController uidController;
+  TextEditingController emailController;
+  FindPassBody(
+      {super.key, required this.uidController, required this.emailController});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    FindUserVm findUserVm = ref.read(findUserProvider.notifier);
+
     return Scaffold(
       resizeToAvoidBottomInset: true, // 키보드가 올라왔을 때 화면 조정
       body: GestureDetector(
@@ -25,6 +34,7 @@ class FindPassBody extends StatelessWidget {
                   TextFormField(
                     cursorColor: Colors.grey[600],
                     cursorHeight: 20,
+                    controller: uidController,
                     decoration: InputDecoration(
                       labelText: ' 아이디*',
                       labelStyle: TextStyle(
@@ -46,6 +56,7 @@ class FindPassBody extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   TextFormField(
+                    controller: emailController,
                     keyboardType: TextInputType.emailAddress, // 이메일 입력용 키보드 타입
                     cursorColor: Colors.grey[600],
                     decoration: InputDecoration(
@@ -76,15 +87,23 @@ class FindPassBody extends StatelessWidget {
             ),
             Positioned(
               bottom:
-              MediaQuery.of(context).viewInsets.bottom + 16, // 키보드 위로 버튼 위치
+                  MediaQuery.of(context).viewInsets.bottom + 16, // 키보드 위로 버튼 위치
               left: 16,
               right: 16,
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    bool result = await findUserVm.findUserPass(
+                        uidController.text.trim(), emailController.text.trim());
+
+                    if (!result) {
+                      return;
+                    }
+                    uidController.clearComposing();
+                    emailController.clearComposing();
                     // TODO : 중간에 '이메일 인증완료 되었습니다' 페이지 넣을지 고민
-                    Navigator.pushNamed(context, '/find_pass_change');
+                    Navigator.popAndPushNamed(context, '/find_pass_change');
                   },
                   child: Text('비밀번호 재설정하기'),
                 ),

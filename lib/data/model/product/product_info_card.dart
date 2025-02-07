@@ -4,6 +4,7 @@
 */
 //상세 정보
 import '../../../_core/utils/apiUrl.dart';
+import '../../../_core/utils/logger.dart';
 
 class ProductInfoCard {
   final int? product_id; // 아이디
@@ -17,7 +18,8 @@ class ProductInfoCard {
   final int? price; // 가격
   final String? status; // 상태
   final String? deleted_at; // 삭제 일자
-  final String? seller_id; // 판매자 아이디
+  final int? seller_id; // 판매자 아이디
+  final String? nickname; //판매자 닉네임
   final bool? is_negotiable; // 네고 가능 여부
   final bool? is_possible_meet_you; // 직거래 가능 여부
   final String? category; // 카테고리
@@ -38,6 +40,7 @@ class ProductInfoCard {
     required this.status, // 상태
     this.deleted_at, // 삭제 일자
     required this.seller_id, // 판매자 아이디
+    required this.nickname, // 판매자 닉네임
     required this.is_negotiable, // 네고 가능 여부
     required this.is_possible_meet_you, // 직거래 가능 여부
     required this.category, // 카테고리
@@ -78,7 +81,8 @@ class ProductInfoCard {
       price: json['price'] as int?,
       status: json['status'] as String?,
       deleted_at: json['deleted_at'] as String?,
-      seller_id: json['seller_id'] as String?,
+      seller_id: json['seller_id'] as int?,
+      nickname: json['nickName'] as String?,
       is_negotiable: json['is_negotiable'] as bool?,
       is_possible_meet_you: json['is_possible_meet_you'] as bool?,
       category: json['category'] as String?,
@@ -86,6 +90,57 @@ class ProductInfoCard {
       images: json['productImage'] != null
           ? ["$apiUrl/uploads/${json['id']}/${json['productImage']}"]
           : [],
+    );
+  }
+  factory ProductInfoCard.todata(Map<String, dynamic> json) {
+    // updatedAt 문자열을 파싱할 때, 만약 서버가 UTC 시간을 보내고 있다면
+    // toLocal()을 호출하여 현지 시간으로 변환합니다.
+    DateTime updatedDateTime =
+        DateTime.tryParse(json['updatedAt'] as String? ?? '')?.toLocal() ??
+            DateTime.now();
+    logger.i('updatedDateTime : ${updatedDateTime}');
+    String formattedUpdatedAt;
+    DateTime now = DateTime.now();
+    logger.i('now : $now');
+    // 만약 updatedDateTime이 오늘이면 시간 차이를 계산
+    if (updatedDateTime.year == now.year &&
+        updatedDateTime.month == now.month &&
+        updatedDateTime.day == now.day) {
+      Duration diff = now.difference(updatedDateTime);
+      if (diff.inHours >= 1) {
+        formattedUpdatedAt = "${diff.inHours}시간 전";
+      } else if (diff.inMinutes >= 1) {
+        formattedUpdatedAt = "${diff.inMinutes}분 전";
+      } else {
+        formattedUpdatedAt = "방금 전";
+      }
+    } else {
+      // 오늘이 아니라면 날짜만 출력 (예: 2025-02-04)
+      formattedUpdatedAt =
+          "${updatedDateTime.year}-${updatedDateTime.month.toString().padLeft(2, '0')}-${updatedDateTime.day.toString().padLeft(2, '0')}";
+    }
+    return ProductInfoCard(
+      product_id: json['id'] as int?,
+      title: json['title'] as String?,
+      product_name: json['productName'] as String?, // Key 수정
+      content: json['content'] as String?,
+      register_location: json['registerLocation'] as String?, // Key 수정
+      register_ip: json['registerIp'] as String?, // Key 수정
+      created_at: json['createdAt'] as String?, // Key 수정
+      updated_at: formattedUpdatedAt, // Key 수정
+      price: json['price'] as int?,
+      status: json['status'] as String?,
+      deleted_at: json['deletedAt'] as String?,
+      seller_id: json['sellerId'] as int?,
+      nickname: json['nickName'] as String?,
+      is_negotiable: json['isNegotiable'] as bool?, // Key 수정
+      is_possible_meet_you: json['isPossibleMeetYou'] as bool?, // Key 수정
+      category: json['category'] as String?,
+      brand: json['brand'] as String?,
+      images: (json['images'] as List<dynamic>?)?.map((image) {
+            return "$apiUrl/uploads/${json['id']}/${image['uuidName']}";
+          }).toList() ??
+          [], // 이미지 매핑
     );
   }
 }

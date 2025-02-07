@@ -1,4 +1,6 @@
 import 'package:applus_market/_core/utils/logger.dart';
+import 'package:applus_market/data/gvm/session_gvm.dart';
+import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/service/chat_websocket_service.dart';
 import 'package:applus_market/ui/pages/chat/room/chat_room_page_view_model.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +10,23 @@ import '../../../../../data/model/product/product_card.dart';
 
 import '../../../components/time_ago.dart';
 
+/*
+ * packageName    : lib/ui/pages/chat/room/widget/chat_room_body.dart
+ * fileName       : chat_room_body.dart
+ * author         : 황수빈
+ * date           : 2024/01/21
+ * description    : 채팅방 Widget 사용
+ *
+ * =============================================================
+ * DATE              AUTHOR             NOTE
+ * -------------------------------------------------------------
+ * 2024/02/06       황수빈      MyId sessionUser에서 받아옴
+ */
+
 class ChatRoomBody extends ConsumerStatefulWidget {
-  const ChatRoomBody({super.key});
+  final int chatRoomId;
+
+  const ChatRoomBody({super.key, required this.chatRoomId});
 
   @override
   ChatRoomBodyState createState() => ChatRoomBodyState();
@@ -19,13 +36,11 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
   @override
   void initState() {
     super.initState();
-    // ViewModel의 chatService 사용
-    final viewModel = ref.read(chatRoomProvider.notifier);
-    viewModel.chatService.connect();
+    widget.chatRoomId;
   }
 
   final ScrollController _scrollController = ScrollController();
-  ChatService chatService = ChatService();
+
   ChatRoomPageViewModel chatRoomViewModel = ChatRoomPageViewModel();
 
   final TextEditingController _messageController = TextEditingController();
@@ -34,13 +49,16 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
 
   void scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
+      // 이 시점에 UI가 완전히 업데이트 되지 않아서 Future.delayed 이용
+      Future.delayed(Duration(milliseconds: 100), () {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+          );
+        }
+      });
     });
   }
 
@@ -66,20 +84,22 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
   @override
   Widget build(BuildContext context) {
     // TODO : 하드 코딩 고치기
-    final int chatRoomId = 1;
-    final int myId = 2;
-
+    int chatRoomId = widget.chatRoomId;
+    final viewModel = ref.read(chatRoomProvider.notifier);
+    viewModel.chatService.connect();
+    SessionUser sessionUser = ref.watch(LoginProvider);
+    int myId = sessionUser.id!;
     final chatRoomState = ref.watch(chatRoomProvider);
-    chatService.connect();
+
     return chatRoomState.when(
       data: (room) {
         final otherUser =
-            room.participants.firstWhere((user) => user.user_id != myId);
+            room.participants.firstWhere((user) => user.userId != myId);
 
         return Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            title: Text(otherUser.name),
+            title: Text(otherUser.nickname),
           ),
           body: Column(
             children: [
@@ -187,7 +207,7 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                         icon: const Icon(CupertinoIcons.paperplane_fill),
                         onPressed: () {
                           setState(() {
-                            chatService.sendMessage(
+                            viewModel.chatService.sendMessage(
                                 chatRoomId, _messageController.text, myId);
                           });
                           _messageController.clear();

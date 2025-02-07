@@ -65,6 +65,8 @@ dependencies:
 
   image_picker: ^1.1.2
   page_transition: ^2.2.1 # 2025.02.04 김민희 - 페이지 전환 애니메이션 (왼→오, 오→왼, 위→아래, 아래→위)
+  permission_handler: ^11.3.1
+  get: ^4.6.6
 
 
 dev_dependencies:

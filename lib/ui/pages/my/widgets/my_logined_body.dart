@@ -1,3 +1,4 @@
+import 'package:applus_market/_core/utils/dialog_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,7 @@ import '../../../../_core/components/size.dart';
 import '../../../../_core/components/theme.dart';
 import '../../../../data/gvm/session_gvm.dart';
 import '../../../../data/model/auth/login_state.dart';
+import '../../../widgets/applus_pay_text_logo.dart';
 import 'profile_card.dart';
 
 class MyLoginedBody extends ConsumerWidget {
@@ -108,21 +110,52 @@ class MyLoginedBody extends ConsumerWidget {
                     title: '회원정보',
                     onTap: () {
                       print('관심목록 클릭됨');
+                      Navigator.pushNamed(context, '/my/info');
                     }),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   horizontalTitleGap: 0,
-                  title: Text(
-                    'APPlus pay',
-                    style: GoogleFonts.bangers(
-                        color: APlusTheme.primaryColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400), // 텍스트 스타일
-                  ),
+                  title: APPlusPayTextLogo(size: 16, spacing: 0.8),
                   trailing: Icon(Icons.arrow_forward_ios,
                       size: 16.0, color: Colors.grey), // 오른쪽 화살표
                   onTap: () {
                     print('애쁠 페이');
+                    DialogHelper.showAlertDialog(
+                        context: context,
+                        title: '애플페이를 시작하시겠습니까?',
+                        isCanceled: true,
+                        onConfirm: () {
+                          //1. 계좌 생성하는 메서드가 호출되어야함
+                          //2. 계좌 생성후 Navigiagto
+                          //ref.read(accountProvider.notifier).createAccount(sessionUser.id);
+
+                          /*
+                      crateAccount 메서드
+                           try{
+                                if(id == null){return;}
+                                Map<String,dynamic> resBody = accountRepository.createAccount(id);
+                                    {//여기는 레파지토리 안
+                                        Response response = await dio.get('/pay/account/{id}')
+                                        Map<String,dynamic> resBody = response.data;
+                                        retrun resBody;
+                                        //백단 요청
+                                    }
+
+                                   if(resBody['status']== failed'){
+                                   CustomSnackbar.
+                                      return ;
+                                   }
+                                   //상태값 변화
+
+                                   Map<String,dynamic> data = resBody['data'];
+                                     Navigator.pushNamed(context,'my/payHome');
+
+
+
+                            }catch(e){
+                           }
+                       */
+                        });
                   }, // 클릭 이벤트
                 ),
                 _buildListTile(
@@ -135,6 +168,7 @@ class MyLoginedBody extends ConsumerWidget {
                   title: '회원 탈퇴',
                   onTap: () {
                     print('구매내역 클릭됨');
+                    Navigator.pushNamed(context, '/withdrawal');
                   },
                 ),
                 const SizedBox(height: 50),

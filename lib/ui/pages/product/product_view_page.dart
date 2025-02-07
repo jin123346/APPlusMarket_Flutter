@@ -1,40 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../_core/components/theme.dart';
+import '../../../_core/utils/logger.dart';
+import '../../../data/gvm/product/product_gvm.dart';
 import '../../../data/model/product/product_info_card.dart';
 
 /*
   2025.01.22 - 이도영 : 상품 정보 출력화면
 */
-class ProductViewPage extends StatefulWidget {
+class ProductViewPage extends ConsumerStatefulWidget {
   final int productId;
   const ProductViewPage({super.key, required this.productId});
 
   @override
-  State<ProductViewPage> createState() => _ProductViewState();
+  ConsumerState<ProductViewPage> createState() => _ProductViewState();
 }
 
-class _ProductViewState extends State<ProductViewPage> {
-  late ProductInfoCard product; // 해당 제품 정보를 저장할 변수
+class _ProductViewState extends ConsumerState<ProductViewPage> {
   final PageController _pageController = PageController();
-  int _currentPage = 0; // 현재 페이지 인덱스 추적
-
+  int _currentPage = 0;
+  bool _isLoading = true; // 로딩 상태
+  String? _errorMessage; // 에러 메시지
   @override
   void initState() {
     super.initState();
-    // product =
-    //     //products.firstWhere((prod) => prod.product_id == widget.productId);
-    //     // 페이지 변경을 감지하여 현재 페이지 인덱스를 업데이트
-    //     _pageController.addListener(() {
-    //   setState(() {
-    //     _currentPage = _pageController.page?.round() ?? 0; // 페이지 인덱스 업데이트
-    //   });
-    // });
+    _loadProductData();
+  }
+
+  Future<void> _loadProductData() async {
+    try {
+      await ref.read(productProvider.notifier).selectProduct(widget.productId);
+      setState(() {
+        _isLoading = false; // 로딩 완료
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "상품 데이터를 가져오는 데 실패했습니다. 다시 시도해주세요.";
+        logger.e("Error loading product data: $e");
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final product = ref.watch(productProvider); // 상태 자동 반영
+    final productid = product.product_id; // 상품 아이디
+
+    logger.e("Product Data : $product");
+    if (_isLoading) {
+      // 로딩 중인 경우
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('상품 보기'),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (_errorMessage != null) {
+      // 에러가 발생한 경우
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('상품 보기'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _loadProductData,
+                child: const Text('다시 시도'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey[200],
@@ -42,18 +90,13 @@ class _ProductViewState extends State<ProductViewPage> {
           title: const Text('상품 보기'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context); // 뒤로 가기
-            },
+            onPressed: () => Navigator.pop(context),
           ),
           actions: [
             // 신고 버튼 추가
             IconButton(
               icon: const Icon(CupertinoIcons.exclamationmark_triangle),
-              onPressed: () {
-                // 신고 버튼 동작
-                print("신고 버튼 클릭됨");
-              },
+              onPressed: () => print("신고 버튼 클릭됨"),
             ),
           ],
         ),
@@ -77,7 +120,7 @@ class _ProductViewState extends State<ProductViewPage> {
                             itemBuilder: (context, index) {
                               return Image.network(
                                 product.images![index], // 동적으로 각 이미지 표시
-                                fit: BoxFit.cover,
+                                // fit: BoxFit.cover,
                               );
                             },
                           ),
@@ -118,7 +161,7 @@ class _ProductViewState extends State<ProductViewPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${product.seller_id}',
+                                '${product.nickname}',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               //register_location 널이 아닐경우 수정 필요

@@ -11,7 +11,8 @@ import 'widgets/login_form.dart';
 
 class LoginPage extends ConsumerWidget {
   LoginPage({super.key});
-
+  TextEditingController uidController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>(); // ✅ 추가
 
   @override
@@ -31,6 +32,8 @@ class LoginPage extends ConsumerWidget {
       resizeToAvoidBottomInset: false, // 키보드와 bottomNavigationBar 충돌 방지
       body: LoginBody(
         formKey: formKey,
+        uidController: uidController,
+        passwordController: passwordController,
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(halfPadding),
@@ -38,7 +41,8 @@ class LoginPage extends ConsumerWidget {
           height: 50,
           child: ElevatedButton(
             onPressed: () {
-              loginNotifier.login(formKey);
+              loginNotifier.login(formKey, uidController.text.trim(),
+                  passwordController.text.trim());
             },
             child: const Text('로그인'),
           ),

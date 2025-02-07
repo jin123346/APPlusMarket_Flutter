@@ -3,6 +3,10 @@ import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../_core/utils/exception_handler.dart';
+import '../../../_core/utils/logger.dart';
+import '../../../_core/utils/secure_storage.dart';
+
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
@@ -14,27 +18,38 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // ✅ 로그인 상태 확인 후 자동 이동
+    _checkLoginState();
+  }
+
+  Future<void> _checkLoginState() async {
+    try {
+      String? accessToken = await storage.read(key: 'refreshToken');
+      if (accessToken == null) {
+        logger.i('여기로 안들어와??');
+
+        _navigateToLogin();
+      } else {
+        logger.i('여기로 안들어와??');
+        await ref.read(LoginProvider.notifier).initializeAuthState();
+      }
+    } catch (e, stackTrace) {
+      ExceptionHandler.handleException('자동로그인 중 오류 발생', stackTrace);
+      _navigateToLogin();
+    }
+  }
+
+  //로그인 페이지 이동 메서드
+  void _navigateToLogin() {
+    //2초 동안 대기 후 로그인 페이지 이동 처리
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        Navigator.popAndPushNamed(context, '/login');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    Future<void>(() async {
-      await ref.read(LoginProvider.notifier).initializeAuthState();
-    });
-
-    // ✅ 로그인 상태 변화를 감지하고 화면 이동
-    ref.listen<SessionUser>(LoginProvider, (previous, next) {
-      if (mounted) {
-        Future.delayed(Duration(seconds: 2), () {
-          if (next.isLoggedIn) {
-            Navigator.pushReplacementNamed(context, '/home');
-          } else {
-            Navigator.popAndPushNamed(context, '/login');
-          }
-        });
-      }
-    });
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(

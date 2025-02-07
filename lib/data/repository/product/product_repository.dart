@@ -12,6 +12,7 @@ class ProductRepository {
     Map<String, dynamic> reqData, {
     List<File>? imageFiles,
   }) async {
+    logger.i('imageFiles : ${imageFiles}');
     imageFiles ??= [];
     // 이미지 파일들을 MultipartFile로 변환
     final List<MultipartFile> multipartImages = await Future.wait(
@@ -44,5 +45,11 @@ class ProductRepository {
       logger.e('상품 목록 불러오기 실패: $e');
       return {'status': 'fail', 'message': '상품 목록을 불러올 수 없습니다.'};
     }
+  }
+
+  Future<Map<String, dynamic>> selectProduct({required int id}) async {
+    Response response = await dio.get('/product/$id');
+    logger.e("Updated State: $response");
+    return response.data;
   }
 }
