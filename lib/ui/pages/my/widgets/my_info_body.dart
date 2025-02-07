@@ -1,10 +1,12 @@
 import 'package:applus_market/data/model_view/user/my_info_vm.dart';
+import 'package:applus_market/ui/pages/my/widgets/profile_image_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../_core/utils/logger.dart';
 import '../../../../data/model/auth/user.dart';
+import 'custom_info_textField.dart';
 
 class MyInfoBody extends ConsumerStatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -60,14 +62,22 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
   @override
   Widget build(BuildContext context) {
     MyInfoVM myInfoVM = ref.read(myInfoProvider.notifier);
+    User user = ref.read(myInfoProvider);
     return Form(
       key: widget.formKey,
       child: ListView(
         padding: EdgeInsets.all(16.0),
         children: [
-          _buildProfileImage(),
+          Center(
+            child: ProfileImageContainer(
+              profileImg: user.profileImg,
+              userId: user.id,
+              width: 100,
+              height: 100,
+            ),
+          ),
           SizedBox(height: 24),
-          _buildTextField(
+          CustomInfoTextfield(
               label: '이름',
               controller: widget.nameController,
               onChanged: (value) {}
@@ -75,7 +85,7 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
               ,
               readOnly: true),
           SizedBox(height: 16),
-          _buildTextField(
+          CustomInfoTextfield(
               label: '닉네임',
               controller: widget.nicknameController,
               onChanged: (value) {
@@ -83,15 +93,15 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
                 myInfoVM.updateNickName(value);
               }),
           SizedBox(height: 16),
-          _buildTextField(
+          CustomInfoTextfield(
               label: '생년월일',
               controller: widget.birthDateController,
               readOnly: true,
-              onTap: () {}
+              onChanged: (value) {}
               // _selectDate(context),
               ),
           SizedBox(height: 16),
-          _buildTextField(
+          CustomInfoTextfield(
             label: '휴대폰 번호',
             controller: widget.phoneNumberController,
             onChanged: (value) {
@@ -100,7 +110,7 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
             //  ref.read(userProfileProvider.notifier).updatePhoneNumber(value),
           ),
           SizedBox(height: 16),
-          _buildTextField(
+          CustomInfoTextfield(
             label: '이메일', controller: widget.emailController,
             onChanged: (value) {
               myInfoVM.updateEmail(value);
@@ -109,66 +119,6 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildProfileImage() {
-    return Center(
-      child: Stack(
-        children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.grey[200],
-            child: Icon(Icons.person, size: 50, color: Colors.grey[400]),
-          ),
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: CircleAvatar(
-              backgroundColor: Colors.blue,
-              radius: 18,
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(Icons.camera_alt, color: Colors.white),
-                onPressed: () {
-                  // TODO: 이미지 선택 구현
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required String label,
-    required TextEditingController controller,
-    void Function(String)? onChanged,
-    bool readOnly = false,
-    VoidCallback? onTap,
-  }) {
-    return TextFormField(
-      controller: controller,
-      onChanged: onChanged,
-      readOnly: readOnly,
-      onTap: onTap,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return '$label을(를) 입력해주세요';
-        }
-        return null;
-      },
     );
   }
 
