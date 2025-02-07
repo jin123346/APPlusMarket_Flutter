@@ -12,6 +12,7 @@ class ProductRepository {
     Map<String, dynamic> reqData, {
     List<File>? imageFiles,
   }) async {
+    logger.i('imageFiles : ${imageFiles}');
     imageFiles ??= [];
     // 이미지 파일들을 MultipartFile로 변환
     final List<MultipartFile> multipartImages = await Future.wait(
