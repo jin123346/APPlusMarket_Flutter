@@ -1,3 +1,4 @@
+import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/model/chat/chat_room.dart';
 import 'package:applus_market/data/service/chat_websocket_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,15 +20,22 @@ import 'package:applus_market/data/repository/chat/chat_repository.dart';
 class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   final ChatRepository chatRepository = ChatRepository();
   final ChatService chatService = ChatService();
-  late int chatRoomId;
 
+  final int chatRoomId = 0;
   @override
   Future<ChatRoom> build() async {
-    chatRoomId = 1; // TODO: 실제 채팅방 ID로 변경
+    // TODO: 실제 채팅방 ID로 변경
+
     setupMessageListener();
-    return await getChatRoomDetail(chatRoomId); // 초기 데이터 로드
+    return await getChatRoomDetail(1); // 초기 데이터 로드
   }
 
+  void getChatRoomId(int chatRoomId) {
+    chatRoomId = chatRoomId;
+    logger.e('');
+  }
+
+  // 구독한 방에서 받아온 알람을 화면에 반영하기 위함
   void setupMessageListener() {
     chatService.onMessageReceived = (ChatMessage newMessage) {
       state.whenData((currentRoom) {

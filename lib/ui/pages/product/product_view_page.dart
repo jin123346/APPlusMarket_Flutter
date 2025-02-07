@@ -120,7 +120,7 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
                             itemBuilder: (context, index) {
                               return Image.network(
                                 product.images![index], // 동적으로 각 이미지 표시
-                                fit: BoxFit.cover,
+                                // fit: BoxFit.cover,
                               );
                             },
                           ),
@@ -161,7 +161,7 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${product.seller_id}',
+                                '${product.nickname}',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               //register_location 널이 아닐경우 수정 필요

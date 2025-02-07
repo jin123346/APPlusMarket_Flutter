@@ -19,6 +19,7 @@ class ProductInfoCard {
   final String? status; // 상태
   final String? deleted_at; // 삭제 일자
   final int? seller_id; // 판매자 아이디
+  final String? nickname; //판매자 닉네임
   final bool? is_negotiable; // 네고 가능 여부
   final bool? is_possible_meet_you; // 직거래 가능 여부
   final String? category; // 카테고리
@@ -39,6 +40,7 @@ class ProductInfoCard {
     required this.status, // 상태
     this.deleted_at, // 삭제 일자
     required this.seller_id, // 판매자 아이디
+    required this.nickname, // 판매자 닉네임
     required this.is_negotiable, // 네고 가능 여부
     required this.is_possible_meet_you, // 직거래 가능 여부
     required this.category, // 카테고리
@@ -80,6 +82,7 @@ class ProductInfoCard {
       status: json['status'] as String?,
       deleted_at: json['deleted_at'] as String?,
       seller_id: json['seller_id'] as int?,
+      nickname: json['nickName'] as String?,
       is_negotiable: json['is_negotiable'] as bool?,
       is_possible_meet_you: json['is_possible_meet_you'] as bool?,
       category: json['category'] as String?,
@@ -129,6 +132,7 @@ class ProductInfoCard {
       status: json['status'] as String?,
       deleted_at: json['deletedAt'] as String?,
       seller_id: json['sellerId'] as int?,
+      nickname: json['nickName'] as String?,
       is_negotiable: json['isNegotiable'] as bool?, // Key 수정
       is_possible_meet_you: json['isPossibleMeetYou'] as bool?, // Key 수정
       category: json['category'] as String?,

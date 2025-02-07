@@ -24,12 +24,8 @@ class ChatListPageViewModel extends AsyncNotifier<List<ChatRoomCard>> {
 
   @override
   Future<List<ChatRoomCard>> build() async {
-    final sessionUser = ref.watch(LoginProvider);
-
-    if (!sessionUser.isLoggedIn) {
-      logger.w('로그인이 필요합니다.');
-      return [];
-    }
+    logger.e('build() 메서드 입성');
+    SessionUser sessionUser = ref.watch(LoginProvider);
 
     try {
       final chatRooms = await selectChatRooms(sessionUser.id!);

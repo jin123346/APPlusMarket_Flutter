@@ -4,25 +4,28 @@
 */
 
 class UserCard {
-  final int user_id;
+  final int userId;
   final String name;
+  final String nickname;
   final String? profileImage;
 
   UserCard({
-    required this.user_id,
+    required this.userId,
     required this.name,
+    required this.nickname,
     this.profileImage,
   });
   factory UserCard.fromJson(Map<String, dynamic> json) {
     return UserCard(
-      user_id: json['userId'],
+      userId: json['userId'],
       name: json['userName'],
+      nickname: json['nickname'],
       profileImage: json['profileImage'] ?? '',
     );
   }
 
   @override
   String toString() {
-    return 'UserCard{user_id: $user_id, name: $name, profileImage: $profileImage}';
+    return 'UserCard{user_id: $userId, name: $name, profileImage: $profileImage}';
   }
 }
