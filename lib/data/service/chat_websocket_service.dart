@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/model/chat/chat_room.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
@@ -42,7 +43,7 @@ class ChatService {
 
   void onConnect(StompFrame frame) {
     // TODO : 로그인한 회원이 참여하고 있는 채팅방 ID 전체 구독 - main에서
-    // 예시로 1번 방을 구독하는 코드
+
     subscribeToChatRoom("1");
   }
 
@@ -89,6 +90,7 @@ class ChatService {
     }
   }
 
+// 이벤트 발생을 구독중인 리스너에게 알려주는 메서드
   void notifyListeners(ChatMessage chatMessage) {
     if (onMessageReceived != null) {
       onMessageReceived!(chatMessage);

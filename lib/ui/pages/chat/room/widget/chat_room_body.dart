@@ -24,7 +24,9 @@ import '../../../components/time_ago.dart';
  */
 
 class ChatRoomBody extends ConsumerStatefulWidget {
-  const ChatRoomBody({super.key});
+  final int chatRoomId;
+
+  const ChatRoomBody({super.key, required this.chatRoomId});
 
   @override
   ChatRoomBodyState createState() => ChatRoomBodyState();
@@ -34,6 +36,7 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
   @override
   void initState() {
     super.initState();
+    widget.chatRoomId;
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -46,13 +49,16 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
 
   void scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
+      // 이 시점에 UI가 완전히 업데이트 되지 않아서 Future.delayed 이용
+      Future.delayed(Duration(milliseconds: 100), () {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+          );
+        }
+      });
     });
   }
 
@@ -78,24 +84,22 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
   @override
   Widget build(BuildContext context) {
     // TODO : 하드 코딩 고치기
-    int chatRoomId = 1;
-
+    int chatRoomId = widget.chatRoomId;
+    final viewModel = ref.read(chatRoomProvider.notifier);
+    viewModel.chatService.connect();
     SessionUser sessionUser = ref.watch(LoginProvider);
     int myId = sessionUser.id!;
     final chatRoomState = ref.watch(chatRoomProvider);
-    final viewModel = ref.read(chatRoomProvider.notifier);
-
-    viewModel.chatService.connect();
 
     return chatRoomState.when(
       data: (room) {
         final otherUser =
-            room.participants.firstWhere((user) => user.user_id != myId);
+            room.participants.firstWhere((user) => user.userId != myId);
 
         return Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            title: Text(otherUser.name),
+            title: Text(otherUser.nickname),
           ),
           body: Column(
             children: [

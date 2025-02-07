@@ -1,3 +1,4 @@
+import 'package:applus_market/ui/pages/chat/room/chat_room_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../data/model/chat/chat_room_card.dart';
@@ -16,7 +17,13 @@ class ChatListContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/chat/room');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ChatRoomPage(chatRoomId: chatRoom.chatRoomId), // 해당 ID를 전달
+          ),
+        );
       },
       child: Container(
         height: 90.0,
@@ -42,7 +49,7 @@ class ChatListContainer extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        chatRoom.userName, // 사용자 이름
+                        chatRoom.userNickname, // 사용자 이름
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 15),
                       ),
