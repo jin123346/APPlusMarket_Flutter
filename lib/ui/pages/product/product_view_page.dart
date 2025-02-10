@@ -29,6 +29,7 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
     _loadProductData();
   }
 
+  //상품을 가지고 오는 동안 데이터가 로딩 됩니다.
   Future<void> _loadProductData() async {
     try {
       await ref.read(productProvider.notifier).selectProduct(widget.productId);
@@ -262,6 +263,7 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
                       '${product.content}',
                     ),
                     const SizedBox(height: 16),
+                    // 현재는 고정으로 해놨지만 추후 기능을 추가 해야 합니다.
                     const Text(
                       '채팅 1 : 관심 4 : 조회 36',
                       style: TextStyle(color: Colors.grey),
