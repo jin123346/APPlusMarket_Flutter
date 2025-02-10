@@ -122,19 +122,19 @@ class ProductInfoCard {
     return ProductInfoCard(
       product_id: json['id'] as int?,
       title: json['title'] as String?,
-      product_name: json['productName'] as String?, // Key 수정
+      product_name: json['productName'] as String?,
       content: json['content'] as String?,
-      register_location: json['registerLocation'] as String?, // Key 수정
-      register_ip: json['registerIp'] as String?, // Key 수정
-      created_at: json['createdAt'] as String?, // Key 수정
-      updated_at: formattedUpdatedAt, // Key 수정
+      register_location: json['registerLocation'] as String?,
+      register_ip: json['registerIp'] as String?,
+      created_at: json['createdAt'] as String?,
+      updated_at: formattedUpdatedAt,
       price: json['price'] as int?,
       status: json['status'] as String?,
       deleted_at: json['deletedAt'] as String?,
       seller_id: json['sellerId'] as int?,
       nickname: json['nickName'] as String?,
-      is_negotiable: json['isNegotiable'] as bool?, // Key 수정
-      is_possible_meet_you: json['isPossibleMeetYou'] as bool?, // Key 수정
+      is_negotiable: json['isNegotiable'] as bool?,
+      is_possible_meet_you: json['isPossibleMeetYou'] as bool?,
       category: json['category'] as String?,
       brand: json['brand'] as String?,
       images: (json['images'] as List<dynamic>?)?.map((image) {

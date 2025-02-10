@@ -4,6 +4,7 @@ import '../../../_core/utils/logger.dart';
 import '../../model/product/product_info_card.dart';
 import '../../repository/product/product_repository.dart';
 
+// 상품 리스트 출력 기능
 class ProductListGvm extends StateNotifier<List<ProductInfoCard>> {
   final ProductRepository productRepository = ProductRepository();
   int _currentPage = 1;
