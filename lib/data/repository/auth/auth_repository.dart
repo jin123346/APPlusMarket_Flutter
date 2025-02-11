@@ -140,4 +140,9 @@ class AuthRepository {
     Response response = await dio.put("/find/pass/change", data: reqData);
     return response.data;
   }
+
+  Future<Map<String, dynamic>> withdrawal(int userid) async {
+    Response response = await dio.get('/auth/withdrawal/$userid');
+    return response.data;
+  }
 }

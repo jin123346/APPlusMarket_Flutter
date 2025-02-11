@@ -1,3 +1,4 @@
+import 'package:applus_market/_core/utils/custom_snackbar.dart';
 import 'package:applus_market/_core/utils/dialog_helper.dart';
 import 'package:applus_market/_core/utils/exception_handler.dart';
 import 'package:applus_market/data/repository/auth/auth_repository.dart';
@@ -18,8 +19,6 @@ class SessionGVM extends Notifier<SessionUser> {
   final mContext = navigatorkey.currentContext!;
   final AuthRepository authRepository = AuthRepository();
 
-  TextEditingController uidController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   TokenManager tokenManager = TokenManager();
   String? _uid;
   String? _pass;
@@ -31,8 +30,15 @@ class SessionGVM extends Notifier<SessionUser> {
       uid: null,
       nickname: null,
       isLoggedIn: false,
+      profileImg: null,
       accessToken: null,
     );
+  }
+
+  void updateProfileImage(String profilePath) {
+    logger.i('프로일 이미지 등록 $profilePath');
+    state = state.copyWith(profileImg: profilePath);
+    logger.i('프로일 이미지 등록 $profilePath');
   }
 
   Future<void> initializeAuthState() async {
@@ -43,10 +49,10 @@ class SessionGVM extends Notifier<SessionUser> {
       if (isDecode) {
         logger.i("✅ 기존 Access Token 으로 셋팅: $state");
 
-        Navigator.pushNamed(mContext!, "/home");
+        Navigator.popAndPushNamed(mContext, "/home");
       }
     }
-    // ✅ 2. Access Token이 없으면, Refresh Token을 사용하여 자동 로그인 시도
+    // 2. Access Token이 없으면, Refresh Token을 사용하여 자동 로그인 시도
     logger.i("🔄 Access Token 없음, Refresh Token으로 재로그인 시도...");
     String? refreshToken = await tokenManager.getRefreshToken();
     logger.i('refreshToken 존재X $refreshToken');
@@ -54,22 +60,36 @@ class SessionGVM extends Notifier<SessionUser> {
       logger.d('여기');
       (Map<String, dynamic>, String?) tuple =
           await authRepository.refreshAccessToken(refreshToken);
-      Map<String, dynamic> responseBody = tuple.$1;
+      Map<String, dynamic> resBody = tuple.$1;
       String? newAccessToken = tuple.$2;
 
-      if (responseBody['code'] == 1000 && newAccessToken != null) {
-        tokenManager.saveAccessToken(newAccessToken);
-        bool isDecode = decodeAccessToken(newAccessToken);
-        if (isDecode) {
-          logger.i("✅ 자동 로그인 성공");
-
-          _setupDioInterceptor(newAccessToken);
-          Navigator.pushNamed(mContext!, "/home");
-        }
-      } else {
+      if (resBody['code'] != 1000 || newAccessToken == null) {
         logger.w("❌ 자동 로그인 실패 - 로그인 화면으로 이동");
         Navigator.pushNamed(mContext, "/login");
+        return;
       }
+
+      tokenManager.saveAccessToken(newAccessToken);
+      DateTime expiryDate =
+          JwtDecoder.getExpirationDate(newAccessToken); //  만료 시간
+      logger.i(" 토큰 만료 시간: $expiryDate, 현재 시간: ${DateTime.now()}");
+      if (expiryDate.isBefore(DateTime.now())) {
+        return;
+      }
+
+      logger.i(" 자동 로그인 성공");
+
+      Map<String, dynamic> data = resBody['data'];
+      state = state.copyWith(
+        id: data['id'],
+        uid: data['uid'],
+        nickname: data['nickname'],
+        profileImg: data['profileImg'],
+        isLoggedIn: true,
+      );
+      logger.i('업데이트 된 정보@@ ${state.nickname}');
+      _setupDioInterceptor(newAccessToken);
+      Navigator.pushNamed(mContext, "/home");
     } else {
       logger.w("❌ refreshToken 존재 X  - 로그인 화면으로 이동");
       Navigator.pushNamed(mContext, "/login");
@@ -77,11 +97,12 @@ class SessionGVM extends Notifier<SessionUser> {
   }
 
   //로그인
-  void login(GlobalKey<FormState> formKey) async {
+  void login(
+      GlobalKey<FormState> formKey, String? uid, String? password) async {
     AuthRepository authRepository = AuthRepository();
     // 로그인 로직
     //입력필드값 없을때,
-    if (uidController.text.isEmpty || passwordController.text.isEmpty) {
+    if (uid == null || password == null) {
       DialogHelper.showAlertDialog(
         context: mContext,
         title: '로그인 실패',
@@ -93,8 +114,8 @@ class SessionGVM extends Notifier<SessionUser> {
       return;
     } else if (formKey.currentState?.validate() ?? false) {
       try {
-        _uid = uidController.text.trim();
-        _pass = passwordController.text.trim();
+        _uid = uid;
+        _pass = password;
         (Map<String, dynamic>, String) response =
             await authRepository.login(_uid!, _pass!);
         String accessToken = response.$2;
@@ -110,15 +131,17 @@ class SessionGVM extends Notifier<SessionUser> {
           tokenManager.saveRefreshToken(refreshToken);
           logger.d('저장된 refreshToken!!! $refreshToken');
           //state = // 상태 업데이트
+          Map<String, dynamic> data = responseDTO['data'];
+
           state = state.copyWith(
-            id: responseDTO['data']['id'],
-            uid: responseDTO['data']['uid'],
-            nickname: responseDTO['data']['nickName'],
+            id: data['id'],
+            uid: data['uid'],
+            nickname: data['nickName'],
+            profileImg: data['profileImg'],
             isLoggedIn: true,
           );
           _setupDioInterceptor(accessToken);
-          clearControllers();
-          Navigator.pushNamed(mContext, '/home');
+          Navigator.popAndPushNamed(mContext, '/home');
         } else {
           ExceptionHandler.handleException(
               responseDTO['message'], StackTrace.current);
@@ -230,16 +253,6 @@ class SessionGVM extends Notifier<SessionUser> {
     }
   }
 
-  void clearControllers() {
-    uidController.clear();
-    passwordController.clear();
-  }
-
-  void dispose() {
-    uidController.dispose();
-    passwordController.dispose();
-  }
-
   //sessionUser 초기화 시키기
   void resetUser() {
     state = SessionUser(
@@ -248,6 +261,7 @@ class SessionGVM extends Notifier<SessionUser> {
       nickname: null,
       isLoggedIn: false,
       accessToken: null,
+      profileImg: null,
     );
   }
 
@@ -258,6 +272,7 @@ class SessionGVM extends Notifier<SessionUser> {
     int? userId = decodedToken['id'] is int
         ? decodedToken['id']
         : int.tryParse(decodedToken['id'].toString());
+    String? profileImg = decodedToken['profileImg'];
     if (uid == null || userId == null) {
       logger.e("JWT 토큰 파싱 오류: 필수 정보가 없습니다.");
       return false;
@@ -275,10 +290,38 @@ class SessionGVM extends Notifier<SessionUser> {
         id: decodedToken['id'],
         uid: uid,
         nickname: decodedToken['nickName'],
+        profileImg: profileImg,
         isLoggedIn: true);
 
     logger.i('상태 업데이트 완료! $state');
     return true;
+  }
+
+  //탈퇴하기
+
+  Future<void> withdrawal() async {
+    try {
+      if (state.id == null || state.id == 0) {
+        ExceptionHandler.handleException('회원탈퇴 중 오류 발생', StackTrace.current);
+        return;
+      }
+      Map<String, dynamic> resBody = await authRepository.withdrawal(state.id!);
+      if (resBody['code'] == 'failed') {
+        CustomSnackbar.showSnackBar(resBody['message']);
+        return;
+      }
+
+      DialogHelper.showAlertDialog(
+        context: mContext,
+        title: '탈퇴되었습니다.',
+        onConfirm: () {
+          logout();
+        },
+      );
+    } catch (e, stackTrace) {
+      ExceptionHandler.handleException('회원탈퇴 중 오류 발생', stackTrace);
+      return;
+    }
   }
 }
 

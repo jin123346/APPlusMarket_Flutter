@@ -4,7 +4,12 @@ import 'package:applus_market/_core/components/theme.dart';
 class LoginFormField extends StatefulWidget {
   final String label;
   final TextEditingController controller;
-  LoginFormField({required this.label, required this.controller, super.key});
+  final obsecure;
+  LoginFormField(
+      {required this.label,
+      required this.controller,
+      this.obsecure = false,
+      super.key});
 
   @override
   State<LoginFormField> createState() => _LoginFormFieldState();
@@ -31,15 +36,16 @@ class _LoginFormFieldState extends State<LoginFormField> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.controller,
-      obscureText: widget.label == '비밀번호',
+      obscureText: widget.obsecure,
       keyboardType: TextInputType.text,
       decoration: InputDecoration(
         labelText: widget.label,
         border: UnderlineInputBorder(
-        borderSide: BorderSide(
-        color: APlusTheme.borderLightGrey,
-        width: 1.0,
-        ),),
+          borderSide: BorderSide(
+            color: APlusTheme.borderLightGrey,
+            width: 1.0,
+          ),
+        ),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {

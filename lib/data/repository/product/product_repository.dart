@@ -27,10 +27,11 @@ class ProductRepository {
       'images': multipartImages,
     });
     Response response = await dio.post('/product/insert', data: formData);
+    logger.i('response : $response');
     //바디 추출
     Map<String, dynamic> responseBody =
         response.data; // header, body 중에 body 만 추출
-    logger.i(responseBody);
+    logger.i('responseBody : $responseBody');
     return responseBody;
   }
 

@@ -10,6 +10,7 @@ class User {
   final String? nickName;
   final String? email;
   final DateTime? birthday;
+  final String? profileImg;
 
   User({
     this.id,
@@ -20,6 +21,7 @@ class User {
     this.nickName,
     this.email,
     this.birthday,
+    this.profileImg,
   });
 
   User copyWith(
@@ -30,6 +32,7 @@ class User {
       String? name,
       String? nickName,
       String? email,
+      String? profileImg,
       DateTime? birthday}) {
     return User(
         id: id ?? this.id,
@@ -39,6 +42,7 @@ class User {
         hp: hp ?? this.hp,
         name: name ?? this.name,
         email: email ?? this.email,
+        profileImg: profileImg ?? this.profileImg,
         nickName: nickName ?? this.nickName);
   }
 
@@ -52,8 +56,22 @@ class User {
       "hp": hp,
       "name": name,
       "nickName": nickName,
+      "profileImg": profileImg,
       "birthday": birthday?.toIso8601String(),
     };
+  }
+
+  factory User.fromMap(Map<String, dynamic> map) {
+    return User(
+        id: map['id'],
+        uid: map['uid'],
+        email: map['email'],
+        password: map['password'] ?? null,
+        hp: map['hp'],
+        name: map['name'],
+        nickName: map['nickName'],
+        profileImg: map['profileImg'],
+        birthday: map['birthday']);
   }
 
   @override

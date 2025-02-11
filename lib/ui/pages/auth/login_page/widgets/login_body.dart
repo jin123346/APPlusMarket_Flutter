@@ -10,8 +10,9 @@ import 'login_form.dart';
 
 class LoginBody extends ConsumerWidget {
   GlobalKey<FormState> formKey; // ✅ 추가
-
-  LoginBody({required this.formKey, super.key});
+  final TextEditingController uidController;
+  final TextEditingController passwordController;
+  LoginBody({required this.formKey,required this.uidController,required this.passwordController, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -63,8 +64,8 @@ class LoginBody extends ConsumerWidget {
               const SizedBox(height: 20),
               LoginForm(
                 formKey: formKey,
-                uidController: loginNotifier.uidController,
-                passwordController: loginNotifier.passwordController,
+                uidController: uidController,
+                passwordController: passwordController,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

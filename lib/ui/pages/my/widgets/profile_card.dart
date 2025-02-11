@@ -1,4 +1,5 @@
 import 'package:applus_market/data/model/auth/login_state.dart';
+import 'package:applus_market/ui/pages/my/widgets/profile_image_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,40 +26,9 @@ class ProfileCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Stack(
-                  children: [
-                    Container(
-                      width: 90,
-                      height: 90,
-                    ),
-                    Positioned(
-                      left: 10,
-                      top: 10,
-                      child: ImageContainer(
-                        width: 80,
-                        height: 80,
-                        borderRadius: 40,
-                        imgUri: 'https://picsum.photos/id/237/200/300',
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                          width: 27,
-                          height: 27,
-                          decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(17.5),
-                              border:
-                                  Border.all(color: Colors.white, width: 0.5)),
-                          child: Icon(
-                            CupertinoIcons.camera_fill,
-                            size: 16,
-                            color: Colors.black38,
-                          )),
-                    )
-                  ],
+                ProfileImageContainer(
+                  profileImg: sessionUser.profileImg,
+                  userId: sessionUser.id,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0),

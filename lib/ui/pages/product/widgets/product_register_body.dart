@@ -10,14 +10,14 @@ import '../../../../data/model/auth/login_state.dart';
 import '../selection_page.dart';
 import '../../../../_core/components/theme.dart';
 
-/// 이미지 항목 클래스
+// 이미지 항목 클래스
 class ImageItem {
   final String path;
   final String id;
   ImageItem({required this.path, required this.id});
 }
 
-/// 각 상태를 위한 StateProvider 선언
+// 각 상태를 위한 StateProvider 선언
 final imagePathsProvider = StateProvider<List<ImageItem>>((ref) => []);
 final isNegotiableProvider = StateProvider<bool>((ref) => false);
 final isPossibleMeetYouProvider = StateProvider<bool>((ref) => false);
@@ -33,7 +33,7 @@ class ProductRegisterBody extends ConsumerStatefulWidget {
 }
 
 class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
-  // 컨트롤러들을 상태로 선언
+  // 컨트롤러들을 상태로 선언 (상품을 등록한 뒤에 초기화 하기 위함)
   late final TextEditingController titleController;
   late final TextEditingController priceController;
   late final TextEditingController descriptionController;
@@ -261,6 +261,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                                                 ),
                                               ),
                                             ),
+                                            //위치가 첫번째 이면 대표 사진으로 지정
                                             if (index == 0)
                                               Positioned(
                                                 bottom: 0,
@@ -494,7 +495,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                         // Provider에 저장된 ImageItem 리스트를 File 객체 리스트로 변환
                         final List<File> imageFiles =
                             imagePaths.map((img) => File(img.path)).toList();
-
+                        // 현재 "서울" 위치기반 API 를 활용해서 상세 주소로 변경 해야합니다.
                         await ref.read(productProvider.notifier).insertproduct(
                               titleController.text, // 제목
                               productNameController.text, // 제품명

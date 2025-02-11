@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 //이미지의 가로, 세로, radius, url,
 
-class ImageContainer extends StatelessWidget {
+class ImageNetworkContainer extends StatelessWidget {
   final double borderRadius;
   final String imgUri;
   final double width;
   final double height;
   final bool isNull;
 
-  const ImageContainer(
+  const ImageNetworkContainer(
       {required this.borderRadius,
       required this.imgUri,
       required this.width,
@@ -24,11 +24,17 @@ class ImageContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: Image.asset(
+      child: Image.network(
         imgUri, // Use dynamic API URL
         height: height,
         width: width,
         fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Image.asset(
+          defaultProfile,
+          height: height,
+          width: width,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

@@ -55,18 +55,11 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     // 브랜드 목록 예시
     final brands = [
-      'ZARA',
-      'H&M',
-      'POLO',
-      'Dunst',
-      'LACOSTE',
-      'GUCCI',
-      'Nike',
-      'Adidas',
-      'Puma',
-      'Calvin Klein',
-      'Tommy Hilfiger',
-      'Uniqlo'
+      'APPLE',
+      'SamSung',
+      'LG',
+      'Asus',
+      'Lenova',
     ];
 
     // productListProvider 상태 구독
