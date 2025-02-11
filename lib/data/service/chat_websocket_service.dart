@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:math';
 import 'package:applus_market/_core/utils/logger.dart';
+import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model/chat/chat_room.dart';
+import 'package:applus_market/data/repository/chat/chat_repository.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 /*
@@ -18,36 +21,53 @@ import 'package:stomp_dart_client/stomp_dart_client.dart';
  *                          받은 메시지 화면 반영을 위하여
  */
 
+// TODO : Notifier로 만들어서 사용
 class ChatService {
+  static final ChatService _instance = ChatService._internal();
+
+  factory ChatService() {
+    return _instance;
+  }
+
+  ChatService._internal();
+
   StompClient? stompClient;
   final Set<String> subscribedDestinations = {};
+  List<int> results = [];
 
-  void connect() {
+  bool connect(List<int> chatIds) {
+    results = chatIds;
+
     // 이미 연결되어 있는 경우 활성화 방지
     if (stompClient != null && stompClient!.connected) {
       logger.d("이미 WebSocket 연결이 활성화되어 있습니다.");
-      return;
+      return true;
     }
-
-    stompClient = StompClient(
-      config: StompConfig.sockJS(
-        url: "http://192.168.0.145:8080/ws",
-        onConnect: onConnect,
-        onWebSocketError: (dynamic error) =>
-            logger.e("WebSocket error: $error"),
-      ),
-    );
-    stompClient!.activate();
-    logger.d("WebSocket 연결 시도");
+    try {
+      stompClient = StompClient(
+        config: StompConfig.sockJS(
+          url: "http://192.168.0.145:8080/ws",
+          onConnect: onConnect,
+          onWebSocketError: (dynamic error) =>
+              logger.e("WebSocket error: $error"),
+        ),
+      );
+      stompClient!.activate();
+      logger.d("WebSocket 연결 중 상태 : ${stompClient?.connected}");
+      return true;
+    } catch (e) {
+      logger.e('WebSocket 연결 실패 : $e');
+      return false;
+    }
   }
 
   void onConnect(StompFrame frame) {
-    // TODO : 로그인한 회원이 참여하고 있는 채팅방 ID 전체 구독 - main에서
-
-    subscribeToChatRoom("1");
+    for (int id in results) {
+      subscribeToChatRoom(id);
+    }
   }
 
-  void subscribeToChatRoom(String chatRoomId) {
+  void subscribeToChatRoom(int chatRoomId) {
     final destination = "/sub/chatroom/$chatRoomId";
 
     if (!subscribedDestinations.contains(destination)) {
@@ -86,7 +106,8 @@ class ChatService {
         logger.e("메시지 전송 오류: $e");
       }
     } else {
-      logger.e("WebSocket 연결되지 않음");
+      logger.e("WebSocket 연결되지 않음 ${stompClient?.connected}");
+      connect(results);
     }
   }
 

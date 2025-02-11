@@ -5,11 +5,13 @@
 
 // 채팅 리스트에서 사용 - /chatting
 
+import 'package:applus_market/_core/utils/apiUrl.dart';
+
 class ChatRoomCard {
   final int chatRoomId;
   final int userId;
   final String userNickname;
-  final String userImage;
+  final String? userImage;
   final int productId;
   final String productThumbnail;
   final int sellerId; // 채팅방의 제품 판매자
@@ -33,9 +35,13 @@ class ChatRoomCard {
       chatRoomId: json['chatRoomId'],
       userId: json['userId'],
       userNickname: json['userNickname'],
-      userImage: json['userImage'],
+      // TODO : 일단 하드코딩
+      userImage: json['userImage'] ??
+          '$apiUrl/uploads/113/c640fa66-d501-43c5-8892-d93a8d64bd1a.png',
       productId: json['productId'],
-      productThumbnail: json['productThumbnail'],
+      productThumbnail:
+          // TODO : 이걸 만드는 메서드를 만들거나 imageContainer를 하나 생성하면 좋을 듯
+          '$apiUrl/uploads/${json['productId']}/${json['productThumbnail']}',
       sellerId: json['sellerId'],
       recentMessage: json['recentMessage'] ?? 'mongo로 분리할 생각 중 따로 쿼리문 작성',
       messageCreatedAt: json['messageCreatedAt'] ?? '2025-01-20 15:02:22',
