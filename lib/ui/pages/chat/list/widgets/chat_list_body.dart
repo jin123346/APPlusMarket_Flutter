@@ -11,6 +11,7 @@ class ChatListBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chatListState = ref.watch(chatListProvider);
+    final chatListViewModel = ref.watch(chatListProvider.notifier);
 
     return Scaffold(
       backgroundColor: Colors.white,

@@ -1,6 +1,7 @@
 class ChatMessage {
   final int? messageId;
   final int senderId;
+  final int chatRoomId;
   final String content;
   final bool? isRead;
   final String createdAt;
@@ -10,6 +11,7 @@ class ChatMessage {
       {this.messageId,
       required this.senderId,
       required this.content,
+      required this.chatRoomId,
       this.isRead = false,
       required this.createdAt,
       this.deletedAt});
@@ -18,6 +20,7 @@ class ChatMessage {
     return ChatMessage(
         messageId: json['chatMessageId'] ?? 0,
         senderId: json['senderId'],
+        chatRoomId: json['chatRoomId'],
         content: json['content'],
         isRead: json['isRead'] ?? false,
         createdAt: json['createdAt'],
@@ -26,6 +29,6 @@ class ChatMessage {
 
   @override
   String toString() {
-    return 'ChatMessage{chatMessageId: $messageId, senderId: $senderId, message: $content, isRead: $isRead, createdAt: $createdAt}';
+    return 'ChatMessage{messageId: $messageId, senderId: $senderId, chatRoomId: $chatRoomId, content: $content, isRead: $isRead, createdAt: $createdAt, deletedAt: $deletedAt}';
   }
 }
