@@ -1,3 +1,4 @@
+import 'package:applus_market/_core/utils/apiUrl.dart';
 import 'package:applus_market/ui/pages/chat/room/chat_room_page.dart';
 import 'package:flutter/material.dart';
 
@@ -33,9 +34,11 @@ class ChatListContainer extends StatelessWidget {
           children: [
             Container(
               width: 50,
+              // TODO : Image network 로 수정하기
               child: ImageContainer(
                 borderRadius: 25,
-                imgUri: chatRoom.userImage,
+                imgUri: chatRoom.userImage ??
+                    '$apiUrl/uploads/133/c640fa66-d501-43c5-8892-d93a8d64bd1a.png',
                 width: 50,
                 height: 50,
               ),
