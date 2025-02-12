@@ -43,14 +43,13 @@ dependencies:
   font_awesome_flutter: ^10.8.0
   flutter_svg: ^2.0.17
   flutter_dotenv: ^5.2.1
-
   intl: ^0.18.0 # 2025.01.21 황수빈 - time_ago 함수에서 사용
   logger: ^2.5.0
   animated_toggle_switch: ^0.8.4
-  http: ^1.3.0
   webview_flutter: ^4.10.0
   flutter_inappwebview: ^6.1.5
   daum_postcode_search: ^0.0.3
+
   flutter_native_splash: ^2.4.4
   shared_preferences: ^2.4.0
   flutter_secure_storage: ^9.2.4
@@ -59,14 +58,14 @@ dependencies:
   dio_cookie_manager: ^3.2.0
   cookie_jar: ^4.0.8
   jwt_decoder: ^2.0.1
-
   stomp_dart_client: ^2.1.1 # 2025.02.03 황수빈 - 웹소켓 세팅
   web_socket_client: ^0.1.5
-
   image_picker: ^1.1.2
   page_transition: ^2.2.1 # 2025.02.04 김민희 - 페이지 전환 애니메이션 (왼→오, 오→왼, 위→아래, 아래→위)
   permission_handler: ^11.3.1
-  get: ^4.6.6
+  geolocator: ^13.0.2
+  http: ^1.3.0
+  geocoding: ^3.0.0
 
 
 dev_dependencies:
