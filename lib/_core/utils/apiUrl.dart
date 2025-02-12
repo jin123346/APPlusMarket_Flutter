@@ -11,8 +11,11 @@ final env = dotenv.env['API_BASE_URL'];
 // 지니 집
 // final String apiUrl = 'http://192.168.219.109:8080';
 
+// 미니 집
+// final String apiUrl = 'http://192.168.123.101:8080';
+
 // 미니꼬
-final String apiUrl = 'http://$env:8080' ?? 'http://192.168.0.26:8080';
+final String apiUrl = 'http://$env:8080' ?? 'http://192.168.0.32:8080';
 
 final defaultProfile = 'assets/images/default-profile.png';
 
