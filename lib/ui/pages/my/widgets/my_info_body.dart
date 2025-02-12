@@ -32,8 +32,8 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
-    _getMyInfo();
   }
 
   String _formattedDate(DateTime picked) {
@@ -43,26 +43,33 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
     return formattedDate;
   }
 
-  void _getMyInfo() async {
-    MyInfoVM myInfoVM = ref.read(myInfoProvider.notifier);
-    await myInfoVM.getMyInfo();
-    User user = ref.read(myInfoProvider);
-    logger.i(user.toString());
-    setState(() {
-      widget.nameController.text = user.name ?? '';
-      widget.birthDateController.text = user.birthday != null
-          ? _formattedDate(user.birthday!) // 🎯 null 체크 후 변환
-          : '';
-      widget.emailController.text = user.email ?? '';
-      widget.nicknameController.text = user.nickName ?? '';
-      widget.phoneNumberController.text = user.hp ?? '';
-    });
-  }
+  // void _getMyInfo() async {
+  //   MyInfoVM myInfoVM = ref.read(myInfoProvider.notifier);
+  //   await myInfoVM.getMyInfo();
+  //   User user = ref.watch(myInfoProvider)!;
+  //   logger.i(user.toString());
+  //   setState(() {
+  //     widget.nameController.text = user.name ?? '';
+  //     widget.birthDateController.text = user.birthday != null
+  //         ? _formattedDate(user.birthday!) // 🎯 null 체크 후 변환
+  //         : '';
+  //     widget.emailController.text = user.email ?? '';
+  //     widget.nicknameController.text = user.nickName ?? '';
+  //     widget.phoneNumberController.text = user.hp ?? '';
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     MyInfoVM myInfoVM = ref.read(myInfoProvider.notifier);
-    User user = ref.read(myInfoProvider);
+    User user = ref.watch(myInfoProvider)!;
+    widget.nameController.text = user?.name ?? '';
+    widget.birthDateController.text =
+        user?.birthday != null ? _formattedDate(user!.birthday!) : '';
+    widget.emailController.text = user?.email ?? '';
+    widget.nicknameController.text = user?.nickName ?? '';
+    widget.phoneNumberController.text = user?.hp ?? '';
+
     return Form(
       key: widget.formKey,
       child: ListView(

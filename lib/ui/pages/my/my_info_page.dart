@@ -1,7 +1,10 @@
+import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model_view/user/my_info_vm.dart';
 import 'package:applus_market/ui/pages/my/widgets/my_info_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../data/model/auth/user.dart';
 
 class MyInfoPage extends ConsumerWidget {
   MyInfoPage({super.key});
@@ -15,6 +18,8 @@ class MyInfoPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     MyInfoVM myInfoNotifier = ref.read(myInfoProvider.notifier);
+    User user = ref.watch(myInfoProvider) ?? User();
+    SessionGVM sessionGVM = ref.read(LoginProvider.notifier);
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -46,7 +51,6 @@ class MyInfoPage extends ConsumerWidget {
                       nickName: nicknameController.text,
                       hp: phoneNumberController.text,
                       email: emailController.text);
-                  FocusScope.of(context).unfocus();
                 },
                 child: Text('저장')),
           ),
