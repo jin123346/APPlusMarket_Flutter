@@ -35,10 +35,9 @@ class ChatListContainer extends StatelessWidget {
             Container(
               width: 50,
               // TODO : Image network 로 수정하기
-              child: ImageContainer(
-                borderRadius: 25,
-                imgUri: chatRoom.userImage ??
-                    '$apiUrl/uploads/133/c640fa66-d501-43c5-8892-d93a8d64bd1a.png',
+              child: Image.network(
+                chatRoom.userImage ??
+                    '$apiUrl/uploads/1/e6c4fd7e-3ee7-4e1c-91e4-45c2fb5b5cad.png',
                 width: 50,
                 height: 50,
               ),
@@ -62,6 +61,20 @@ class ChatListContainer extends StatelessWidget {
                       Text(
                         timeAgo(chatRoom.messageCreatedAt), // 최근 메시지 시간
                         style: TextStyle(fontSize: 12, color: Colors.black54),
+                      ),
+                      Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(25)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Text(
+                            '${chatRoom.unRead}', // 최근 메시지 시간
+                            style: TextStyle(fontSize: 13, color: Colors.white),
+                          ),
+                        ),
                       )
                     ],
                   ),
@@ -75,11 +88,11 @@ class ChatListContainer extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            ImageContainer(
-              borderRadius: 5,
-              imgUri: chatRoom.productThumbnail,
+            Image.network(
+              chatRoom.productThumbnail,
               width: 50,
               height: 50,
+              fit: BoxFit.cover,
             )
           ],
         ),

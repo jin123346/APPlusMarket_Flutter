@@ -1,3 +1,5 @@
+import 'package:applus_market/_core/utils/logger.dart';
+import 'package:applus_market/data/model/chat/chat_message.dart';
 import 'package:applus_market/data/model/chat/chat_room.dart';
 import 'package:applus_market/data/service/chat_websocket_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,7 +45,7 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   void setChatRoomId(int id) {
     chatRoomId = id;
     _isInitialized = true;
-// 로딩 상태 설정
+    // 로딩 상태 설정
     setupMessageListener();
 
     _refreshData();
@@ -61,6 +63,7 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   // 구독한 방에서 받아온 알람을 화면에 반영하기 위함
   void setupMessageListener() {
     chatService.onMessageReceived = (ChatMessage newMessage) {
+      logger.e('여긴 확실히 올 듯 ');
       state.whenData((currentRoom) {
         final updatedMessages = [...currentRoom.messages, newMessage];
         state = AsyncData(currentRoom.copyWith(messages: updatedMessages));

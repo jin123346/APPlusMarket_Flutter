@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
  */
 final env = dotenv.env['API_BASE_URL'];
 final String apiUrl = 'http://$env:8080' ?? 'http://192.168.0.127:8080';
+
 // final String apiUrl = 'http://192.168.0.127:8080';
 
 // 지니 집
