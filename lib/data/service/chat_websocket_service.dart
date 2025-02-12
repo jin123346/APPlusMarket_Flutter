@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/gvm/session_gvm.dart';
+import 'package:applus_market/data/model/chat/chat_message.dart';
 import 'package:applus_market/data/model/chat/chat_room.dart';
 import 'package:applus_market/data/repository/chat/chat_repository.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
@@ -77,6 +78,7 @@ class ChatService {
             Map<String, dynamic> result = json.decode(frame.body!);
             ChatMessage receivedMessage = ChatMessage.fromJson(result);
             logger.e('💻received data: $receivedMessage');
+
             notifyListeners(receivedMessage);
           }
         },
@@ -110,14 +112,14 @@ class ChatService {
     }
   }
 
+  Function(ChatMessage)? onMessageReceived;
+
 // 이벤트 발생을 구독중인 리스너에게 알려주는 메서드
   void notifyListeners(ChatMessage chatMessage) {
     if (onMessageReceived != null) {
       onMessageReceived!(chatMessage);
     }
   }
-
-  Function(ChatMessage)? onMessageReceived;
 
   void disconnect() {
     stompClient?.deactivate();
