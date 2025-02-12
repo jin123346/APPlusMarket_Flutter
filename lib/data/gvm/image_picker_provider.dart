@@ -7,7 +7,6 @@ import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/repository/image_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../_core/utils/logger.dart';

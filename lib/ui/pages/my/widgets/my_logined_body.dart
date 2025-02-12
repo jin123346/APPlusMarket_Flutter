@@ -21,7 +21,7 @@ class MyLoginedBody extends ConsumerWidget {
 
     return ListView(
       children: [
-        ProfileCard(sessionUser: sessionUser),
+        ProfileCard(),
         const SizedBox(height: 8),
         Card(
           margin: EdgeInsets.zero,

@@ -4,8 +4,6 @@ import 'package:applus_market/ui/widgets/image_network_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../../../../_core/utils/logger.dart';
 import '../../../../data/gvm/image_picker_provider.dart';
