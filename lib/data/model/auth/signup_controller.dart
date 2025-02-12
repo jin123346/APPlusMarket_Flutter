@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:core';
 
+import 'package:applus_market/_core/utils/custom_snackbar.dart';
 import 'package:applus_market/_core/utils/exception_handler.dart';
 import 'package:applus_market/data/model/auth/sign_up_state.dart';
 import 'package:applus_market/data/model/auth/user.dart';
@@ -154,11 +155,11 @@ class SignUpController extends Notifier<SignUpState> {
   String? phoneValidation() {
     String? phone = state.hpController?.text.trim() ?? '';
     if (phone == null || phone.isEmpty) {
-      //  ExceptionHandler.handleException('휴대폰 번호를 입력해주세요.', StackTrace.current);
+      //CustomSnackbar.showSnackBar('휴대폰 번호를 입력해주세요.');
       return '휴대폰 번호를 입력해주세요.';
     }
     if (!RegExp(r'^\d{10,11}$').hasMatch(phone)) {
-      // ExceptionHandler.handleException('휴대폰 번호는 10~11자리 숫자여야 합니다.', StackTrace.current);
+      // CustomSnackbar.showSnackBar('휴대폰 번호는 10~11자리 숫자여야 합니다.');
       return '휴대폰 번호는 10~11자리 숫자여야 합니다.';
     }
 

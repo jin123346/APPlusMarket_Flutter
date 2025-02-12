@@ -5,6 +5,8 @@
 
 // 채팅방 조회시 사용됨
 
+import 'package:applus_market/data/model/chat/chat_message.dart';
+
 import '../product/product_card.dart';
 import '../user_card.dart';
 
@@ -51,37 +53,5 @@ class ChatRoom {
   @override
   String toString() {
     return 'ChatRoom{chat_room_id: $chat_room_id, productCard: $productCard, participants: $participants, messages: $messages}';
-  }
-}
-
-class ChatMessage {
-  final int? messageId;
-  final int senderId;
-  final String content;
-  final bool? isRead;
-  final String createdAt;
-  final String? deletedAt;
-
-  ChatMessage(
-      {this.messageId,
-      required this.senderId,
-      required this.content,
-      this.isRead = false,
-      required this.createdAt,
-      this.deletedAt});
-
-  factory ChatMessage.fromJson(Map<String, dynamic> json) {
-    return ChatMessage(
-        messageId: json['messageId'] ?? 0,
-        senderId: json['senderId'],
-        content: json['content'],
-        isRead: json['isRead'] ?? false,
-        createdAt: json['createdAt'],
-        deletedAt: json['deletedAt'] ?? '');
-  }
-
-  @override
-  String toString() {
-    return 'ChatMessage{chatMessageId: $messageId, senderId: $senderId, message: $content, isRead: $isRead, createdAt: $createdAt}';
   }
 }

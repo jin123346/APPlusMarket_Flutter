@@ -2,20 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:daum_postcode_search/daum_postcode_search.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
+import '../../../../_core/utils/logger.dart';
+
+/*
+    2025.1.29  하진희 우편번호 검색 페이지
+ */
 class DeliveryAddressPage extends StatefulWidget {
+  final TextEditingController address1Controller;
+  final TextEditingController postCodeController;
+  final TextEditingController address2Controller;
+
+  DeliveryAddressPage(this.postCodeController, this.address1Controller,
+      this.address2Controller);
+
   @override
   _DeliveryAddressPageState createState() => _DeliveryAddressPageState();
 }
 
 class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
   final _formKey = GlobalKey<FormState>();
-  final _deliveryNameController = TextEditingController();
-  final _recipientNameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _mobileController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _detailAddressController = TextEditingController();
-  final _postCodeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +39,7 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
             children: [
               Expanded(
                 child: TextFormField(
-                  controller: _postCodeController,
+                  controller: widget.postCodeController,
                   readOnly: true,
                   decoration: InputDecoration(
                     focusColor: Colors.grey,
@@ -69,7 +74,7 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
           ),
           SizedBox(height: 8),
           TextFormField(
-            controller: _addressController,
+            controller: widget.address1Controller,
             readOnly: true,
             decoration: InputDecoration(
               focusColor: Colors.grey,
@@ -86,7 +91,7 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
           ),
           SizedBox(height: 8),
           TextFormField(
-            controller: _detailAddressController,
+            controller: widget.address2Controller,
             decoration: InputDecoration(
               focusColor: Colors.grey,
               contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
@@ -133,25 +138,17 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
       );
 
       if (result != null) {
+        logger.i('주소 결과  : $result');
         setState(() {
-          _addressController.text = result.address +
+          widget.address1Controller.text = result.address +
               (result.buildingName?.isNotEmpty == true
                   ? ' ${result.buildingName}'
                   : '');
-          _postCodeController.text = result.postcode;
+          widget.postCodeController.text = result.zonecode;
         });
       }
     } catch (e) {
       print('Error searching address: $e');
-    }
-  }
-
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // 폼 제출 로직 구현
-      print('배송지명: ${_deliveryNameController.text}');
-      print('받는사람: ${_recipientNameController.text}');
-      print('주소: ${_addressController.text} ${_detailAddressController.text}');
     }
   }
 }

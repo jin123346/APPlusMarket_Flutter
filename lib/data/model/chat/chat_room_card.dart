@@ -5,14 +5,17 @@
 
 // 채팅 리스트에서 사용 - /chatting
 
+import 'package:applus_market/_core/utils/apiUrl.dart';
+
 class ChatRoomCard {
   final int chatRoomId;
   final int userId;
   final String userNickname;
-  final String userImage;
+  final String? userImage;
   final int productId;
   final String productThumbnail;
   final int sellerId; // 채팅방의 제품 판매자
+  final int unRead;
 
   final String recentMessage;
   final String messageCreatedAt;
@@ -25,6 +28,7 @@ class ChatRoomCard {
       required this.productId,
       required this.productThumbnail,
       required this.sellerId,
+      required this.unRead,
       required this.recentMessage,
       required this.messageCreatedAt}); // JSON 데이터를 ChatRoomCard 객체로 변환하는 fromJson 메서드
 
@@ -33,12 +37,37 @@ class ChatRoomCard {
       chatRoomId: json['chatRoomId'],
       userId: json['userId'],
       userNickname: json['userNickname'],
-      userImage: json['userImage'],
+      // TODO 하드코딩 고치기
+      userImage: json['userImage'] ??
+          '$apiUrl/uploads/profile/e6c4fd7e-3ee7-4e1c-91e4-45c2fb5b5cad.png',
       productId: json['productId'],
-      productThumbnail: json['productThumbnail'],
+      unRead: json['unRead'],
+      productThumbnail:
+          '$apiUrl/uploads/${json['productId']}/${json['productThumbnail']}',
       sellerId: json['sellerId'],
       recentMessage: json['recentMessage'] ?? 'mongo로 분리할 생각 중 따로 쿼리문 작성',
       messageCreatedAt: json['messageCreatedAt'] ?? '2025-01-20 15:02:22',
+    );
+  }
+  // copyWith 메서드 추가
+  ChatRoomCard copyWith({
+    String? userImage,
+    String? productThumbnail,
+    String? recentMessage,
+    String? messageCreatedAt,
+    int? unRead,
+  }) {
+    return ChatRoomCard(
+      chatRoomId: this.chatRoomId,
+      userId: this.userId,
+      userNickname: this.userNickname,
+      userImage: userImage ?? this.userImage,
+      productId: this.productId,
+      unRead: unRead ?? this.unRead,
+      productThumbnail: productThumbnail ?? this.productThumbnail,
+      sellerId: this.sellerId,
+      recentMessage: recentMessage ?? this.recentMessage,
+      messageCreatedAt: messageCreatedAt ?? this.messageCreatedAt,
     );
   }
 
