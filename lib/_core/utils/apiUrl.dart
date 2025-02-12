@@ -15,3 +15,6 @@ final env = dotenv.env['API_BASE_URL'];
 final String apiUrl = 'http://$env:8080' ?? 'http://192.168.0.26:8080';
 
 final defaultProfile = 'assets/images/default-profile.png';
+
+final kakaoApiKey = 'bee0049d1dc30f192fc49b3c0a0b9d97';
+final googleKey = 'AIzaSyCoUUCbbb60fkaSxQ1pw65UFKJgQ-TzFLI';
