@@ -1,7 +1,6 @@
 import 'package:applus_market/_core/utils/custom_snackbar.dart';
 import 'package:applus_market/_core/utils/dialog_helper.dart';
 import 'package:applus_market/_core/utils/exception_handler.dart';
-import 'package:applus_market/data/gvm/myinfo_event_notifier.dart';
 import 'package:applus_market/data/repository/auth/auth_repository.dart';
 import 'package:applus_market/main.dart';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -15,8 +14,6 @@ import '../../_core/utils/dio.dart';
 import '../../_core/utils/logger.dart';
 import '../model/auth/login_state.dart';
 import '../model/auth/token_manager.dart';
-import '../model/auth/user.dart';
-import '../model_view/user/my_info_vm.dart';
 
 class SessionGVM extends Notifier<SessionUser> {
   final mContext = navigatorkey.currentContext!;
@@ -28,16 +25,6 @@ class SessionGVM extends Notifier<SessionUser> {
 
   @override
   SessionUser build() {
-    ref.listen(
-      myInfoProvider,
-      (previous, next) {
-        if (next != UserAction.none) {
-          init();
-          ref.read(myInfoEventProvider.notifier).reset();
-        }
-      },
-    );
-
     return SessionUser(
       id: null,
       uid: null,
@@ -48,27 +35,10 @@ class SessionGVM extends Notifier<SessionUser> {
     );
   }
 
-  void init() {
-    state = SessionUser(
-      id: state.id,
-      uid: state.uid,
-      nickname: state.nickname,
-      isLoggedIn: state.isLoggedIn,
-      profileImg: state.profileImg,
-      accessToken: state.accessToken,
-    );
-  }
-
   void updateProfileImage(String profilePath) {
     logger.i('프로일 이미지 등록 $profilePath');
     state = state.copyWith(profileImg: profilePath);
     logger.i('프로일 이미지 등록 $profilePath');
-  }
-
-  void updateNickname(String nickname) {
-    logger.i('nickName 변경 메소드 시작');
-    state = state.copyWith(nickname: nickname);
-    logger.i('현재 SessionUser : $state');
   }
 
   Future<void> initializeAuthState() async {
