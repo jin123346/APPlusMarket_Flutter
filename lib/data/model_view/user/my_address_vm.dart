@@ -8,6 +8,7 @@ import 'package:applus_market/_core/utils/exception_handler.dart';
 import 'package:applus_market/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
 
 import '../../../_core/utils/logger.dart';
 import '../../model/my/my_address.dart';

@@ -9,12 +9,13 @@ import 'widgets/charge_password_page.dart';
  * 2025.02.11 김민희 - Provider 연동 준비, 입력값 검증 로직 강화
  */
 
-// 충전 페이지 위젯
-//
-// [StatefulWidget]을 사용 하는 이유:
-// 1. 현재 입력된 금액(_currentAmount)의 로컬 상태 관리 필요
-// 2. 사용자 입력에 따른 UI 업데이트 필요
-// 3. 향후 Provider 연동 시 위젯 내부에서 상태 구독 필요
+/// 충전 페이지 위젯
+///
+/// [StatefulWidget]을 사용하는 이유:
+/// 1. 현재 입력된 금액(_currentAmount)의 로컬 상태 관리 필요
+/// 2. 사용자 입력에 따른 UI 업데이트 필요
+/// 3. 향후 Provider 연동 시 위젯 내부에서 상태 구독 필요
+
 class ChargePage extends StatefulWidget {
   const ChargePage({super.key});
 
@@ -52,6 +53,7 @@ class _ChargePageState extends State<ChargePage> {
   }
 
   /// 백스페이스 처리
+
   /// 입력된 금액이 있는 경우 마지막 숫자 삭제
   void _onBackspacePressed() {
     setState(() {
@@ -238,6 +240,7 @@ class _ChargePageState extends State<ChargePage> {
   }
 
   // 충전하기 버튼 → 비밀번호 입력 페이지 이동
+
   Widget _buildChargeButton() {
     return Padding(
       padding: EdgeInsets.all(APlusTheme.spacingM),
