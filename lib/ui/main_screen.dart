@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'pages/home/home_page.dart';
 import 'pages/my/my_logined_page.dart';
 import 'pages/product/product_register_page.dart';
 import 'pages/wish/wish_page.dart';
 import 'pages/chat/list/chat_list_page.dart'; // 황수빈 리팩토링
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends ConsumerState<MainScreen> {
   int pageIndex = 0;
 
   @override

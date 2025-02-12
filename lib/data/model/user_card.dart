@@ -3,6 +3,8 @@
 *
 */
 
+import 'package:applus_market/_core/utils/apiUrl.dart';
+
 class UserCard {
   final int userId;
   final String name;
@@ -20,7 +22,8 @@ class UserCard {
       userId: json['userId'],
       name: json['userName'],
       nickname: json['nickname'],
-      profileImage: json['profileImage'] ?? '',
+      profileImage: json['profileImage'] ??
+          '$apiUrl/uploads/113/c640fa66-d501-43c5-8892-d93a8d64bd1a.png',
     );
   }
 

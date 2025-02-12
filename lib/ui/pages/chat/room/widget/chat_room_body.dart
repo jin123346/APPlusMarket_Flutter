@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
@@ -18,9 +20,10 @@ import '../../../components/time_ago.dart';
  * description    : 채팅방 Widget 사용
  *
  * =============================================================
- * DATE              AUTHOR             NOTE
+ * DATE           AUTHOR             NOTE
  * -------------------------------------------------------------
- * 2024/02/06       황수빈      MyId sessionUser에서 받아옴
+ * 2024/02/06     황수빈      MyId sessionUser에서 받아옴
+ * 2024/02/07     황수빈      chatRoomId 추가 id로 채팅방 조회
  */
 
 class ChatRoomBody extends ConsumerStatefulWidget {
@@ -36,7 +39,10 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
   @override
   void initState() {
     super.initState();
-    widget.chatRoomId;
+    final viewModel = ref.read(chatRoomProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewModel.setChatRoomId(widget.chatRoomId);
+    });
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -67,6 +73,8 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
     _messageController.dispose();
     _focusNode.dispose();
     _scrollController.dispose();
+    logger.e('상세보기 화면 파괴됨');
+
     super.dispose();
   }
 
@@ -83,12 +91,11 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO : 하드 코딩 고치기
     int chatRoomId = widget.chatRoomId;
-    final viewModel = ref.read(chatRoomProvider.notifier);
-    viewModel.chatService.connect();
     SessionUser sessionUser = ref.watch(LoginProvider);
     int myId = sessionUser.id!;
+
+    final viewModel = ref.read(chatRoomProvider.notifier);
     final chatRoomState = ref.watch(chatRoomProvider);
 
     return chatRoomState.when(
@@ -249,9 +256,7 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text('에러 발생: $error'),
-      ),
+      error: (error, stack) => const Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -316,7 +321,7 @@ _buildProductCard(ProductCard productCard) {
         child: Row(
           children: [
             Image.network(
-              productCard.thumbnail_image,
+              productCard.thumbnailImage,
               width: 60,
               height: 60,
               fit: BoxFit.cover,
@@ -338,7 +343,7 @@ _buildProductCard(ProductCard productCard) {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      productCard.is_negotiable! ? '(가격제안가능)' : '(가격제안불가)',
+                      productCard.isNegotiable! ? '(가격제안가능)' : '(가격제안불가)',
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     )
                   ],

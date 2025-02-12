@@ -72,7 +72,7 @@ class ChatMessage {
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
     return ChatMessage(
-        messageId: json['messageId'] ?? 0,
+        messageId: json['chatMessageId'] ?? 0,
         senderId: json['senderId'],
         content: json['content'],
         isRead: json['isRead'] ?? false,
