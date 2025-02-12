@@ -3,6 +3,7 @@ import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/repository/chat/chat_repository.dart';
 import 'package:applus_market/data/service/chat_websocket_service.dart';
+import 'package:applus_market/data/model/auth/my_position.dart';
 import 'package:applus_market/ui/widgets/productlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
