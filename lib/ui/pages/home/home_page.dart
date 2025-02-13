@@ -1,8 +1,11 @@
 
+import 'package:applus_market/data/model/auth/my_position.dart';
+
 import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/repository/chat/chat_repository.dart';
 import 'package:applus_market/data/service/chat_websocket_service.dart';
+import 'package:applus_market/data/model/auth/my_position.dart';
 import 'package:applus_market/ui/widgets/productlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../_core/components/theme.dart';
 import '../../../_core/utils/logger.dart';
+import '../../../data/gvm/geo/location_gvm.dart';
 import '../../../data/gvm/product/productlist_gvm.dart';
 import '../../../data/model/auth/my_position.dart';
 
@@ -58,6 +62,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     // productListProvider 상태 구독
     final products = ref.watch(productListProvider);
 
+    final MyPosition? myPosition = ref.watch(locationProvider);
     return Scaffold(
       body: CustomScrollView(
         controller: _scrollController, // 스크롤 컨트롤러 적용
@@ -84,6 +89,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             actions: [
               // 알림 아이콘
+              Visibility(
+                  visible: myPosition != null,
+                  child: Text('${myPosition?.district ?? "위치 정보 없음"}')),
               Stack(
                 children: [
                   IconButton(
