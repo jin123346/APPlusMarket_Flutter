@@ -1,3 +1,7 @@
+import 'package:applus_market/data/gvm/session_gvm.dart';
+import 'package:applus_market/data/model/auth/login_state.dart';
+import 'package:applus_market/ui/pages/chat/room/chat_room_page.dart';
+import 'package:applus_market/ui/pages/chat/room/chat_room_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -311,8 +315,20 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
               SizedBox(
                 width: 120,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // 채팅하기 동작
+                  onPressed: () async {
+                    SessionUser sessionUser = ref.watch(LoginProvider);
+                    int result = await ref
+                        .watch(chatRoomProvider.notifier)
+                        .createChatRoom(product.seller_id!, product.product_id!,
+                            sessionUser.id!);
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ChatRoomPage(chatRoomId: result), // 해당 ID를 전달
+                      ),
+                    );
                   },
                   child: const Text('채팅하기'), // 채팅하기 텍스트 보이도록 수정
                 ),

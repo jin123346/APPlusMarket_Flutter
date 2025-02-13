@@ -31,9 +31,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     _scrollController = ScrollController()..addListener(_scrollListener);
 
     // ChatService Notifier로 수정하여 사용하기
-    // TODO : (중요) 하드코딩을 지우고 요청 받아온 값으로 처리해야함
 
-    chatService.connect([1, 2, 3]);
+    // TODO : 수빈 - (중요) 하드코딩을 지우고 요청 받아온 값으로 처리해야함
+    chatService.connect([1, 2, 3, 4, 5, 6, 7, 9, 10]);
     logger.e(chatService.stompClient?.connected);
   }
 

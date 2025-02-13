@@ -12,6 +12,6 @@ final String apiUrl = 'http://$env:8080' ?? 'http://192.168.0.145:8080';
 // final String apiUrl = 'http://192.168.219.109:8080';
 
 // 미니꼬
-final String apiUrl = 'http://$env:8080' ?? 'http://192.168.0.26:8080';
+// final String apiUrl = 'http://$env:8080' ?? 'http://192.168.0.26:8080';
 
 final defaultProfile = 'assets/images/default-profile.png';

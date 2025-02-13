@@ -60,7 +60,7 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
     }
   }
 
-  // 구독한 방에서 받아온 알람을 화면에 반영하기 위함
+  // 구독한 방에서 받아온 메시지를 화면에 반영하기 위함
   void setupMessageListener() {
     chatService.onMessageReceived = (ChatMessage newMessage) {
       logger.e('여긴 확실히 올 듯 ');
@@ -69,6 +69,15 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
         state = AsyncData(currentRoom.copyWith(messages: updatedMessages));
       });
     };
+  }
+
+  Future<int> createChatRoom(int sellerId, int productId, int userId) async {
+    Map<String, dynamic> body = {
+      "sellerId": sellerId,
+      "productId": productId,
+      "userId": userId,
+    };
+    return await chatRepository.createChatRoom(body);
   }
 
   Future<ChatRoom> getChatRoomDetail(int chatRoomId) async {
