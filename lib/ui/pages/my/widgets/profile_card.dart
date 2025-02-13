@@ -2,20 +2,23 @@ import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/ui/pages/my/widgets/profile_image_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../_core/components/theme.dart';
+import '../../../../data/gvm/session_gvm.dart';
 import '../../../widgets/image_container.dart';
 
 /*
 * 2025.01.21 하진희 : 프로필 카드-  myPage의 상단 프로필 부분
 * */
 
-class ProfileCard extends StatelessWidget {
-  final SessionUser sessionUser;
-  const ProfileCard({required this.sessionUser, super.key});
+class ProfileCard extends ConsumerWidget {
+  const ProfileCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    SessionUser sessionUser = ref.watch(LoginProvider);
+
     return Container(
       margin: EdgeInsets.zero,
       color: Colors.white,
