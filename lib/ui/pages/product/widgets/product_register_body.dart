@@ -23,7 +23,6 @@ final isNegotiableProvider = StateProvider<bool>((ref) => false);
 final isPossibleMeetYouProvider = StateProvider<bool>((ref) => false);
 final selectedCategoryProvider = StateProvider<String>((ref) => "카테고리");
 final selectedBrandProvider = StateProvider<String>((ref) => "브랜드");
-final selectedCategoryIdProvider = StateProvider<int>((ref) => 0);
 
 class ProductRegisterBody extends ConsumerStatefulWidget {
   const ProductRegisterBody({Key? key}) : super(key: key);
@@ -334,40 +333,6 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildTitle('브랜드'),
-                            height8Box,
-                            GestureDetector(
-                              onTap: _selectBrand,
-                              child: Container(
-                                height: 47,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                decoration: _defaultBoxDecoration(),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      selectedBrand,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: selectedBrand == '브랜드'
-                                            ? Colors.grey
-                                            : Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
                             _buildTitle('카테고리'),
                             height8Box,
                             GestureDetector(
@@ -397,23 +362,42 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                           ],
                         ),
                       ),
+                      const SizedBox(width: 16),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildTitle('브랜드'),
+                            height8Box,
+                            GestureDetector(
+                              onTap: _selectBrand,
+                              child: Container(
+                                height: 47,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: _defaultBoxDecoration(),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      selectedBrand,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: selectedBrand == '브랜드'
+                                            ? Colors.grey
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-
-                  Visibility(
-                      visible: selectedBrand == '삼성',
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          height16Box,
-                          _buildTitle('제품 검색하기'),
-                          height8Box,
-                          _buildInputContainer(
-                              controller: productNameController,
-                              title: '제품명, 제품 코드 '),
-                        ],
-                      )),
-
                   height16Box,
                   // 가격 입력
                   _buildTitle('가격'),
@@ -474,7 +458,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                     ),
                   ),
                   height16Box,
-                  _buildTitle('택배 가능 여부'),
+                  _buildTitle('직거래 '),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -489,7 +473,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                           },
                         ),
                       ),
-                      const Text('가능', style: TextStyle(fontSize: 16)),
+                      const Text('불가능', style: TextStyle(fontSize: 16)),
                       const SizedBox(width: 5),
                       Radio<bool>(
                         value: true,
@@ -499,7 +483,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                               value!;
                         },
                       ),
-                      const Text('불가능', style: TextStyle(fontSize: 16)),
+                      const Text('가능', style: TextStyle(fontSize: 16)),
                     ],
                   ),
                   height16Box,

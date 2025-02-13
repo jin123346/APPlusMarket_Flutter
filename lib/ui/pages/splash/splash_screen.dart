@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../_core/utils/exception_handler.dart';
 import '../../../_core/utils/logger.dart';
 import '../../../_core/utils/secure_storage.dart';
-import '../../../data/gvm/geo/location_gvm.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -20,7 +19,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
     _checkLoginState();
-    ref.read(locationProvider.notifier);
   }
 
   Future<void> _checkLoginState() async {
@@ -43,7 +41,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   //로그인 페이지 이동 메서드
   void _navigateToLogin() {
     //2초 동안 대기 후 로그인 페이지 이동 처리
-
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         Navigator.popAndPushNamed(context, '/login');
