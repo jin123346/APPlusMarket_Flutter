@@ -4,6 +4,10 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>앱이 실행 중일 때 현재 위치를 사용합니다.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>앱이 백그라운드에서도 위치를 사용할 수 있습니다.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Applus Flutter</string>
 	<key>CFBundleExecutable</key>
