@@ -53,7 +53,7 @@ class _ChargePageState extends State<ChargePage> {
   }
 
   /// 백스페이스 처리
-
+  ///
   /// 입력된 금액이 있는 경우 마지막 숫자 삭제
   void _onBackspacePressed() {
     setState(() {
@@ -239,8 +239,7 @@ class _ChargePageState extends State<ChargePage> {
     );
   }
 
-  // 충전하기 버튼 → 비밀번호 입력 페이지 이동
-
+  /// 충전하기 버튼 섹션
   Widget _buildChargeButton() {
     return Padding(
       padding: EdgeInsets.all(APlusTheme.spacingM),
