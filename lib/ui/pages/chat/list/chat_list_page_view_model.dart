@@ -19,7 +19,7 @@ import 'package:applus_market/data/repository/chat/chat_repository.dart';
  * =============================================================
  *   DATE         AUTHOR             NOTE
  * -------------------------------------------------------------
- *
+ * 2025/02/13
  */
 
 class ChatListPageViewModel extends AsyncNotifier<List<ChatRoomCard>> {

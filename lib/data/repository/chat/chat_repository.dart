@@ -44,7 +44,6 @@ class ChatRepository {
       Map<String, dynamic> responseBody = response.data;
       Map<String, dynamic> data = responseBody['data'];
       logger.e('채팅방 상세 : 🎇 $data');
-      logger.e('채팅방 상세 : 🎇 ${ChatRoom.fromJson(data)}');
       return ChatRoom.fromJson(data);
     } catch (e) {
       throw Exception('채팅방 정보 불러오는 중 오류 발생 : $e');
@@ -65,6 +64,23 @@ class ChatRepository {
       return data;
     } catch (e) {
       throw Exception('채팅방 정보 불러오는 중 오류 발생 : $e');
+    }
+  }
+
+  // TODO : 25/02/12 - 1. insertMethod 정의
+  Future<int> createChatRoom(Map<String, dynamic> reqData) async {
+    try {
+      Response response = await dio.post('/chat-rooms', data: reqData);
+
+      Map<String, dynamic> responseBody = response.data;
+      int data = responseBody['data'];
+
+      logger.e('생성된 채팅방 Id : 🎇$data');
+
+      return data;
+    } catch (e) {
+      logger.e(e);
+      throw Exception('채팅방 생성 요청 중 오류 발생');
     }
   }
 }

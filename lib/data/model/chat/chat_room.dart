@@ -34,9 +34,11 @@ class ChatRoom {
       participants: (json['participants'] as List)
           .map((item) => UserCard.fromJson(item))
           .toList(),
-      messages: (json['messages'] as List)
-          .map((item) => ChatMessage.fromJson(item))
-          .toList(),
+      messages: (json['messages'] is List)
+          ? (json['messages'] as List)
+              .map((item) => ChatMessage.fromJson(item))
+              .toList()
+          : [],
     );
   }
 

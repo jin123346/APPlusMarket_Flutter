@@ -119,36 +119,41 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                   },
                   child: Align(
                     alignment: Alignment.topCenter,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      controller: _scrollController,
-                      itemCount: room.messages.length,
-                      itemBuilder: (context, index) {
-                        final message = room.messages[index];
-                        final isMyMessage = message.senderId == myId;
+                    child: room.messages.isEmpty
+                        ? Center(
+                            child: Text('메시지가 없습니다'),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            controller: _scrollController,
+                            itemCount: room.messages.length,
+                            itemBuilder: (context, index) {
+                              final message = room.messages[index];
+                              final isMyMessage = message.senderId == myId;
 
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            mainAxisAlignment: isMyMessage
-                                ? MainAxisAlignment.end
-                                : MainAxisAlignment.start,
-                            children: [
-                              _buildMessageTimestamp(
-                                  isMyMessage, message.createdAt),
-                              SizedBox(width: isMyMessage ? 5 : 0),
-                              _buildMessageContainer(
-                                  isMyMessage, message.content, context),
-                              SizedBox(width: !isMyMessage ? 5 : 0),
-                              _buildMessageTimestamp(
-                                  !isMyMessage, message.createdAt),
-                            ],
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: Row(
+                                  mainAxisAlignment: isMyMessage
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start,
+                                  children: [
+                                    _buildMessageTimestamp(
+                                        isMyMessage, message.createdAt),
+                                    SizedBox(width: isMyMessage ? 5 : 0),
+                                    _buildMessageContainer(
+                                        isMyMessage, message.content, context),
+                                    SizedBox(width: !isMyMessage ? 5 : 0),
+                                    _buildMessageTimestamp(
+                                        !isMyMessage, message.createdAt),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
                   ),
                 ),
               ),
