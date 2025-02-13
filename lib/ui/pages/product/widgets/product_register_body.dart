@@ -1,5 +1,10 @@
 import 'dart:io';
+import 'package:applus_market/data/gvm/geo/location_gvm.dart';
 import 'package:applus_market/data/gvm/product/product_gvm.dart';
+import 'package:applus_market/data/model_view/product/product_search_notifier.dart';
+import 'package:applus_market/ui/pages/product/widgets/custom_label_input_field.dart';
+import 'package:applus_market/ui/pages/product/widgets/image_select_container.dart';
+import 'package:applus_market/ui/pages/product/widgets/product_search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -40,6 +45,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
   late final TextEditingController descriptionController;
   late final TextEditingController tradeLocationController;
   late final TextEditingController productNameController;
+  late final TextEditingController productFindController;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -51,6 +57,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
     descriptionController = TextEditingController();
     tradeLocationController = TextEditingController();
     productNameController = TextEditingController();
+    productFindController = TextEditingController();
   }
 
   @override
@@ -60,34 +67,8 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
     descriptionController.dispose();
     tradeLocationController.dispose();
     productNameController.dispose();
+    productFindController.dispose();
     super.dispose();
-  }
-
-  // 이미지 추가 함수 (이미지 피커 사용)
-  Future<void> addImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final current = ref.read(imagePathsProvider.notifier).state;
-      if (current.length >= 10) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('최대 10개의 이미지만 추가할 수 있습니다.')),
-        );
-        return;
-      }
-      final newImage = ImageItem(
-        path: pickedFile.path,
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-      );
-      ref.read(imagePathsProvider.notifier).state = [...current, newImage];
-    }
-  }
-
-  // 이미지 제거 함수
-  void removeImage(int index) {
-    final current = ref.read(imagePathsProvider.notifier).state;
-    final updated = List<ImageItem>.from(current)..removeAt(index);
-    ref.read(imagePathsProvider.notifier).state = updated;
   }
 
   // 카테고리 선택 함수
@@ -130,54 +111,9 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
     );
   }
 
-  // 제목 텍스트 위젯
-  Widget _buildTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-          fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
-    );
-  }
-
-  // 입력 컨테이너 위젯
-  Widget _buildInputContainer({
-    String type = 'text',
-    required TextEditingController controller,
-    required String title,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: _defaultBoxDecoration(),
-      child: TextFormField(
-        controller: controller,
-        keyboardType:
-            type == 'number' ? TextInputType.number : TextInputType.text,
-        cursorColor: Colors.grey[600],
-        cursorHeight: 20,
-        decoration: InputDecoration(
-          hintText: title == "제목" ? "글제목" : title,
-          hintStyle: TextStyle(
-              fontSize: 15,
-              color: Colors.grey[500],
-              fontWeight: FontWeight.w500),
-          border: const UnderlineInputBorder(borderSide: BorderSide.none),
-          contentPadding: const EdgeInsets.symmetric(vertical: 9),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return '$title 을 입력해주세요';
-          }
-          if (title == "가격" && int.tryParse(value) == null) {
-            return '유효한 숫자를 입력해주세요';
-          }
-          return null;
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final productSearchNotifier = ref.read(productSearchProvider.notifier);
     final imagePaths = ref.watch(imagePathsProvider);
     final isNegotiable = ref.watch(isNegotiableProvider);
     final isPossibleMeetYou = ref.watch(isPossibleMeetYouProvider);
@@ -206,125 +142,19 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 이미지 추가 및 출력 영역
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: addImage,
-                        child: Container(
-                          width: 90,
-                          height: 90,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child:
-                              const Icon(Icons.add_a_photo, color: Colors.grey),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Container(
-                          height: 90,
-                          child: imagePaths.isNotEmpty
-                              ? ReorderableListView(
-                                  scrollDirection: Axis.horizontal,
-                                  onReorder: (oldIndex, newIndex) {
-                                    final List<ImageItem> items =
-                                        List.from(imagePaths);
-                                    if (newIndex > oldIndex) newIndex -= 1;
-                                    final item = items.removeAt(oldIndex);
-                                    items.insert(newIndex, item);
-                                    ref
-                                        .read(imagePathsProvider.notifier)
-                                        .state = items;
-                                  },
-                                  children: [
-                                    for (int index = 0;
-                                        index < imagePaths.length;
-                                        index++)
-                                      Container(
-                                        key: ValueKey(imagePaths[index].id),
-                                        padding:
-                                            const EdgeInsets.only(right: 8.0),
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              width: 90,
-                                              height: 90,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                image: DecorationImage(
-                                                  image: FileImage(File(
-                                                      imagePaths[index].path)),
-                                                  fit: BoxFit.fill,
-                                                ),
-                                              ),
-                                            ),
-                                            //위치가 첫번째 이면 대표 사진으로 지정
-                                            if (index == 0)
-                                              Positioned(
-                                                bottom: 0,
-                                                left: 0,
-                                                right: 0,
-                                                child: Container(
-                                                  color: Colors.black54,
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 3),
-                                                  child: const Text(
-                                                    '대표 사진',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            Positioned(
-                                              top: 0,
-                                              right: 0,
-                                              child: GestureDetector(
-                                                onTap: () => removeImage(index),
-                                                child: Container(
-                                                  width: 18,
-                                                  height: 18,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Colors.red,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: const Icon(Icons.close,
-                                                      color: Colors.white,
-                                                      size: 16),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                  ],
-                                )
-                              : Container(),
-                        ),
-                      ),
-                    ],
-                  ),
+                  ImageSelectContainer(),
                   height16Box,
                   // 제목 입력
-                  _buildTitle('제목'),
-                  height8Box,
-                  _buildInputContainer(
-                      controller: titleController, title: '글 제목'),
+                  CustomLabelInputField(
+                      title: '제목',
+                      controller: titleController,
+                      inputLabel: '글 제목'),
                   height16Box,
                   // 제품 입력
-                  _buildTitle('제품'),
-                  height8Box,
-                  _buildInputContainer(
-                      controller: productNameController, title: '제품명'),
+                  CustomLabelInputField(
+                      title: '제품',
+                      controller: productNameController,
+                      inputLabel: '제품명'),
                   height16Box,
                   // 카테고리 및 브랜드 선택
                   Row(
@@ -401,25 +231,29 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                   ),
 
                   Visibility(
-                      visible: selectedBrand == '삼성',
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          height16Box,
-                          _buildTitle('제품 검색하기'),
-                          height8Box,
-                          _buildInputContainer(
-                              controller: productNameController,
-                              title: '제품명, 제품 코드 '),
-                        ],
-                      )),
+                    visible: selectedBrand == '삼성',
+                    child:
+                        ProductSearchField(controller: productFindController),
+
+                    // Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     height16Box,
+                    //     CustomLabelInputField(
+                    //         title: '제품 검색하기',
+                    //         controller: productFindController,
+                    //         inputLabel: '제품명, 제품 코드'),
+                    //   ],
+                    // ),
+                  ),
 
                   height16Box,
                   // 가격 입력
-                  _buildTitle('가격'),
-                  height8Box,
-                  _buildInputContainer(
-                      type: 'number', controller: priceController, title: '가격'),
+                  CustomLabelInputField(
+                      title: '가격',
+                      type: 'number',
+                      controller: priceController,
+                      inputLabel: '가격'),
                   const SizedBox(height: APlusTheme.spacingS),
                   // 가격 제안 받기
                   Row(
@@ -524,6 +358,10 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                               selectedCategory, // 카테고리
                               userid,
                               imageFiles, // 이미지 파일 리스트
+                              productSearchNotifier.getCurrentSelected(),
+                              ref
+                                  .read(locationProvider.notifier)
+                                  .getMyDistrict(),
                             );
                         // 등록 성공 후 입력 데이터 초기화
                         titleController.clear();
@@ -531,6 +369,9 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                         priceController.clear();
                         descriptionController.clear();
                         tradeLocationController.clear();
+                        productFindController.clear();
+
+                        productSearchNotifier.reset();
 
                         // 이미지 목록 초기화
                         ref.read(imagePathsProvider.notifier).state = [];
@@ -552,6 +393,14 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+          fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
     );
   }
 }

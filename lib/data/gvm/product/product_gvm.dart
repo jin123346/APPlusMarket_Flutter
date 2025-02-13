@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:applus_market/data/gvm/product/productlist_gvm.dart';
 import 'package:applus_market/data/model/product/product_info_card.dart';
+import 'package:applus_market/data/model/product/selected_product.dart';
 import 'package:applus_market/data/repository/product/product_repository.dart';
 import 'package:applus_market/main.dart';
 import 'package:flutter/material.dart';
@@ -17,23 +18,24 @@ class ProductGvm extends Notifier<ProductInfoCard> {
   @override
   ProductInfoCard build() {
     return ProductInfoCard(
-      product_id: null,
-      title: null,
-      product_name: null,
-      images: null,
-      content: null,
-      updated_at: null,
-      price: null,
-      status: null,
-      seller_id: null,
-      nickname: null,
-      is_negotiable: null,
-      is_possible_meet_you: null,
-      category: null,
-      register_ip: null,
-      created_at: null,
-      brand: null,
-    );
+        product_id: null,
+        title: null,
+        product_name: null,
+        images: null,
+        content: null,
+        updated_at: null,
+        price: null,
+        status: null,
+        seller_id: null,
+        nickname: null,
+        is_negotiable: null,
+        is_possible_meet_you: null,
+        category: null,
+        register_ip: null,
+        created_at: null,
+        brand: null,
+        selectedProduct: null,
+        location: null);
   }
 
   //상품 등록
@@ -49,6 +51,8 @@ class ProductGvm extends Notifier<ProductInfoCard> {
     String category,
     int userid,
     List<File> imageFiles,
+    SelectedProduct? selectedProduct,
+    String? location,
   ) async {
     try {
       final body = {
@@ -62,6 +66,8 @@ class ProductGvm extends Notifier<ProductInfoCard> {
         'isPossibleMeetYou': ispossiblemeetyou,
         'sellerId': userid,
         'category': category,
+        'SelectedProduct': selectedProduct ?? null,
+        'location': location ?? null
       };
       logger.i('productName : ${body}');
       final responseBody = await productRepository.insertProduct(
@@ -105,6 +111,10 @@ class ProductGvm extends Notifier<ProductInfoCard> {
       return null;
     }
   }
+
+  void findSelectedProduct() {}
+
+  void updateSelectedProduct() {}
 }
 
 final productProvider = NotifierProvider<ProductGvm, ProductInfoCard>(

@@ -57,6 +57,10 @@ class LocationGvm extends Notifier<MyPosition?> {
     return await Geolocator.getCurrentPosition();
   }
 
+  String getMyDistrict() {
+    return state!.district!;
+  }
+
   Future<MyPosition?> getAddressFromCoordinates(
       double latitude, double longitude) async {
     latitude = 35.162553736212246;

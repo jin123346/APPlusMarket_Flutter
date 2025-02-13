@@ -3,6 +3,8 @@
 *
 */
 //상세 정보
+import 'package:applus_market/data/model/product/selected_product.dart';
+
 import '../../../_core/utils/apiUrl.dart';
 import '../../../_core/utils/logger.dart';
 
@@ -25,6 +27,8 @@ class ProductInfoCard {
   final String? category; // 카테고리
   final String? brand; //브랜드
   final List<String>? images; // 이미지들
+  final SelectedProduct? selectedProduct;
+  final String? location;
 
   // 생성자
   ProductInfoCard({
@@ -46,6 +50,8 @@ class ProductInfoCard {
     required this.category, // 카테고리
     required this.brand, //브랜드
     required this.images, // 이미지들
+    required this.selectedProduct,
+    required this.location,
   });
 
   // 수정된 toString() 메서드
@@ -90,6 +96,8 @@ class ProductInfoCard {
       images: json['productImage'] != null
           ? ["$apiUrl/uploads/${json['id']}/${json['productImage']}"]
           : [],
+      selectedProduct: null,
+      location: null,
     );
   }
   factory ProductInfoCard.todata(Map<String, dynamic> json) {
@@ -120,28 +128,30 @@ class ProductInfoCard {
           "${updatedDateTime.year}-${updatedDateTime.month.toString().padLeft(2, '0')}-${updatedDateTime.day.toString().padLeft(2, '0')}";
     }
     return ProductInfoCard(
-      product_id: json['id'] as int?,
-      title: json['title'] as String?,
-      product_name: json['productName'] as String?,
-      content: json['content'] as String?,
-      register_location: json['registerLocation'] as String?,
-      register_ip: json['registerIp'] as String?,
-      created_at: json['createdAt'] as String?,
-      updated_at: formattedUpdatedAt,
-      price: json['price'] as int?,
-      status: json['status'] as String?,
-      deleted_at: json['deletedAt'] as String?,
-      seller_id: json['sellerId'] as int?,
-      nickname: json['nickName'] as String?,
-      is_negotiable: json['isNegotiable'] as bool?,
-      is_possible_meet_you: json['isPossibleMeetYou'] as bool?,
-      category: json['category'] as String?,
-      brand: json['brand'] as String?,
-      images: (json['images'] as List<dynamic>?)?.map((image) {
-            return "$apiUrl/uploads/${json['id']}/${image['uuidName']}";
-          }).toList() ??
-          [], // 이미지 매핑
-    );
+        product_id: json['id'] as int?,
+        title: json['title'] as String?,
+        product_name: json['productName'] as String?,
+        content: json['content'] as String?,
+        register_location: json['registerLocation'] as String?,
+        register_ip: json['registerIp'] as String?,
+        created_at: json['createdAt'] as String?,
+        updated_at: formattedUpdatedAt,
+        price: json['price'] as int?,
+        status: json['status'] as String?,
+        deleted_at: json['deletedAt'] as String?,
+        seller_id: json['sellerId'] as int?,
+        nickname: json['nickName'] as String?,
+        is_negotiable: json['isNegotiable'] as bool?,
+        is_possible_meet_you: json['isPossibleMeetYou'] as bool?,
+        category: json['category'] as String?,
+        brand: json['brand'] as String?,
+        images: (json['images'] as List<dynamic>?)?.map((image) {
+              return "$apiUrl/uploads/${json['id']}/${image['uuidName']}";
+            }).toList() ??
+            [], // 이미지 매핑
+        //TODO: 선택된 product 가져오기
+        selectedProduct: null,
+        location: json['location'] ?? null);
   }
 }
 
