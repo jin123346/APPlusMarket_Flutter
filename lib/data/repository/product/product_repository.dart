@@ -53,4 +53,11 @@ class ProductRepository {
     logger.e("Updated State: $response");
     return response.data;
   }
+
+  Future<Map<String, dynamic>> searchProductForSamsung(String keyword) async {
+    Response response = await dio
+        .get('/api/samsung/search', queryParameters: {"keyword": keyword});
+
+    return response.data;
+  }
 }
