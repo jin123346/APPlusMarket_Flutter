@@ -8,11 +8,6 @@ class MyPosition {
   String? neighborhood; // 마을/동네 (administrative_area_level_3)
   String? postalCode; // 우편번호
 
-<<<<<<< HEAD
-
-  
-=======
->>>>>>> 2292753 (pay)
   MyPosition({
     required this.latitude,
     required this.longitude,
