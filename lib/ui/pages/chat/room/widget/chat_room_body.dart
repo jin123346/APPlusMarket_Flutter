@@ -219,7 +219,7 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                         icon: const Icon(CupertinoIcons.paperplane_fill),
                         onPressed: () {
                           setState(() {
-                            viewModel.chatService.sendMessage(
+                            viewModel.sendMessage(
                                 chatRoomId, _messageController.text, myId);
                           });
                           _messageController.clear();

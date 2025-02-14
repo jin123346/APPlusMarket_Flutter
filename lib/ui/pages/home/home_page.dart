@@ -1,4 +1,5 @@
 import 'package:applus_market/data/gvm/session_gvm.dart';
+import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/repository/chat/chat_repository.dart';
 import 'package:applus_market/data/service/chat_websocket_service.dart';
@@ -24,7 +25,6 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   late final ScrollController _scrollController;
   ChatRepository chatRepository = ChatRepository();
-  ChatService chatService = ChatService();
 
   @override
   void initState() {
@@ -32,12 +32,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     // ScrollController를 초기화하고 리스너 등록
     _scrollController = ScrollController()..addListener(_scrollListener);
-
-    // ChatService Notifier로 수정하여 사용하기
-
-    // TODO : 수빈 - (중요) 하드코딩을 지우고 요청 받아온 값으로 처리해야함
-    chatService.connect([1, 2, 3, 4, 5, 6, 7, 9, 10]);
-    logger.e(chatService.stompClient?.connected);
   }
 
   // 스크롤 위치가 하단 근처에 도달하면 추가 데이터 요청

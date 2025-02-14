@@ -15,7 +15,7 @@ class ChatRoomCard {
   final int productId;
   final String productThumbnail;
   final int sellerId; // 채팅방의 제품 판매자
-  final int unRead;
+  final int? unRead;
 
   final String recentMessage;
   final String messageCreatedAt;
@@ -28,7 +28,7 @@ class ChatRoomCard {
       required this.productId,
       required this.productThumbnail,
       required this.sellerId,
-      required this.unRead,
+      this.unRead = 0,
       required this.recentMessage,
       required this.messageCreatedAt}); // JSON 데이터를 ChatRoomCard 객체로 변환하는 fromJson 메서드
 

@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:applus_market/_core/utils/logger.dart';
+import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/data/model/chat/chat_message.dart';
 import 'package:applus_market/data/model/chat/chat_room.dart';
 import 'package:applus_market/data/service/chat_websocket_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:applus_market/data/repository/chat/chat_repository.dart';
+import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 /*
  * packageName    : lib/ui/pages/chat/room/chat_room_page_view_model.dart
@@ -23,7 +27,6 @@ import 'package:applus_market/data/repository/chat/chat_repository.dart';
 // TODO : (중요) AutoDispose.family 로 수정 해야함
 class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   final ChatRepository chatRepository = ChatRepository();
-  final ChatService chatService = ChatService();
 
   late int chatRoomId; // 나중에 ChatRoomBody 에서 초기화 해줄 것
   bool _isInitialized = false;
@@ -47,7 +50,6 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
     _isInitialized = true;
     // 로딩 상태 설정
     setupMessageListener();
-
     _refreshData();
   }
 
@@ -62,7 +64,8 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
 
   // 구독한 방에서 받아온 메시지를 화면에 반영하기 위함
   void setupMessageListener() {
-    chatService.onMessageReceived = (ChatMessage newMessage) {
+    ref.watch(webSocketProvider.notifier).onMessageReceived =
+        (ChatMessage newMessage) {
       logger.e('여긴 확실히 올 듯 ');
       state.whenData((currentRoom) {
         final updatedMessages = [...currentRoom.messages, newMessage];
@@ -71,13 +74,38 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
     };
   }
 
+  void sendMessage(int chatRoomId, String message, int senderId) {
+    WebSocketNotifier notifier = ref.watch(webSocketProvider.notifier);
+    StompClient? stompClient = notifier.stompClient;
+    if (stompClient != null && stompClient!.connected) {
+      try {
+        Map<String, dynamic> body = {
+          "chatRoomId": chatRoomId,
+          "content": message,
+          "senderId": senderId,
+        };
+        stompClient!.send(
+          destination: "/pub/chat/message",
+          body: json.encode(body),
+        );
+        logger.d("메시지 전송 성공: $body");
+      } catch (e) {
+        logger.e("메시지 전송 오류: $e");
+      }
+    } else {
+      logger.e("WebSocket 연결되지 않음 ${stompClient?.connected}");
+    }
+  }
+
   Future<int> createChatRoom(int sellerId, int productId, int userId) async {
     Map<String, dynamic> body = {
       "sellerId": sellerId,
       "productId": productId,
       "userId": userId,
     };
-    return await chatRepository.createChatRoom(body);
+    int result = await chatRepository.createChatRoom(body);
+    ref.watch(webSocketProvider.notifier).subscribe('/sub/chatroom/$result');
+    return result;
   }
 
   Future<ChatRoom> getChatRoomDetail(int chatRoomId) async {
