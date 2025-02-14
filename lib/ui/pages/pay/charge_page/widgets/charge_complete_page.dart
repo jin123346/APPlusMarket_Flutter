@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 import '../../../../../_core/utils/logger.dart';
+import '../../pay_home_page.dart';
 
 class ChargeCompletePage extends StatelessWidget {
   @override
@@ -32,7 +34,7 @@ class ChargeCompletePage extends StatelessWidget {
               ),
             ),
 
-            // *** [수정] 송금 상세 정보 -> 충전 상세 정보
+            // *** 송금 상세 정보 -> 충전 상세 정보
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -50,9 +52,18 @@ class ChargeCompletePage extends StatelessWidget {
                   padding: EdgeInsets.all(20),
                   child: ElevatedButton(
                     onPressed: () {
-                      // *** [수정] 로그 메시지 변경
-                      logger.i('🍎 충전 완료 → 버튼 클릭 이벤트 발생');
                       // 버튼 클릭 처리
+                      logger.i('🍎 여기는 충전 완료 페이지 → ((확인)) 버튼 클릭 이벤트 발생 !!!');
+                      Navigator.pushReplacement(
+                        // 충전 완료 페이지 → 애쁠 페이 홈 이동 (뒤로 가기 x)
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.rightToLeft,
+                          child: PayHomePage(),
+                          duration:
+                              Duration(milliseconds: 300), // 3초 후 이동 (사용자 ux)
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFFF3B30),
