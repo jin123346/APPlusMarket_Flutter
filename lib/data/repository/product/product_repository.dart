@@ -60,4 +60,11 @@ class ProductRepository {
 
     return response.data;
   }
+
+  Future<Map<String, dynamic>> selectForMyList(
+      Map<String, dynamic> body) async {
+    Response response = await dio.get('/product/on-sale', data: body);
+
+    return response.data;
+  }
 }
