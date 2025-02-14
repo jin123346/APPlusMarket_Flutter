@@ -1,3 +1,5 @@
+import 'package:applus_market/_core/utils/logger.dart';
+import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/ui/pages/chat/list/chat_list_page.dart';
 import 'package:applus_market/ui/pages/my/my_info_page.dart';
 import 'package:applus_market/ui/pages/my/withdrawal_page.dart';
@@ -56,11 +58,17 @@ Future<void> main() async {
 
 GlobalKey<NavigatorState> navigatorkey = GlobalKey<NavigatorState>();
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // ChatService Notifier로 수정하여 사용하기
+    WebSocketNotifier notifier = ref.watch(webSocketProvider.notifier);
+
+    notifier.connect();
+    logger.e(
+        'HomePage initState() - stompClient 연결 여부 ${notifier.stompClient?.connected}');
     return MaterialApp(
       navigatorKey: navigatorkey,
       debugShowCheckedModeBanner: false,
