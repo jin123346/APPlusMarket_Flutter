@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../_core/utils/logger.dart';
+
 class ProductMyList {
   int? id;
   String? title;
@@ -8,6 +10,7 @@ class ProductMyList {
   String? productName;
   String? createdAt;
   String? updatedAt;
+  String? reloadAt;
   int? price;
   String? status;
   bool? isNegotiable;
@@ -18,20 +21,21 @@ class ProductMyList {
   String? uuidName;
 
   ProductMyList({
-    required int? id,
-    required String? title,
-    required String? productImage,
-    required String? productName,
-    required String? createdAt,
-    required String? updatedAt,
-    required int? price,
-    required String? status,
-    required bool? isNegotiable,
-    required bool? isPossibleMeetYou,
-    required String? category,
-    required int? sellerId,
-    required String? registerLocation,
-    required String? uuidName,
+    required this.id,
+    required this.uuidName,
+    required this.productName,
+    required this.productImage,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.reloadAt,
+    required this.price,
+    required this.status,
+    required this.isPossibleMeetYou,
+    required this.sellerId,
+    required this.registerLocation,
+    required this.category,
+    required this.isNegotiable,
+    required this.title,
   });
 
   ProductMyList copyWith({
@@ -41,6 +45,7 @@ class ProductMyList {
     String? productName,
     String? createdAt,
     String? updatedAt,
+    String? reloadAt,
     int? price,
     String? status,
     bool? isNegotiable,
@@ -57,6 +62,7 @@ class ProductMyList {
       productName: productName ?? this.productName,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      reloadAt: reloadAt ?? this.reloadAt,
       price: price ?? this.price,
       status: status ?? this.status,
       isNegotiable: isNegotiable ?? this.isNegotiable,
@@ -69,21 +75,28 @@ class ProductMyList {
   }
 
   factory ProductMyList.fromMap(Map<String, dynamic> json) {
+    logger.i('들어온 Json $json');
     return ProductMyList(
-      id: json['id'],
-      title: json['title'],
-      productImage: json['productImage'],
-      productName: json['productName'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      price: json['price'],
-      status: json['status'],
-      isNegotiable: json['isNegotiable'],
-      isPossibleMeetYou: json['isPossibleMeetYou'],
-      category: json['category'],
-      registerLocation: json['registerLocation'],
-      sellerId: json['sellerId'],
-      uuidName: json['uuidName'],
+      id: json["id"] ?? 0,
+      title: json["title"] ?? "No Title",
+      productImage: json["productImage"] ?? "", // Default to empty string
+      productName: json["productName"] ?? "No Name",
+      createdAt: json['createdAt'] ?? '',
+      updatedAt: json['updatedAt'] ?? '',
+      reloadAt: json['reloadAt'] ?? '',
+      price: json['price'] ?? 0.0,
+      status: json['status'] ?? 'Unknown',
+      isNegotiable: json['isNegotiable'] ?? false,
+      isPossibleMeetYou: json['isPossibleMeetYou'] ?? false,
+      category: json['category'] ?? 'Unknown',
+      registerLocation: json['registerLocation'] ?? 'Unknown',
+      sellerId: json['sellerId'] ?? 0,
+      uuidName: json['uuidName'] ?? "",
     );
+  }
+
+  @override
+  String toString() {
+    return 'ProductMyList{id: $id, title: $title, productImage: $productImage, productName: $productName, createdAt: $createdAt, updatedAt: $updatedAt, price: $price, status: $status, isNegotiable: $isNegotiable, isPossibleMeetYou: $isPossibleMeetYou, category: $category, sellerId: $sellerId, registerLocation: $registerLocation, uuidName: $uuidName}';
   }
 }

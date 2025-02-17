@@ -2,6 +2,8 @@ import 'package:applus_market/ui/pages/chat/list/chat_list_page.dart';
 import 'package:applus_market/ui/pages/my/my_info_page.dart';
 import 'package:applus_market/ui/pages/my/my_sell_list_page.dart';
 import 'package:applus_market/ui/pages/my/withdrawal_page.dart';
+import 'package:applus_market/ui/pages/product/product_modify_page.dart';
+import 'package:applus_market/ui/pages/product/widgets/product_modify_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,6 +82,7 @@ class MyApp extends StatelessWidget {
         '/join/check': (context) => JoinCheckPage(),
         '/home': (context) => MainScreen(),
         '/product/register': (context) => ProductRegisterPage(),
+        '/product/modify': (context) => ProductModifyPage(),
         '/withdrawal': (context) => WithdrawalPage(),
         '/withdrawal/confirm': (context) => WithdrawalWarningDialog(),
         '/my': (context) => MyLoginedPage(),

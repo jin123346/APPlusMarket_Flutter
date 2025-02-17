@@ -1,4 +1,3 @@
-import 'package:applus_market/_core/components/theme.dart';
 import 'package:applus_market/_core/utils/apiUrl.dart';
 import 'package:applus_market/_core/utils/dialog_helper.dart';
 import 'package:applus_market/data/model/product/product_my_list.dart';
@@ -11,15 +10,14 @@ import 'package:intl/intl.dart';
 import '../../../../_core/utils/priceFormatting.dart';
 import '../../../../data/model_view/product/product_my_list_model_view.dart';
 
-class ProductSellList extends ConsumerStatefulWidget {
-  final String status;
-  const ProductSellList({required this.status, super.key});
+class ProductHiddenList extends ConsumerStatefulWidget {
+  const ProductHiddenList({super.key});
 
   @override
-  ConsumerState<ProductSellList> createState() => _ProductSellListState();
+  ConsumerState<ProductHiddenList> createState() => _ProductSellListState();
 }
 
-class _ProductSellListState extends ConsumerState<ProductSellList> {
+class _ProductSellListState extends ConsumerState<ProductHiddenList> {
   List<ProductMyList> mySellList = [];
   bool _isLoading = true;
   bool _isExist = true;
@@ -32,7 +30,7 @@ class _ProductSellListState extends ConsumerState<ProductSellList> {
   void _loadList() async {
     await ref
         .read(productMyLisProvider.notifier)
-        .getMyOnSaleList(null, widget.status);
+        .getMyOnSaleList(null, 'Hidden');
   }
 
   @override
@@ -91,27 +89,21 @@ class _ProductSellListState extends ConsumerState<ProductSellList> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          '${product.productName}',
-                                          style: CustomTextTheme.titleMedium,
-                                        ),
+                                        Text('${product.productName}'),
                                         Text(
                                             '${product.registerLocation} ${time} '),
-                                        Text(
-                                          '${price} 원',
-                                          style: CustomTextTheme.titleMedium,
-                                        ),
+                                        Text('${price} 원'),
                                         const SizedBox(height: 5),
                                         Container(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 10, vertical: 4),
                                           decoration: BoxDecoration(
-                                            color: Colors.red,
+                                            color: Colors.grey.shade500,
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                           ),
                                           child: Text(
-                                            '판매중',
+                                            '숨김',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 12),
@@ -132,36 +124,31 @@ class _ProductSellListState extends ConsumerState<ProductSellList> {
                                         width: double.infinity,
                                         child: ElevatedButton(
                                           onPressed: () {
-                                            if (!canReload(product.reloadAt)) {
-                                              return;
-                                            }
                                             DialogHelper.showAlertDialog(
                                                 context: context,
-                                                title: '끌어올리시겠습니까?',
+                                                title: '숨기기 해제하시겠습니까?',
+                                                isCanceled: true,
                                                 onConfirm: () {
                                                   Navigator.pop(
                                                       context); // 다이얼로그 닫기
-                                                  _updateReload(
-                                                      productId: product.id!);
+                                                  _updateStatus(
+                                                      status: 'Active',
+                                                      productId: product.id!,
+                                                      message: '숨김 해제 되었습니다.');
                                                   FocusScope.of(context)
                                                       .unfocus();
-                                                },
-                                                isCanceled: true);
+                                                });
                                           },
-                                          child: Text('끌어올리기'),
+                                          child: Text(
+                                            '숨기기 해제',
+                                          ),
                                           style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  canReload(product.reloadAt)
-                                                      ? Colors.white12
-                                                      : Colors.grey.shade200,
-                                              foregroundColor:
-                                                  canReload(product.reloadAt)
-                                                      ? Colors.black
-                                                      : Colors.grey,
+                                              backgroundColor: Colors.white12,
+                                              foregroundColor: Colors.black,
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 25),
                                               side: BorderSide(
-                                                  color: Colors.grey.shade500)),
+                                                  color: Colors.black)),
                                         ),
                                       ),
                                     ),
@@ -181,8 +168,8 @@ class _ProductSellListState extends ConsumerState<ProductSellList> {
                           },
                         )
                       : [
-                          ListTile(
-                            title: Text("현재 판매중인 상품이 없습니다."),
+                          Center(
+                            child: Text("숨긴 상품이 존재하지 않습니다."),
                           )
                         ]),
             ),
@@ -201,30 +188,9 @@ class _ProductSellListState extends ConsumerState<ProductSellList> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildOption(context, '예약중', () {
-                Navigator.pop(context);
-                _updateStatus(
-                    productId: product.id!,
-                    status: 'Reserved',
-                    message: '예약중처리 되었습니다.');
-              }),
-              _buildOption(context, '거래완료', () {
-                Navigator.pop(context);
-                _updateStatus(
-                    productId: product.id!,
-                    status: 'Sold',
-                    message: '거래완료 처리되었습니다.');
-              }),
               _buildOption(context, '게시글 수정', () {
-                Navigator.pushNamed(context, '/product/modify',
-                    arguments: product.id);
-              }),
-              _buildOption(context, '숨기기', () {
                 Navigator.pop(context);
-                _updateStatus(
-                    productId: product.id!,
-                    status: 'Hidden',
-                    message: '숨김 처리 되었습니다.');
+                // 수정 페이지로 이동하는 로직 추가
               }),
               Divider(),
               _buildOption(context, '삭제', () {
@@ -259,33 +225,17 @@ class _ProductSellListState extends ConsumerState<ProductSellList> {
     // await ref.read(productMyLisProvider.notifier).deleteProduct(productId);
   }
 
-// 끌어올리기
-  void _updateReload({required int productId}) async {
-    FocusScope.of(context).unfocus();
-    await ref.read(productMyLisProvider.notifier).updateReload(productId);
-  }
-
-  bool canReload(String? reloadAt) {
-    if (reloadAt == null || reloadAt.isEmpty) return true; // reloadAt이 없으면 허용
-    try {
-      // "2025-02-17T12:40:13" 형식을 지원하도록 파싱
-      DateTime reloadDate = DateTime.parse(reloadAt);
-      DateTime now = DateTime.now();
-      return now.difference(reloadDate).inDays >= 3; // 3일 이상 지났는지 확인
-    } catch (e) {
-      print("⚠️ Date Parsing Error: $e"); // 디버깅 로그 추가
-      return true; // 에러 발생 시 기본적으로 허용
-    }
-  }
+  //숨기기 해제
 
   void _updateStatus(
       {required int productId,
       required String status,
-      required message}) async {
+      required String message}) async {
     await ref
         .read(productMyLisProvider.notifier)
         .updateStatus(productId, status, message);
   }
+
 // 받은 후기 보기
 // 후기 보내기
 }
