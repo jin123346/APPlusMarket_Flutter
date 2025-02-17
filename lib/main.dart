@@ -2,7 +2,10 @@ import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/ui/pages/chat/list/chat_list_page.dart';
 import 'package:applus_market/ui/pages/my/my_info_page.dart';
+import 'package:applus_market/ui/pages/my/my_sell_list_page.dart';
 import 'package:applus_market/ui/pages/my/withdrawal_page.dart';
+import 'package:applus_market/ui/pages/product/product_modify_page.dart';
+import 'package:applus_market/ui/pages/product/widgets/product_modify_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,6 +39,7 @@ import 'ui/pages/my/widgets/withdrawal_warning_dialog.dart';
 import 'ui/pages/pay/charge_page/charge_page.dart';
 import 'ui/pages/pay/pay_home_page.dart';
 import 'ui/pages/pay/widgets/pay_send_page.dart';
+import 'ui/pages/product/product_register_page.dart';
 import 'ui/pages/splash/splash_screen.dart';
 
 /**
@@ -85,6 +89,8 @@ class MyApp extends ConsumerWidget {
         '/join/insertEmail': (context) => InsertEmailPage(),
         '/join/check': (context) => JoinCheckPage(),
         '/home': (context) => MainScreen(),
+        '/product/register': (context) => ProductRegisterPage(),
+        '/product/modify': (context) => ProductModifyPage(),
         '/withdrawal': (context) => WithdrawalPage(),
         '/withdrawal/confirm': (context) => WithdrawalWarningDialog(),
         '/my': (context) => MyLoginedPage(),
@@ -93,6 +99,7 @@ class MyApp extends ConsumerWidget {
         '/my/delivery': (context) => DeliveryPage(),
         '/my/delivery/register': (context) => DeliveryRegisterPage(),
         '/my/delivery/modify': (context) => DeliveryMoifyPage(),
+        '/my/sell/list': (context) => MySellListPage(),
         '/my/payHome': (context) => PayHomePage(), // 결제 홈 화면
         '/pay/charge': (context) => ChargePage(), // 충전 화면
         '/pay/send': (context) => PaySendPage(), // 송금 화면
