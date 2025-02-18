@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../data/model_view/product/image_item_view_model.dart';
+
 class ImageSelectContainer extends ConsumerStatefulWidget {
   const ImageSelectContainer({super.key});
 
@@ -19,31 +21,25 @@ class _ImageSelectContainerState extends ConsumerState<ImageSelectContainer> {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      final current = ref.read(imagePathsProvider.notifier).state;
-      if (current.length >= 10) {
+      if (ref.read(imageStateProvider).length >= 10) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('최대 10개의 이미지만 추가할 수 있습니다.')),
         );
         return;
       }
-      final newImage = ImageItem(
-        path: pickedFile.path,
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-      );
-      ref.read(imagePathsProvider.notifier).state = [...current, newImage];
+      ref.read(imageStateProvider.notifier).addNewImage(File(pickedFile.path));
     }
   }
 
   // 이미지 제거 함수
-  void removeImage(int index) {
-    final current = ref.read(imagePathsProvider.notifier).state;
-    final updated = List<ImageItem>.from(current)..removeAt(index);
-    ref.read(imagePathsProvider.notifier).state = updated;
+  void removeImage(ImageItem image) {
+    ref.read(imageStateProvider.notifier).removeImage(image);
   }
 
   @override
   Widget build(BuildContext context) {
-    final imagePaths = ref.watch(imagePathsProvider);
+    final imageState = ref.watch(imageStateProvider); // 이미지 상태 가져오기
+    final imageNotifier = ref.read(imageStateProvider.notifier);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,20 +60,17 @@ class _ImageSelectContainerState extends ConsumerState<ImageSelectContainer> {
         Expanded(
           child: Container(
             height: 90,
-            child: imagePaths.isNotEmpty
+            child: imageState.isNotEmpty
                 ? ReorderableListView(
                     scrollDirection: Axis.horizontal,
                     onReorder: (oldIndex, newIndex) {
-                      final List<ImageItem> items = List.from(imagePaths);
-                      if (newIndex > oldIndex) newIndex -= 1;
-                      final item = items.removeAt(oldIndex);
-                      items.insert(newIndex, item);
-                      ref.read(imagePathsProvider.notifier).state = items;
+                      imageNotifier.reorderImages(oldIndex, newIndex);
                     },
                     children: [
-                      for (int index = 0; index < imagePaths.length; index++)
+                      for (int index = 0; index < imageState.length; index++)
                         Container(
-                          key: ValueKey(imagePaths[index].id),
+                          key: ValueKey(
+                              imageState[index].id ?? imageState[index].path),
                           padding: const EdgeInsets.only(right: 8.0),
                           child: Stack(
                             children: [
@@ -87,8 +80,7 @@ class _ImageSelectContainerState extends ConsumerState<ImageSelectContainer> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
                                   image: DecorationImage(
-                                    image:
-                                        FileImage(File(imagePaths[index].path)),
+                                    image: _getImageProvider(imageState[index]),
                                     fit: BoxFit.fill,
                                   ),
                                 ),
@@ -118,7 +110,7 @@ class _ImageSelectContainerState extends ConsumerState<ImageSelectContainer> {
                                 top: 0,
                                 right: 0,
                                 child: GestureDetector(
-                                  onTap: () => removeImage(index),
+                                  onTap: () => removeImage(imageState[index]),
                                   child: Container(
                                     width: 18,
                                     height: 18,
@@ -141,5 +133,14 @@ class _ImageSelectContainerState extends ConsumerState<ImageSelectContainer> {
         ),
       ],
     );
+  }
+
+  // 기존 이미지와 새로 추가된 이미지를 구분하여 표시
+  ImageProvider _getImageProvider(ImageItem image) {
+    if (image.path.startsWith('http')) {
+      return NetworkImage(image.path); // 서버 이미지 (URL)
+    } else {
+      return FileImage(File(image.path)); // 로컬 파일 이미지
+    }
   }
 }

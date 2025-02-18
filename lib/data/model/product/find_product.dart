@@ -24,11 +24,11 @@ class FindProduct {
     return FindProduct(
         id: map['id'],
         name: map['name'],
-        productCode: map['productCode'],
-        productDetailCode: map['productDetailCode'],
-        originalPrice: map['originalPrice'],
-        finalPrice: map['finalPrice'],
-        productUrl: map['productUrl'],
-        brandName: map['brandName']);
+        productCode: map['productCode'] as String,
+        productDetailCode: map['productDetailCode'] as String,
+        originalPrice: map['originalPrice'] ?? 0,
+        finalPrice: map['finalPrice'] ?? 0,
+        productUrl: map['productUrl'] as String,
+        brandName: map['brandName'] as String);
   }
 }
