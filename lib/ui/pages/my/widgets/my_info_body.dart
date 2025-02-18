@@ -77,8 +77,6 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
         children: [
           Center(
             child: ProfileImageContainer(
-              profileImg: user.profileImg,
-              userId: user.id,
               width: 100,
               height: 100,
             ),

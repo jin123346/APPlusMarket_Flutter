@@ -3,54 +3,56 @@
 *
 */
 //상세 정보
+import 'package:applus_market/data/model/product/find_product.dart';
+import 'package:applus_market/data/model/product/product_image.dart';
 import 'package:applus_market/data/model/product/selected_product.dart';
 
 import '../../../_core/utils/apiUrl.dart';
 import '../../../_core/utils/logger.dart';
 
-class ProductInfoCard {
-  final int? product_id; // 아이디
+class Product {
+  final int? id; // 아이디
   final String? title; // 제목
-  final String? product_name; //제품명
+  final String? productName; //제품명
   final String? content; // 내용
-  final String? register_location; // 등록 위치
-  final String? register_ip; // 등록 아이피
-  final String? created_at; // 생성 일자
-  final String? updated_at; // 업데이트 일자
+  final String? registerLocation; // 등록 위치
+  final String? registerIp; // 등록 아이피
+  final String? createdAt; // 생성 일자
+  final String? updatedAt; // 업데이트 일자
   final int? price; // 가격
   final String? status; // 상태
-  final String? deleted_at; // 삭제 일자
-  final int? seller_id; // 판매자 아이디
+  final String? deletedAt; // 삭제 일자
+  final int? sellerId; // 판매자 아이디
   final String? nickname; //판매자 닉네임
-  final bool? is_negotiable; // 네고 가능 여부
-  final bool? is_possible_meet_you; // 직거래 가능 여부
+  final bool? isNegotiable; // 네고 가능 여부
+  final bool? isPossibleMeetYou; // 직거래 가능 여부
   final String? category; // 카테고리
   final String? brand; //브랜드
-  final List<String>? images; // 이미지들
-  final SelectedProduct? selectedProduct;
+  final List<ProductImage>? images; // 이미지들
+  final SelectedProduct? findProduct;
   final String? location;
 
   // 생성자
-  ProductInfoCard({
-    required this.product_id, // 아이디
+  Product({
+    required this.id, // 아이디
     required this.title, // 제목
-    required this.product_name, //제품명
+    required this.productName, //제품명
     required this.content, // 내용
-    this.register_location, // 등록 위치
-    required this.register_ip, // 등록 아이피
-    required this.created_at, // 생성 일자aa
-    required this.updated_at, // 업데이트 일자
+    this.registerLocation, // 등록 위치
+    required this.registerIp, // 등록 아이피
+    required this.createdAt, // 생성 일자aa
+    required this.updatedAt, // 업데이트 일자
     required this.price, // 가격
     required this.status, // 상태
-    this.deleted_at, // 삭제 일자
-    required this.seller_id, // 판매자 아이디
+    this.deletedAt, // 삭제 일자
+    required this.sellerId, // 판매자 아이디
     required this.nickname, // 판매자 닉네임
-    required this.is_negotiable, // 네고 가능 여부
-    required this.is_possible_meet_you, // 직거래 가능 여부
+    required this.isNegotiable, // 네고 가능 여부
+    required this.isPossibleMeetYou, // 직거래 가능 여부
     required this.category, // 카테고리
     required this.brand, //브랜드
     required this.images, // 이미지들
-    required this.selectedProduct,
+    required this.findProduct,
     required this.location,
   });
 
@@ -58,100 +60,53 @@ class ProductInfoCard {
   @override
   String toString() {
     return 'ProductInfoCard{'
-        'product_id: $product_id, '
+        'product_id: $id, '
         'title: $title, '
-        'product_name : $product_name,'
+        'product_name : $productName,'
         'images: $images, '
         'content: $content, '
-        'register_location: $register_location, '
-        'updated_at: $updated_at, '
+        'register_location: $registerLocation, '
+        'updated_at: $updatedAt, '
         'price: $price, '
         'status: $status, '
-        'seller_id: $seller_id, '
-        'is_negotiable: $is_negotiable, '
-        'is_possible_meet_you: $is_possible_meet_you, '
+        'seller_id: $sellerId, '
+        'is_negotiable: $isNegotiable, '
+        'is_possible_meet_you: $isPossibleMeetYou, '
         'category: $category,'
         'brand: $brand}';
   }
 
-  factory ProductInfoCard.fromJson(Map<String, dynamic> json) {
-    return ProductInfoCard(
-      product_id: json['id'] as int?,
+  factory Product.fromJson(Map<String, dynamic> json) {
+    List<dynamic> productImage = json['ProductImages'];
+    List<ProductImage> images = productImage
+        .map(
+          (e) => ProductImage.fromMap(e),
+        )
+        .toList();
+
+    FindProduct findProduct = FindProduct.fromMap(json['findProduct']);
+    return Product(
+      id: json['id'] as int?,
       title: json['title'] as String?,
-      product_name: json['product_name'] as String?,
+      productName: json['product_name'] as String?,
       content: json['content'] as String?,
-      register_location: json['register_location'] as String?,
-      register_ip: json['register_ip'] as String?,
-      created_at: json['created_at'] as String?,
-      updated_at: json['updated_at'] as String?,
+      registerLocation: json['register_location'] as String?,
+      registerIp: json['register_ip'] as String?,
+      createdAt: json['created_at'] as String?,
+      updatedAt: json['updated_at'] as String?,
       price: json['price'] as int?,
       status: json['status'] as String?,
-      deleted_at: json['deleted_at'] as String?,
-      seller_id: json['seller_id'] as int?,
+      deletedAt: json['deleted_at'] as String?,
+      sellerId: json['seller_id'] as int?,
       nickname: json['nickName'] as String?,
-      is_negotiable: json['is_negotiable'] as bool?,
-      is_possible_meet_you: json['is_possible_meet_you'] as bool?,
+      isNegotiable: json['is_negotiable'] as bool?,
+      isPossibleMeetYou: json['is_possible_meet_you'] as bool?,
       category: json['category'] as String?,
       brand: json['brand'] as String?,
-      images: json['productImage'] != null
-          ? ["$apiUrl/uploads/${json['id']}/${json['productImage']}"]
-          : [],
-      selectedProduct: null,
+      images: images,
+      findProduct: null,
       location: null,
     );
-  }
-  factory ProductInfoCard.todata(Map<String, dynamic> json) {
-    // updatedAt 문자열을 파싱할 때, 만약 서버가 UTC 시간을 보내고 있다면
-    // toLocal()을 호출하여 현지 시간으로 변환합니다.
-    DateTime updatedDateTime =
-        DateTime.tryParse(json['updatedAt'] as String? ?? '')?.toLocal() ??
-            DateTime.now();
-    logger.i('updatedDateTime : ${updatedDateTime}');
-    String formattedUpdatedAt;
-    DateTime now = DateTime.now();
-    logger.i('now : $now');
-    // 만약 updatedDateTime이 오늘이면 시간 차이를 계산
-    if (updatedDateTime.year == now.year &&
-        updatedDateTime.month == now.month &&
-        updatedDateTime.day == now.day) {
-      Duration diff = now.difference(updatedDateTime);
-      if (diff.inHours >= 1) {
-        formattedUpdatedAt = "${diff.inHours}시간 전";
-      } else if (diff.inMinutes >= 1) {
-        formattedUpdatedAt = "${diff.inMinutes}분 전";
-      } else {
-        formattedUpdatedAt = "방금 전";
-      }
-    } else {
-      // 오늘이 아니라면 날짜만 출력 (예: 2025-02-04)
-      formattedUpdatedAt =
-          "${updatedDateTime.year}-${updatedDateTime.month.toString().padLeft(2, '0')}-${updatedDateTime.day.toString().padLeft(2, '0')}";
-    }
-    return ProductInfoCard(
-        product_id: json['id'] as int?,
-        title: json['title'] as String?,
-        product_name: json['productName'] as String?,
-        content: json['content'] as String?,
-        register_location: json['registerLocation'] as String?,
-        register_ip: json['registerIp'] as String?,
-        created_at: json['createdAt'] as String?,
-        updated_at: formattedUpdatedAt,
-        price: json['price'] as int?,
-        status: json['status'] as String?,
-        deleted_at: json['deletedAt'] as String?,
-        seller_id: json['sellerId'] as int?,
-        nickname: json['nickName'] as String?,
-        is_negotiable: json['isNegotiable'] as bool?,
-        is_possible_meet_you: json['isPossibleMeetYou'] as bool?,
-        category: json['category'] as String?,
-        brand: json['brand'] as String?,
-        images: (json['images'] as List<dynamic>?)?.map((image) {
-              return "$apiUrl/uploads/${json['id']}/${image['uuidName']}";
-            }).toList() ??
-            [], // 이미지 매핑
-        //TODO: 선택된 product 가져오기
-        selectedProduct: null,
-        location: json['location'] ?? null);
   }
 }
 

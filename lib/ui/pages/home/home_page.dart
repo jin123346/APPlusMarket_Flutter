@@ -1,7 +1,5 @@
-
-import 'package:applus_market/data/model/auth/my_position.dart';
-
 import 'package:applus_market/data/gvm/session_gvm.dart';
+import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/repository/chat/chat_repository.dart';
 import 'package:applus_market/data/service/chat_websocket_service.dart';
@@ -26,10 +24,12 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   late final ScrollController _scrollController;
+  ChatRepository chatRepository = ChatRepository();
 
   @override
   void initState() {
     super.initState();
+
     // ScrollController를 초기화하고 리스너 등록
     _scrollController = ScrollController()..addListener(_scrollListener);
   }

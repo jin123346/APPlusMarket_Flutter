@@ -33,12 +33,15 @@ class MyLoginedBody extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     //관심목록
-                    _buildIconContainer('관심목록', CupertinoIcons.heart),
+                    _buildIconContainer('관심목록', CupertinoIcons.heart, () {}),
                     //판매내역
-                    _buildIconContainer('판매내역', CupertinoIcons.list_bullet),
+                    _buildIconContainer('판매내역', CupertinoIcons.list_bullet, () {
+                      Navigator.pushNamed(context, '/my/sell/list');
+                    }),
 
                     //구매내역
-                    _buildIconContainer('구매내역', Icons.shopping_bag_outlined),
+                    _buildIconContainer(
+                        '구매내역', Icons.shopping_bag_outlined, () {}),
                   ],
                 ),
                 const SizedBox(height: 30),
@@ -46,13 +49,14 @@ class MyLoginedBody extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     //관심목록
-                    _buildIconContainer('상점후기', Icons.rate_review_outlined),
+                    _buildIconContainer(
+                        '상점후기', Icons.rate_review_outlined, () {}),
                     //판매내역
-                    _buildIconContainer('친구초대', Icons.people_outline),
+                    _buildIconContainer('친구초대', Icons.people_outline, () {}),
 
                     //구매내역
                     _buildIconContainer(
-                        '공지사항', Icons.indeterminate_check_box_outlined),
+                        '공지사항', Icons.indeterminate_check_box_outlined, () {}),
                   ],
                 ),
               ],
@@ -223,20 +227,23 @@ class MyLoginedBody extends ConsumerWidget {
     );
   }
 
-  _buildIconContainer(String name, IconData mIcon) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          mIcon,
-          size: 25,
-        ),
-        const SizedBox(height: 5),
-        Text(
-          name,
-          style: TextStyle(fontSize: 12),
-        ),
-      ],
+  _buildIconContainer(String name, IconData mIcon, VoidCallback? onTap) {
+    return InkWell(
+      onTap: onTap ?? () {},
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            mIcon,
+            size: 25,
+          ),
+          const SizedBox(height: 5),
+          Text(
+            name,
+            style: TextStyle(fontSize: 12),
+          ),
+        ],
+      ),
     );
   }
 

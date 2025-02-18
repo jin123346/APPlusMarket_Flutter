@@ -11,16 +11,9 @@ import '../../../../data/model/auth/login_state.dart';
 import '../../../widgets/image_container.dart';
 
 class ProfileImageContainer extends ConsumerWidget {
-  String? profileImg;
-  int? userId;
   double width;
   double height;
-  ProfileImageContainer(
-      {required this.profileImg,
-      required this.userId,
-      this.width = 90,
-      this.height = 90,
-      super.key});
+  ProfileImageContainer({this.width = 90, this.height = 90, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

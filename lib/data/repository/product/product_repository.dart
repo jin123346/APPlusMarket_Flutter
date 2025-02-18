@@ -53,4 +53,45 @@ class ProductRepository {
     logger.e("Updated State: $response");
     return response.data;
   }
+
+  Future<Map<String, dynamic>> searchProductForSamsung(String keyword) async {
+    Response response = await dio
+        .get('/api/samsung/search', queryParameters: {"keyword": keyword});
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> selectForMyList(
+      Map<String, dynamic> body) async {
+    Response response = await dio.get('/product/on-sale', data: body);
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> selectForMyCompletedList(
+      Map<String, dynamic> body) async {
+    Response response = await dio.get('/product/completed', data: body);
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> reloadProduct(int productId) async {
+    Response response = await dio.put('/product/reload/${productId}');
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> updateStatus(
+      int productId, String status) async {
+    Response response = await dio.put('/product/${productId}/${status}');
+
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getProductForModify(
+      int productId, int userId) async {
+    Response response = await dio.get('/product/modify/${productId}/${userId}');
+
+    return response.data;
+  }
 }

@@ -1,6 +1,11 @@
+import 'package:applus_market/_core/utils/logger.dart';
+import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/ui/pages/chat/list/chat_list_page.dart';
 import 'package:applus_market/ui/pages/my/my_info_page.dart';
+import 'package:applus_market/ui/pages/my/my_sell_list_page.dart';
 import 'package:applus_market/ui/pages/my/withdrawal_page.dart';
+import 'package:applus_market/ui/pages/product/product_modify_page.dart';
+import 'package:applus_market/ui/pages/product/widgets/product_modify_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +39,7 @@ import 'ui/pages/my/widgets/withdrawal_warning_dialog.dart';
 import 'ui/pages/pay/charge_page/charge_page.dart';
 import 'ui/pages/pay/pay_home_page.dart';
 import 'ui/pages/pay/widgets/pay_send_page.dart';
+import 'ui/pages/product/product_register_page.dart';
 import 'ui/pages/splash/splash_screen.dart';
 
 /**
@@ -56,11 +62,17 @@ Future<void> main() async {
 
 GlobalKey<NavigatorState> navigatorkey = GlobalKey<NavigatorState>();
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // ChatService Notifier로 수정하여 사용하기
+    WebSocketNotifier notifier = ref.watch(webSocketProvider.notifier);
+
+    notifier.connect();
+    logger.e(
+        'HomePage initState() - stompClient 연결 여부 ${notifier.stompClient?.connected}');
     return MaterialApp(
       navigatorKey: navigatorkey,
       debugShowCheckedModeBanner: false,
@@ -77,6 +89,8 @@ class MyApp extends StatelessWidget {
         '/join/insertEmail': (context) => InsertEmailPage(),
         '/join/check': (context) => JoinCheckPage(),
         '/home': (context) => MainScreen(),
+        '/product/register': (context) => ProductRegisterPage(),
+        '/product/modify': (context) => ProductModifyPage(),
         '/withdrawal': (context) => WithdrawalPage(),
         '/withdrawal/confirm': (context) => WithdrawalWarningDialog(),
         '/my': (context) => MyLoginedPage(),
@@ -85,6 +99,7 @@ class MyApp extends StatelessWidget {
         '/my/delivery': (context) => DeliveryPage(),
         '/my/delivery/register': (context) => DeliveryRegisterPage(),
         '/my/delivery/modify': (context) => DeliveryMoifyPage(),
+        '/my/sell/list': (context) => MySellListPage(),
         '/my/payHome': (context) => PayHomePage(), // 결제 홈 화면
         '/pay/charge': (context) => ChargePage(), // 충전 화면
         '/pay/send': (context) => PaySendPage(), // 송금 화면
