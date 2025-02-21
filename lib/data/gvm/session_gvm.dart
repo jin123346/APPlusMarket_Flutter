@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:applus_market/_core/utils/custom_snackbar.dart';
 import 'package:applus_market/_core/utils/dialog_helper.dart';
 import 'package:applus_market/_core/utils/exception_handler.dart';
 import 'package:applus_market/data/gvm/myinfo_event_notifier.dart';
+import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/data/repository/auth/auth_repository.dart';
 import 'package:applus_market/main.dart';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -170,7 +173,11 @@ class SessionGVM extends Notifier<SessionUser> {
             profileImg: data['profileImg'],
             isLoggedIn: true,
           );
+
           _setupDioInterceptor(accessToken);
+
+          ref.watch(webSocketProvider.notifier).subscribeUser(state.id ?? 0);
+
           Navigator.popAndPushNamed(mContext, '/home');
         } else {
           ExceptionHandler.handleException(

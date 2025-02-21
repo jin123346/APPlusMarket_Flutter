@@ -23,6 +23,14 @@ import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 // TODO : Notifier로 만들어서 사용
 class ChatService {
+  static final ChatService _instance = ChatService._internal();
+
+  factory ChatService() {
+    return _instance;
+  }
+
+  ChatService._internal();
+
   StompClient? stompClient;
   final Set<String> subscribedDestinations = {};
   List<int> results = [];

@@ -1,8 +1,8 @@
 class ChatMessage {
-  final int? messageId;
-  final int senderId;
+  final String? messageId;
   final int chatRoomId;
   final String content;
+  final int senderId;
   final bool? isRead;
   final String createdAt;
   final String? deletedAt;
@@ -18,7 +18,7 @@ class ChatMessage {
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
     return ChatMessage(
-        messageId: json['chatMessageId'] ?? 0,
+        messageId: json['_id'],
         senderId: json['senderId'],
         chatRoomId: json['chatRoomId'],
         content: json['content'],

@@ -26,7 +26,7 @@ class WebSocketNotifier extends Notifier<bool> {
           url: "$apiUrl/ws",
           onConnect: (frame) {
             logger.d("WebSocket 연결됨");
-            state = true; // 연결 상태 업데이트
+            state = true;
           },
           onWebSocketError: (dynamic error) =>
               logger.e("WebSocket error: $error"),
@@ -52,6 +52,14 @@ class WebSocketNotifier extends Notifier<bool> {
     }
   }
 
+  void subscribeUser(int userId) {
+    try {
+      subscribe("/sub/user/$userId");
+    } catch (e) {
+      logger.e('로그인 요청 후 구독');
+    }
+  }
+
   Function(ChatMessage)? onMessageReceived;
 
 // 이벤트 발생을 구독중인 리스너에게 알려주는 메서드
@@ -70,7 +78,11 @@ class WebSocketNotifier extends Notifier<bool> {
             Map<String, dynamic> data = json.decode(frame.body!);
             ChatMessage receivedMessage = ChatMessage.fromJson(data);
             logger.e('💻received data: $receivedMessage');
+            // 콜백 함수로 화면 반영
             notifyListeners(receivedMessage);
+            ref
+                .watch(chatListProvider.notifier)
+                .setupMessageListener(receivedMessage);
           }
         },
       );
@@ -87,7 +99,6 @@ class WebSocketNotifier extends Notifier<bool> {
   }
 }
 
-// 🔥 WebSocket 전역 관리 Provider
 final webSocketProvider = NotifierProvider<WebSocketNotifier, bool>(() {
   return WebSocketNotifier();
 });

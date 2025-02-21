@@ -55,7 +55,7 @@ class ChatRepository {
    */
   Future<List<int>> getChatRoomsId(int userId) async {
     try {
-      Response response = await dio.get('/chat-rooms/id/$userId');
+      Response response = await dio.get('/chat-rooms/id?userId=$userId');
 
       Map<String, dynamic> responseBody = response.data;
       List<int> data = responseBody['data'];
@@ -67,15 +67,16 @@ class ChatRepository {
     }
   }
 
-  // TODO : 25/02/12 - 1. insertMethod 정의
-  Future<int> createChatRoom(Map<String, dynamic> reqData) async {
+  Future<Map<String, dynamic>> createChatRoom(
+      Map<String, dynamic> reqData) async {
     try {
       Response response = await dio.post('/chat-rooms', data: reqData);
 
       Map<String, dynamic> responseBody = response.data;
-      int data = responseBody['data'];
+      logger.e(response.data);
+      Map<String, dynamic> data = responseBody['data'];
 
-      logger.e('생성된 채팅방 Id : 🎇$data');
+      logger.e('생성된 채팅방 : 🎇$data');
 
       return data;
     } catch (e) {

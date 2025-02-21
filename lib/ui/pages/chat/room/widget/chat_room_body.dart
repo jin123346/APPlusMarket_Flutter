@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
-import 'package:applus_market/data/service/chat_websocket_service.dart';
 import 'package:applus_market/ui/pages/chat/room/chat_room_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,6 +23,7 @@ import '../../../components/time_ago.dart';
  * -------------------------------------------------------------
  * 2024/02/06     황수빈      MyId sessionUser에서 받아옴
  * 2024/02/07     황수빈      chatRoomId 추가 id로 채팅방 조회
+ * 2024/02/18     황수빈      내용이 없을 땐 전송이 안되도록 수정
  */
 
 class ChatRoomBody extends ConsumerStatefulWidget {
@@ -74,7 +74,6 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
     _focusNode.dispose();
     _scrollController.dispose();
     logger.e('상세보기 화면 파괴됨');
-
     super.dispose();
   }
 
@@ -99,6 +98,8 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
     final chatRoomState = ref.watch(chatRoomProvider);
 
     return chatRoomState.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => const Center(child: CircularProgressIndicator()),
       data: (room) {
         final otherUser =
             room.participants.firstWhere((user) => user.userId != myId);
@@ -110,7 +111,7 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
           ),
           body: Column(
             children: [
-              _buildProductCard(room.productCard),
+              _buildProductCard(room.productCard!),
               const SizedBox(height: 16),
               Expanded(
                 child: GestureDetector(
@@ -260,8 +261,6 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => const Center(child: CircularProgressIndicator()),
     );
   }
 }

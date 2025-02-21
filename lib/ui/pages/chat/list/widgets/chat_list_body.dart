@@ -39,18 +39,14 @@ class ChatListBody extends ConsumerWidget {
           const SizedBox(width: 16),
         ],
       ),
-      body: chatListState.when(
-        data: (chatList) => ListView.builder(
-          itemCount: chatList.length,
-          itemBuilder: (context, index) {
-            return ChatListContainer(chatRoom: chatList[index]);
-          },
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Text('에러 발생: $error'),
-        ),
-      ),
+      body: chatListState.isEmpty
+          ? Center(child: Text('채팅방이 존재하지 않습니다.')) // 로딩 상태를 빈 리스트로 대체
+          : ListView.builder(
+              itemCount: chatListState.length,
+              itemBuilder: (context, index) {
+                return ChatListContainer(chatRoom: chatListState[index]);
+              },
+            ),
     );
   }
 }
