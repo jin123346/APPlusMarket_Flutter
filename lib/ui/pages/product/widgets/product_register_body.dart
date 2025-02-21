@@ -350,7 +350,9 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                               titleController.text, // 제목
                               productNameController.text, // 제품명
                               descriptionController.text, // 내용 (설명)
-                              "서울", // registerLocation
+                              ref
+                                  .read(locationProvider.notifier)
+                                  .getMyDistrict(),
                               env!, // registerIp
                               int.parse(priceController.text), // 가격
                               isNegotiable, // 가격 제안 받기 여부
@@ -359,9 +361,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                               userid,
                               imageFiles, // 이미지 파일 리스트
                               productSearchNotifier.getCurrentSelected(),
-                              ref
-                                  .read(locationProvider.notifier)
-                                  .getMyDistrict(),
+                              selectedBrand,
                             );
                         // 등록 성공 후 입력 데이터 초기화
                         titleController.clear();

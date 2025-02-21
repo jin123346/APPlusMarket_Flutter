@@ -36,6 +36,7 @@ import 'ui/pages/my/widgets/withdrawal_warning_dialog.dart';
 import 'ui/pages/pay/charge_page/charge_page.dart';
 import 'ui/pages/pay/pay_home_page.dart';
 import 'ui/pages/pay/widgets/pay_send_page.dart';
+import 'ui/pages/product/product_register_page.dart';
 import 'ui/pages/splash/splash_screen.dart';
 
 /**

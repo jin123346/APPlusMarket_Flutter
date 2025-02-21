@@ -17,7 +17,10 @@ class ProductSearchNotifier extends Notifier<List<SelectedProduct>> {
     return [];
   }
 
-  SelectedProduct? getCurrentSelected() => currentSelected ?? null;
+  String? getCurrentSelected() {
+    logger.i('선택된 값 : ${currentSelected?.id!}');
+    return currentSelected?.id! ?? null;
+  }
 
   Future<void> searchProducts(String keyword) async {
     if (keyword.isEmpty) {

@@ -29,10 +29,7 @@ class ProfileCard extends ConsumerWidget {
           children: [
             Row(
               children: [
-                ProfileImageContainer(
-                  profileImg: sessionUser.profileImg,
-                  userId: sessionUser.id,
-                ),
+                ProfileImageContainer(),
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0),
                   child: Column(

@@ -51,8 +51,8 @@ class ProductGvm extends Notifier<ProductInfoCard> {
     String category,
     int userid,
     List<File> imageFiles,
-    SelectedProduct? selectedProduct,
-    String? location,
+    String? selectedProduct,
+    String brand,
   ) async {
     try {
       final body = {
@@ -66,8 +66,8 @@ class ProductGvm extends Notifier<ProductInfoCard> {
         'isPossibleMeetYou': ispossiblemeetyou,
         'sellerId': userid,
         'category': category,
-        'SelectedProduct': selectedProduct ?? null,
-        'location': location ?? null
+        'brand': brand,
+        'findProductId': selectedProduct ?? null,
       };
       logger.i('productName : ${body}');
       final responseBody = await productRepository.insertProduct(

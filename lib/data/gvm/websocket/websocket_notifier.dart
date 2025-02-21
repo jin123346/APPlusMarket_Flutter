@@ -7,8 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:applus_market/_core/utils/logger.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
-import '../../model/auth/login_state.dart';
-
 class WebSocketNotifier extends Notifier<bool> {
   StompClient? stompClient;
   final Set<String> subscribedDestinations = {};
