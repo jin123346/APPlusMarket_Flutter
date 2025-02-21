@@ -67,6 +67,7 @@ class MyApp extends ConsumerWidget {
     WebSocketNotifier notifier = ref.watch(webSocketProvider.notifier);
 
     notifier.connect();
+
     logger.e(
         'HomePage initState() - stompClient 연결 여부 ${notifier.stompClient?.connected}');
     return MaterialApp(
