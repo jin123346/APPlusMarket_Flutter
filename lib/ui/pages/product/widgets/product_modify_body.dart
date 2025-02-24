@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:applus_market/data/gvm/geo/location_gvm.dart';
 import 'package:applus_market/data/gvm/product/product_gvm.dart';
-import 'package:applus_market/data/model_view/product/product_modify%20view_model.dart';
+import 'package:applus_market/data/model_view/product/image_item_view_model.dart';
 import 'package:applus_market/data/model_view/product/product_search_notifier.dart';
 import 'package:applus_market/ui/pages/product/widgets/custom_label_input_field.dart';
 import 'package:applus_market/ui/pages/product/widgets/image_select_container.dart';
@@ -14,6 +14,7 @@ import '../../../../_core/utils/apiUrl.dart';
 import '../../../../data/gvm/session_gvm.dart';
 import '../../../../data/model/auth/login_state.dart';
 import '../../../../data/model/product/product.dart';
+import '../../../../data/model_view/product/product_modify_view_model.dart';
 import '../selection_page.dart';
 import '../../../../_core/components/theme.dart';
 import 'product_register_body.dart';
@@ -30,41 +31,82 @@ class ProductModifyBody extends ConsumerStatefulWidget {
 
 class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
   // 컨트롤러들을 상태로 선언 (상품을 등록한 뒤에 초기화 하기 위함)
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController tradeLocationController = TextEditingController();
-  final TextEditingController productNameController = TextEditingController();
-  final TextEditingController productFindController = TextEditingController();
+  late final TextEditingController titleController;
+  late final TextEditingController priceController;
+  late final TextEditingController descriptionController;
+  late final TextEditingController tradeLocationController;
+  late final TextEditingController productNameController;
+  late final TextEditingController productFindController;
   bool isNegotiable = false;
   bool isPossibleMeetYou = false;
   String selectedCategory = "";
   String selectedBrand = "";
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   Product? product;
+  bool isLoading = true;
 
   @override
   void initState() {
+    product = null;
+    titleController = TextEditingController();
+    priceController = TextEditingController();
+    descriptionController = TextEditingController();
+    tradeLocationController = TextEditingController();
+    productNameController = TextEditingController();
+    productFindController = TextEditingController();
+
     super.initState();
-    initProduct();
+    _initProduct();
   }
 
-  void initProduct() async {
-    await ref.read(productModifyProvider.notifier).selectModifyProduct(
-          widget.productId,
-        );
-
-    product = ref.read(productModifyProvider);
-    titleController.text = product!.title!;
-    priceController.text = product!.price! as String;
-    productNameController.text = product!.content!;
-    productFindController.text = product!.findProduct!.name!;
+  Future<void> _initProduct() async {
     setState(() {
-      isNegotiable = product!.isNegotiable!;
-      isPossibleMeetYou = product!.isPossibleMeetYou!;
-      selectedCategory = product!.category!;
-      selectedBrand = product!.brand!;
+      product = null; // 기존 데이터 초기화
+      isLoading = true;
     });
+
+    await ref
+        .read(productModifyProvider.notifier)
+        .selectModifyProduct(widget.productId);
+    if (!mounted) return;
+    product = ref.read(productModifyProvider);
+
+    if (product != null) {
+      _updateControllers();
+      _setExistingImages();
+    }
+
+    setState(() {
+      isLoading = false; // 데이터 로딩 완료
+    });
+  }
+
+  void _updateControllers() {
+    titleController.text = product?.title ?? "";
+    priceController.text = product?.price?.toString() ?? "";
+    productNameController.text = product?.productName ?? "";
+    productFindController.text = product?.findProduct?.name ?? "";
+    descriptionController.text = product?.content ?? "";
+    isNegotiable = product?.isNegotiable ?? false;
+    isPossibleMeetYou = product?.isPossibleMeetYou ?? false;
+    selectedCategory = product?.category ?? "";
+    selectedBrand = product?.brand ?? "";
+    setState(() {}); // 🔹 UI 강제 업데이트
+  }
+
+  void _setExistingImages() {
+    if (product!.images != null && product!.images!.isNotEmpty) {
+      final existingImages = product!.images!
+          .map((image) => ImageItem(
+                path:
+                    "$apiUrl/uploads/${product!.id!}/${image.uuidName}", // 기존 이미지 경로
+                id: image.id.toString(),
+                sequence: image.sequence!, // 이미지 ID (DB 삭제 처리 가능)
+              ))
+          .toList();
+
+      ref.read(imageStateProvider.notifier).state = existingImages;
+    }
   }
 
   @override
@@ -121,26 +163,24 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
   @override
   Widget build(BuildContext context) {
     final productSearchNotifier = ref.read(productSearchProvider.notifier);
-    final imagePaths = ref.watch(imagePathsProvider);
+    final imageState = ref.watch(imageStateProvider); // 이미지 상태 가져오기
 
     final SizedBox height16Box = const SizedBox(height: commonPadding);
     final SizedBox height8Box = const SizedBox(height: halfPadding);
     SessionUser sessionUser = ref.watch(LoginProvider);
     int userid = sessionUser.id!;
-    final isLoading = ref.watch(productModifyProvider.notifier).isLoading;
     product = ref.watch(productModifyProvider);
     return (isLoading)
-        ? SafeArea(
-            child: Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          ))
+        ? const Center(child: CircularProgressIndicator())
         : SafeArea(
             child: Scaffold(
               appBar: AppBar(
                 title: const Text('내 물건 수정하기'),
                 leading: IconButton(
                   icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pushNamed(context, '/home'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
               ),
               body: SingleChildScrollView(
@@ -358,29 +398,27 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               // Provider에 저장된 ImageItem 리스트를 File 객체 리스트로 변환
-                              final List<File> imageFiles = imagePaths
+                              final List<File> imageFiles = imageState
                                   .map((img) => File(img.path))
                                   .toList();
                               // 현재 "서울" 위치기반 API 를 활용해서 상세 주소로 변경 해야합니다.
                               await ref
-                                  .read(productProvider.notifier)
-                                  .insertproduct(
-                                    titleController.text, // 제목
-                                    productNameController.text, // 제품명
-                                    descriptionController.text, // 내용 (설명)
-                                    ref
-                                        .read(locationProvider.notifier)
-                                        .getMyDistrict(),
-                                    env!, // registerIp
-                                    int.parse(priceController.text), // 가격
-                                    isNegotiable, // 가격 제안 받기 여부
-                                    isPossibleMeetYou, // 직거래 가능 여부
-                                    selectedCategory, // 카테고리
-                                    userid,
-                                    imageFiles, // 이미지 파일 리스트
-                                    productSearchNotifier.getCurrentSelected(),
-                                    selectedBrand,
+                                  .read(productModifyProvider.notifier)
+                                  .modifyProduct(
+                                    id: product!.id!,
+                                    title: titleController.text,
+                                    productName: productNameController.text,
+                                    content: descriptionController.text,
+                                    price: priceController.text,
+                                    isNegotiable: isNegotiable,
+                                    isPossibleMeetYou: isPossibleMeetYou,
+                                    category: selectedCategory,
+                                    brand: selectedBrand,
+                                    findProduct:
+                                        productFindController.text ?? "",
+                                    images: product!.images,
                                   );
+
                               // 등록 성공 후 입력 데이터 초기화
                               titleController.clear();
                               productNameController.clear();
@@ -392,8 +430,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
                               productSearchNotifier.reset();
 
                               // 이미지 목록 초기화
-                              ref.read(imagePathsProvider.notifier).state = [];
-
+                              ref.read(imageStateProvider.notifier).reset();
                               // 선택된 카테고리, 브랜드도 초기값으로 설정 (필요한 경우)
                               ref
                                   .read(selectedCategoryProvider.notifier)

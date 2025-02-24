@@ -3,6 +3,8 @@
 *
 */
 //상세 정보
+import 'dart:io';
+
 import 'package:applus_market/data/model/product/find_product.dart';
 import 'package:applus_market/data/model/product/product_image.dart';
 import 'package:applus_market/data/model/product/selected_product.dart';
@@ -29,6 +31,8 @@ class Product {
   final String? category; // 카테고리
   final String? brand; //브랜드
   final List<ProductImage>? images; // 이미지들
+  final List<ProductImage>? removedImage; // 이미지들
+  final List<File>? newImage; // 이미지들
   final FindProduct? findProduct;
   final String? location;
 
@@ -52,6 +56,8 @@ class Product {
     required this.category, // 카테고리
     required this.brand, //브랜드
     required this.images, // 이미지들
+    required this.removedImage, // 이미지들
+    required this.newImage,
     required this.findProduct,
     required this.location,
   });
@@ -74,40 +80,5 @@ class Product {
         'is_possible_meet_you: $isPossibleMeetYou, '
         'category: $category,'
         'brand: $brand}';
-  }
-
-  factory Product.fromJson(Map<String, dynamic> json) {
-    List<dynamic> productImage = json['images'];
-    List<ProductImage> images = productImage
-        .map(
-          (e) => ProductImage.fromMap(e),
-        )
-        .toList();
-
-    FindProduct? findProduct = json['findProduct'] != null
-        ? FindProduct.fromMap(json['findProduct'])
-        : null;
-    return Product(
-      id: json['id'] as int?,
-      title: json['title'] as String?,
-      productName: json['productName'] as String?,
-      content: json['content'] as String?,
-      registerLocation: json['registerLocation'] as String?,
-      registerIp: json['registerIp'] as String?,
-      createdAt: json['createdAt'] as String?,
-      updatedAt: json['updatedAt'] as String?,
-      price: json['price'] as int?,
-      status: json['status'] as String?,
-      deletedAt: json['deletedAt'] as String?,
-      sellerId: json['sellerId'] as int?,
-      nickname: json['nickName'] as String?,
-      isNegotiable: json['isNegotiable'] as bool?,
-      isPossibleMeetYou: json['isPossibleMeetYou'] as bool?,
-      category: json['category'] as String?,
-      brand: json['brand'] as String?,
-      images: images,
-      findProduct: findProduct,
-      location: null,
-    );
   }
 }

@@ -178,12 +178,12 @@ class _ProductSellListState extends ConsumerState<ProductSellCompletedList> {
                 Navigator.pop(context);
                 _updateStatus(
                     productId: product.id!,
-                    status: 'Sold',
+                    status: 'Active',
                     message: '판매 중으로 변경되었습니다.');
               }),
               _buildOption(context, '게시글 수정', () {
-                Navigator.pop(context);
-                // 수정 페이지로 이동하는 로직 추가
+                Navigator.pushNamed(context, '/product/modify',
+                    arguments: product.id);
               }),
               _buildOption(context, '숨기기', () {
                 Navigator.pop(context);
