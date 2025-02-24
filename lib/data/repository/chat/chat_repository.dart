@@ -63,7 +63,7 @@ class ChatRepository {
 
       return data;
     } catch (e) {
-      throw Exception('채팅방 정보 불러오는 중 오류 발생 : $e');
+      throw Exception(' 구독할 아이디 조회 오류 발생 : $e');
     }
   }
 
