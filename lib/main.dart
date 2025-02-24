@@ -1,5 +1,6 @@
 import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
+import 'package:applus_market/ui/pages/chat/direct_trade/chat_direct_page.dart';
 import 'package:applus_market/ui/pages/chat/list/chat_list_page.dart';
 import 'package:applus_market/ui/pages/my/my_info_page.dart';
 import 'package:applus_market/ui/pages/my/withdrawal_page.dart';
@@ -104,6 +105,7 @@ class MyApp extends ConsumerWidget {
         '/find_pass': (context) => FindPassPage(),
         '/find_pass_change': (context) => FindPassChangePage(),
         '/pass_change_result': (context) => PassChangeResultPage(),
+        '/chat/appointment': (context) => ChatDirectPage(),
       },
       initialRoute: '/splash',
     );

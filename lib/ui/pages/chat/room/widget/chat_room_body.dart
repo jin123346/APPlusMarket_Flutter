@@ -1,8 +1,8 @@
-import 'dart:math';
-
 import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
+import 'package:applus_market/data/model/chat/chat_data.dart';
+import 'package:applus_market/data/model/chat/chat_message.dart';
 import 'package:applus_market/ui/pages/chat/room/chat_room_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -93,17 +93,21 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
     int chatRoomId = widget.chatRoomId;
     SessionUser sessionUser = ref.watch(LoginProvider);
     int myId = sessionUser.id!;
+    ChatData chatData;
 
     final viewModel = ref.read(chatRoomProvider.notifier);
     final chatRoomState = ref.watch(chatRoomProvider);
 
     return chatRoomState.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Text('$error'),
       data: (room) {
         final otherUser =
             room.participants.firstWhere((user) => user.userId != myId);
-
+        chatData = ChatData(
+            chatroomId: widget.chatRoomId,
+            sellerName: otherUser.nickname,
+            senderId: myId);
         return Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
@@ -111,7 +115,7 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
           ),
           body: Column(
             children: [
-              _buildProductCard(room.productCard!),
+              _buildProductCard(room.productCard!, context, chatData),
               const SizedBox(height: 16),
               Expanded(
                 child: GestureDetector(
@@ -132,7 +136,8 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                             itemCount: room.messages.length,
                             itemBuilder: (context, index) {
                               final message = room.messages[index];
-                              final isMyMessage = message.senderId == myId;
+                              final isMyMessage = message.userId == myId;
+                              logger.e(message);
 
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -143,13 +148,16 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                                       : MainAxisAlignment.start,
                                   children: [
                                     _buildMessageTimestamp(
-                                        isMyMessage, message.createdAt),
+                                        isMyMessage, message.createdAt!),
                                     SizedBox(width: isMyMessage ? 5 : 0),
-                                    _buildMessageContainer(
-                                        isMyMessage, message.content, context),
+                                    message.date == null &&
+                                            message.content != null
+                                        ? _buildMessageContainer(isMyMessage,
+                                            message.content!, context)
+                                        : _buildDateBox(message),
                                     SizedBox(width: !isMyMessage ? 5 : 0),
                                     _buildMessageTimestamp(
-                                        !isMyMessage, message.createdAt),
+                                        !isMyMessage, message.createdAt!),
                                   ],
                                 ),
                               );
@@ -220,8 +228,10 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                         icon: const Icon(CupertinoIcons.paperplane_fill),
                         onPressed: () {
                           setState(() {
-                            viewModel.sendMessage(
-                                chatRoomId, _messageController.text, myId);
+                            viewModel.sendMessage(ChatMessage(
+                                chatRoomId: chatRoomId,
+                                content: _messageController.text,
+                                userId: myId));
                           });
                           _messageController.clear();
                           scrollToBottom();
@@ -244,11 +254,11 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             _buildOptionButton(
-                                '앨범', CupertinoIcons.photo, Colors.blue),
+                                '앨범', CupertinoIcons.photo, Colors.grey),
                             _buildOptionButton('카메라',
                                 CupertinoIcons.camera_fill, Colors.orange),
-                            _buildOptionButton('자주쓰는문구',
-                                CupertinoIcons.doc_text, Colors.brown),
+                            _buildOptionButton(
+                                '약속', CupertinoIcons.calendar, Colors.blue),
                             _buildOptionButton('장소',
                                 CupertinoIcons.location_solid, Colors.green),
                           ],
@@ -316,7 +326,8 @@ _buildMessageContainer(bool isMyMessage, String message, context) {
   );
 }
 
-_buildProductCard(ProductCard productCard) {
+_buildProductCard(
+    ProductCard productCard, BuildContext context, ChatData chatData) {
   return Column(
     children: [
       const Divider(height: 1),
@@ -336,27 +347,261 @@ _buildProductCard(ProductCard productCard) {
               children: [
                 Text(
                   productCard.name,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                 ),
                 Row(
                   children: [
                     Text(
                       '${productCard.price}원',
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(width: 5),
                     Text(
                       productCard.isNegotiable! ? '(가격제안가능)' : '(가격제안불가)',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
                     )
                   ],
                 ),
               ],
             ),
+            Spacer(),
+            Container(
+              height: 35,
+              width: 80,
+              decoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(5)),
+              child: InkWell(
+                onTap: () {
+                  //TODO : 직거래 / 택배거래 뜨도록
+                  _showPurchaseOptions(context, chatData);
+                },
+                child: Center(
+                  child: Text(
+                    '구매하기',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
+      const SizedBox(
+        width: 16,
+      )
     ],
+  );
+}
+
+void _showPurchaseOptions(BuildContext context, ChatData chatData) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true, // 모달 바깥 클릭 시 닫히도록 설정
+    barrierLabel: '',
+    transitionDuration: Duration(milliseconds: 300), // 부드러운 애니메이션
+    pageBuilder: (BuildContext context, Animation<double> animation,
+        Animation<double> secondaryAnimation) {
+      return Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.85,
+            padding: EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 20,
+                  offset: Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '거래 방식을 선택하세요',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 25),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      _onDirectTradeSelected(context, chatData);
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    splashColor: Colors.grey[100],
+                    hoverColor: Colors.grey[50], // hover 시 색상 적용
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[30],
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(CupertinoIcons.person_crop_circle,
+                              color: Colors.blue),
+                          SizedBox(width: 10),
+                          Text(
+                            '직거래',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      _onParcelTradeSelected();
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    splashColor: Colors.grey[100],
+                    hoverColor: Colors.grey[50], // hover 시 색상 적용
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[30],
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(CupertinoIcons.cube_box_fill,
+                              color: Colors.green),
+                          SizedBox(width: 10),
+                          Text(
+                            '택배거래',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(0, 1);
+      var end = Offset.zero;
+      var curve = Curves.easeOutCubic;
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
+
+void _onDirectTradeSelected(BuildContext context, ChatData chatData) {
+  // 직거래 선택 시 처리할 로직
+  logger.d("직거래 선택됨");
+  logger.e('chatData : $chatData');
+  Navigator.pushNamed(context, '/chat/appointment', arguments: chatData);
+}
+
+void _onParcelTradeSelected() {
+  // 택배거래 선택 시 처리할 로직
+  logger.d("택배거래 선택됨");
+  // 예: 배송지 입력 화면으로 이동 등
+}
+
+Widget _buildDateBox(ChatMessage chatData) {
+  return Center(
+    child: Container(
+      width: 200,
+      height: 200,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        border: Border.all(width: 1, color: Colors.grey.shade200),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '약속 정하기',
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Text(
+            '📅 ${chatData.date}',
+            style: TextStyle(
+              color: Colors.grey[800],
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 4),
+          Text(
+            '⏰ ${chatData.time}',
+            style: TextStyle(
+              color: Colors.grey[800],
+              fontSize: 17,
+            ),
+          ),
+          SizedBox(height: 4),
+          Text(
+            '📍 ${chatData.location}',
+            style: TextStyle(
+              color: Colors.grey[800],
+              fontSize: 17,
+            ),
+          ),
+          if (chatData.locationDescription != null) ...[
+            SizedBox(height: 4),
+            Text(
+              chatData.locationDescription!,
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 12,
+              ),
+            ),
+          ],
+          if (chatData.reminderBefore != null) ...[
+            SizedBox(height: 4),
+            Text(
+              '🔔 ${chatData.reminderBefore} 전 알림',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ],
+      ),
+    ),
   );
 }
