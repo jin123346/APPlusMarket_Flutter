@@ -15,13 +15,13 @@ import '../user_card.dart';
 **/
 
 class ChatRoom {
-  final int? chat_room_id;
-  final ProductCard productCard;
+  final int? chatRoomId;
+  final ProductCard? productCard;
   final List<UserCard> participants;
   final List<ChatMessage> messages;
 
   ChatRoom({
-    this.chat_room_id,
+    this.chatRoomId,
     required this.productCard,
     required this.participants,
     required this.messages,
@@ -29,7 +29,7 @@ class ChatRoom {
 
   factory ChatRoom.fromJson(Map<String, dynamic> json) {
     return ChatRoom(
-      chat_room_id: json['chatRoomId'],
+      chatRoomId: json['chatRoomId'],
       productCard: ProductCard.fromJson(json['productCard']),
       participants: (json['participants'] as List)
           .map((item) => UserCard.fromJson(item))
@@ -38,6 +38,8 @@ class ChatRoom {
           ? (json['messages'] as List)
               .map((item) => ChatMessage.fromJson(item))
               .toList()
+              .reversed
+              .toList()
           : [],
     );
   }
@@ -45,7 +47,7 @@ class ChatRoom {
   // 메시지를 추가할 때마다 새로 상태를 반환
   ChatRoom copyWith({List<ChatMessage>? messages}) {
     return ChatRoom(
-      chat_room_id: this.chat_room_id,
+      chatRoomId: this.chatRoomId,
       productCard: this.productCard,
       participants: this.participants,
       messages: messages ?? this.messages,
@@ -54,6 +56,6 @@ class ChatRoom {
 
   @override
   String toString() {
-    return 'ChatRoom{chat_room_id: $chat_room_id, productCard: $productCard, participants: $participants, messages: $messages}';
+    return 'ChatRoom{chat_room_id: $chatRoomId, productCard: $productCard, participants: $participants, messages: $messages}';
   }
 }

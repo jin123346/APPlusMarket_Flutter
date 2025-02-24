@@ -4,7 +4,6 @@ import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/data/model/chat/chat_message.dart';
 import 'package:applus_market/data/model/chat/chat_room.dart';
-import 'package:applus_market/data/service/chat_websocket_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:applus_market/data/repository/chat/chat_repository.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
@@ -45,12 +44,12 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   }
 
   // ChatRoomBody 에서 들어온 id 값으로 초기화
-  void setChatRoomId(int id) {
+  void setChatRoomId(int id) async {
     chatRoomId = id;
     _isInitialized = true;
-    // 로딩 상태 설정
+
     setupMessageListener();
-    _refreshData();
+    await _refreshData();
   }
 
   Future<void> _refreshData() async {
@@ -66,7 +65,7 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   void setupMessageListener() {
     ref.watch(webSocketProvider.notifier).onMessageReceived =
         (ChatMessage newMessage) {
-      logger.e('여긴 확실히 올 듯 ');
+      logger.d('메시지 화면 반영');
       state.whenData((currentRoom) {
         final updatedMessages = [...currentRoom.messages, newMessage];
         state = AsyncData(currentRoom.copyWith(messages: updatedMessages));
@@ -103,9 +102,13 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
       "productId": productId,
       "userId": userId,
     };
-    int result = await chatRepository.createChatRoom(body);
-    ref.watch(webSocketProvider.notifier).subscribe('/sub/chatroom/$result');
-    return result;
+
+    Map<String, dynamic> result = await chatRepository.createChatRoom(body);
+    logger.d('채팅방 생성 완료 -  : $result');
+
+    int resultId = result['chatRoomId'];
+    ref.watch(webSocketProvider.notifier).subscribe('/sub/chatroom/$resultId');
+    return resultId;
   }
 
   Future<ChatRoom> getChatRoomDetail(int chatRoomId) async {
