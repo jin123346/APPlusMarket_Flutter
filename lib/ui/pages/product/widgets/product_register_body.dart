@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:applus_market/data/gvm/geo/location_gvm.dart';
 import 'package:applus_market/data/gvm/product/product_gvm.dart';
+import 'package:applus_market/data/model_view/product/image_item_view_model.dart';
 import 'package:applus_market/data/model_view/product/product_search_notifier.dart';
 import 'package:applus_market/ui/pages/product/widgets/custom_label_input_field.dart';
 import 'package:applus_market/ui/pages/product/widgets/image_select_container.dart';
@@ -15,15 +16,6 @@ import '../../../../data/model/auth/login_state.dart';
 import '../selection_page.dart';
 import '../../../../_core/components/theme.dart';
 
-// 이미지 항목 클래스
-class ImageItem {
-  final String path;
-  final String id;
-  ImageItem({required this.path, required this.id});
-}
-
-// 각 상태를 위한 StateProvider 선언
-final imagePathsProvider = StateProvider<List<ImageItem>>((ref) => []);
 final isNegotiableProvider = StateProvider<bool>((ref) => false);
 final isPossibleMeetYouProvider = StateProvider<bool>((ref) => false);
 final selectedCategoryProvider = StateProvider<String>((ref) => "카테고리");
@@ -114,7 +106,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
   @override
   Widget build(BuildContext context) {
     final productSearchNotifier = ref.read(productSearchProvider.notifier);
-    final imagePaths = ref.watch(imagePathsProvider);
+    final imagePaths = ref.watch(imageStateProvider);
     final isNegotiable = ref.watch(isNegotiableProvider);
     final isPossibleMeetYou = ref.watch(isPossibleMeetYouProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
@@ -374,7 +366,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
                         productSearchNotifier.reset();
 
                         // 이미지 목록 초기화
-                        ref.read(imagePathsProvider.notifier).state = [];
+                        ref.read(imageStateProvider.notifier).state = [];
 
                         // 선택된 카테고리, 브랜드도 초기값으로 설정 (필요한 경우)
                         ref.read(selectedCategoryProvider.notifier).state =

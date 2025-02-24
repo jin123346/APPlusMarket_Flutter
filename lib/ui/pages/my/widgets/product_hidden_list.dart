@@ -189,8 +189,8 @@ class _ProductSellListState extends ConsumerState<ProductHiddenList> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildOption(context, '게시글 수정', () {
-                Navigator.pop(context);
-                // 수정 페이지로 이동하는 로직 추가
+                Navigator.pushNamed(context, '/product/modify',
+                    arguments: product.id);
               }),
               Divider(),
               _buildOption(context, '삭제', () {

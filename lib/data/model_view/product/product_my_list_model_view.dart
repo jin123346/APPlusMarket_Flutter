@@ -140,7 +140,7 @@ class ProductMyListVM extends Notifier<List<ProductMyList>> {
 
       //상품 리로드 시키기 해야함
 
-      state.removeWhere((element) => element.id == productId);
+      state = state.where((product) => product.id != productId).toList();
       print(state);
       return DialogHelper.showAlertDialog(context: mContext, title: message);
     } catch (e, stackTrace) {
