@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:applus_market/_core/utils/logger.dart';
+import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/model/auth/token_manager.dart';
 import 'package:dio/dio.dart';
@@ -9,6 +12,7 @@ import 'apiUrl.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 
 final cookieJar = CookieJar(); // ✅ 쿠키 저장소
+Completer<void>? refreshCompleter; // 요청이 끝날때까지 기다리기
 
 final Dio dio = Dio(
   BaseOptions(
@@ -26,6 +30,27 @@ final Dio dio = Dio(
         options.headers["Authorization"] = "Bearer $token";
       }
       return handler.next(options);
+    },
+    onError: (error, handler) async {
+      if (refreshCompleter == null) {
+        refreshCompleter = Completer<void>();
+        String? refreshToken = await TokenManager().getRefreshToken();
+        if (refreshToken != null) {
+          try {
+            await SessionGVM().initializeAuthState();
+            refreshCompleter?.complete();
+            final cloneReq = await dio.fetch(error.requestOptions);
+            return handler.resolve(cloneReq);
+          } catch (e) {
+            refreshCompleter?.completeError(e);
+          } finally {
+            refreshCompleter = null;
+          }
+        }
+      }
+      await refreshCompleter?.future;
+      final cloneReq = await dio.fetch(error.requestOptions);
+      return handler.resolve(cloneReq);
     },
   ))
   ..interceptors.add(LogInterceptor(

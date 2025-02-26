@@ -29,11 +29,44 @@ class MyInfoBody extends ConsumerStatefulWidget {
 }
 
 class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
+  bool isLoading = true;
   @override
   void initState() {
     // TODO: implement initState
 
     super.initState();
+    _fetchUserInfo(); // ✅ 사용자 정보 가져오기
+  }
+
+  Future<void> _fetchUserInfo() async {
+    setState(() {
+      isLoading = true; // 로딩 시작
+    });
+
+    try {
+      await ref.read(myInfoProvider.notifier).getMyInfo();
+      setState(() {
+        isLoading = false; // 로딩 완료
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false; // 에러 발생 시에도 로딩 종료
+      });
+      // 에러 처리 (예: AlertDialog 표시)
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('에러'),
+          content: const Text('사용자 정보를 가져오는 중 에러가 발생했습니다.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('확인'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   String _formattedDate(DateTime picked) {
@@ -42,22 +75,6 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
 
     return formattedDate;
   }
-
-  // void _getMyInfo() async {
-  //   MyInfoVM myInfoVM = ref.read(myInfoProvider.notifier);
-  //   await myInfoVM.getMyInfo();
-  //   User user = ref.watch(myInfoProvider)!;
-  //   logger.i(user.toString());
-  //   setState(() {
-  //     widget.nameController.text = user.name ?? '';
-  //     widget.birthDateController.text = user.birthday != null
-  //         ? _formattedDate(user.birthday!) // 🎯 null 체크 후 변환
-  //         : '';
-  //     widget.emailController.text = user.email ?? '';
-  //     widget.nicknameController.text = user.nickName ?? '';
-  //     widget.phoneNumberController.text = user.hp ?? '';
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -70,61 +87,65 @@ class _MyInfoBodyState extends ConsumerState<MyInfoBody> {
     widget.nicknameController.text = user?.nickName ?? '';
     widget.phoneNumberController.text = user?.hp ?? '';
 
-    return Form(
-      key: widget.formKey,
-      child: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: [
-          Center(
-            child: ProfileImageContainer(
-              width: 100,
-              height: 100,
+    return (isLoading)
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Form(
+            key: widget.formKey,
+            child: ListView(
+              padding: EdgeInsets.all(16.0),
+              children: [
+                Center(
+                  child: ProfileImageContainer(
+                    width: 100,
+                    height: 100,
+                  ),
+                ),
+                SizedBox(height: 24),
+                CustomInfoTextfield(
+                    label: '이름',
+                    controller: widget.nameController,
+                    onChanged: (value) {}
+                    //ref.read(userProfileProvider.notifier).updateName(value),
+                    ,
+                    readOnly: true),
+                SizedBox(height: 16),
+                CustomInfoTextfield(
+                    label: '닉네임',
+                    controller: widget.nicknameController,
+                    onChanged: (value) {
+                      logger.i(value);
+                      myInfoVM.updateNickName(value);
+                    }),
+                SizedBox(height: 16),
+                CustomInfoTextfield(
+                    label: '생년월일',
+                    controller: widget.birthDateController,
+                    readOnly: true,
+                    onChanged: (value) {}
+                    // _selectDate(context),
+                    ),
+                SizedBox(height: 16),
+                CustomInfoTextfield(
+                  label: '휴대폰 번호',
+                  controller: widget.phoneNumberController,
+                  onChanged: (value) {
+                    myInfoVM.updateHp(value);
+                  },
+                  //  ref.read(userProfileProvider.notifier).updatePhoneNumber(value),
+                ),
+                SizedBox(height: 16),
+                CustomInfoTextfield(
+                  label: '이메일', controller: widget.emailController,
+                  onChanged: (value) {
+                    myInfoVM.updateEmail(value);
+                  },
+                  //      ref.read(userProfileProvider.notifier).updateEmail(value),
+                ),
+              ],
             ),
-          ),
-          SizedBox(height: 24),
-          CustomInfoTextfield(
-              label: '이름',
-              controller: widget.nameController,
-              onChanged: (value) {}
-              //ref.read(userProfileProvider.notifier).updateName(value),
-              ,
-              readOnly: true),
-          SizedBox(height: 16),
-          CustomInfoTextfield(
-              label: '닉네임',
-              controller: widget.nicknameController,
-              onChanged: (value) {
-                logger.i(value);
-                myInfoVM.updateNickName(value);
-              }),
-          SizedBox(height: 16),
-          CustomInfoTextfield(
-              label: '생년월일',
-              controller: widget.birthDateController,
-              readOnly: true,
-              onChanged: (value) {}
-              // _selectDate(context),
-              ),
-          SizedBox(height: 16),
-          CustomInfoTextfield(
-            label: '휴대폰 번호',
-            controller: widget.phoneNumberController,
-            onChanged: (value) {
-              myInfoVM.updateHp(value);
-            },
-            //  ref.read(userProfileProvider.notifier).updatePhoneNumber(value),
-          ),
-          SizedBox(height: 16),
-          CustomInfoTextfield(
-            label: '이메일', controller: widget.emailController,
-            onChanged: (value) {
-              myInfoVM.updateEmail(value);
-            },
-            //      ref.read(userProfileProvider.notifier).updateEmail(value),
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   Future<void> _selectDate(BuildContext context) async {

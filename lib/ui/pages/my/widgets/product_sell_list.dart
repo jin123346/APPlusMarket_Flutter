@@ -108,7 +108,7 @@ class _ProductSellListState extends ConsumerState<ProductSellList> {
                                           decoration: BoxDecoration(
                                             color: Colors.red,
                                             borderRadius:
-                                                BorderRadius.circular(10),
+                                                BorderRadius.circular(15),
                                           ),
                                           child: Text(
                                             '판매중',

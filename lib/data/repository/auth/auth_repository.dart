@@ -114,7 +114,6 @@ class AuthRepository {
   //나의 정보 가져오기
   Future<Map<String, dynamic>> getMyInfo() async {
     Response response = await dio.get("/auth/myInfo");
-
     return response.data;
   }
 

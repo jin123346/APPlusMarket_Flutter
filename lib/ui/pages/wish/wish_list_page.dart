@@ -1,48 +1,77 @@
-import 'package:applus_market/_core/utils/priceFormatting.dart';
-import 'package:applus_market/data/model/product/product_info_card.dart';
+import 'package:applus_market/data/model/product/product_card.dart';
+import 'package:applus_market/data/model_view/product/product_wish_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/gvm/product/productlist_gvm.dart';
-import '../pages/product/product_register_page.dart';
-import '../pages/product/product_view_page.dart';
 
-class ProductList extends ConsumerWidget {
-  final List<ProductInfoCard> products;
-  const ProductList({super.key, required this.products});
+import '../../../_core/utils/logger.dart';
+import '../my/widgets/product_container.dart';
+import '../product/product_view_page.dart';
+
+class WishListPage extends ConsumerStatefulWidget {
+  WishListPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Riverpod으로 상품 리스트 가져오기
-    final products = ref.watch(productListProvider);
+  ConsumerState<WishListPage> createState() => _WishListPageState();
+}
 
-    return SliverPadding(
-      padding: const EdgeInsets.all(16),
-      sliver: products.isEmpty
-          ? const SliverToBoxAdapter(
-              child: Center(child: CircularProgressIndicator()),
-            )
-          : SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.75,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final product = products[index];
-                  final price = formatPrice(product.price!);
+class _WishListPageState extends ConsumerState<WishListPage> {
+  bool isLoading = true;
+
+  late List<ProductCard> wishLists;
+
+  @override
+  void initState() {
+    wishLists = [];
+    // TODO: implement initState
+    super.initState();
+    getMyList();
+  }
+
+  Future<void> getMyList() async {
+    logger.i('관심상품 리스트 로직 시작');
+    await ref.read(productWishProvider.notifier).getMyWishList();
+    wishLists = ref.watch(productWishProvider);
+    if (wishLists.isEmpty) {
+      wishLists = [];
+      isLoading = false;
+    }
+    isLoading = false;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (isLoading)
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : wishLists.isEmpty
+            ? const SliverToBoxAdapter(
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              )
+            : GridView.builder(
+                padding: EdgeInsets.all(5.0),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5,
+                ),
+                itemCount: wishLists.length,
+                itemBuilder: (context, index) {
+                  ProductCard product = wishLists[index];
                   return GestureDetector(
                     onTap: () {
                       // 상품 클릭 시 상세 페이지로 이동
-
-                      ref.read(productListProvider.notifier).addRecent(product);
-
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              ProductViewPage(productId: product.product_id!),
+                              ProductViewPage(productId: product.productId),
                         ),
                       );
                     },
@@ -57,7 +86,7 @@ class ProductList extends ConsumerWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
-                                product.images!.first,
+                                product.thumbnailImage,
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                               ),
@@ -69,7 +98,7 @@ class ProductList extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '$price 원',
+                                  '${product.price} 원',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -77,7 +106,7 @@ class ProductList extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  product.title!,
+                                  product.name,
                                   style: const TextStyle(fontSize: 14.5),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
@@ -90,9 +119,6 @@ class ProductList extends ConsumerWidget {
                     ),
                   );
                 },
-                childCount: products.length,
-              ),
-            ),
-    );
+              );
   }
 }

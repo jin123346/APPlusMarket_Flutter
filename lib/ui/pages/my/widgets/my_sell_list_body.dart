@@ -57,11 +57,12 @@ class _MySellListBodyState extends State<MySellListBody>
                         Navigator.popAndPushNamed(context, '/product/register');
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red[200],
+                        backgroundColor: Colors.white,
                         foregroundColor: Colors.black,
                         padding: EdgeInsets.symmetric(horizontal: 15),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(color: Colors.red),
+                          borderRadius: BorderRadius.circular(15),
                         ),
                       ),
                       child: const Text('판매 등록'),

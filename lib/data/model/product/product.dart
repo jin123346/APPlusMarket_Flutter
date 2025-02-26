@@ -56,6 +56,49 @@ class Product {
     required this.location,
   });
 
+  Product copyWith({
+    int? id, // 아이디
+    String? title, // 제목
+    String? productName, //제품명
+    String? content, // 내용
+    String? registerLocation, // 등록 위치
+    String? registerIp, // 등록 아이피
+    String? createdAt, // 생성 일자
+    String? updatedAt, // 업데이트 일자
+    int? price, // 가격
+    String? status, // 상태
+    String? deletedAt, // 삭제 일자
+    int? sellerId, // 판매자 아이디
+    String? nickname, //판매자 닉네임
+    bool? isNegotiable, // 네고 가능 여부
+    bool? isPossibleMeetYou, // 직거래 가능 여부
+    String? category, // 카테고리
+    String? brand, //브랜드
+    List<ProductImage>? images, // 이미지들
+    FindProduct? findProduct,
+    String? location,
+  }) {
+    return Product(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        productName: productName ?? this.productName,
+        content: content ?? this.content,
+        registerIp: registerIp ?? this.registerIp,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        price: price ?? this.price,
+        status: status ?? this.status,
+        sellerId: sellerId ?? this.sellerId,
+        nickname: nickname ?? this.nickname,
+        isNegotiable: isNegotiable ?? this.isNegotiable,
+        isPossibleMeetYou: isPossibleMeetYou ?? this.isPossibleMeetYou,
+        category: category ?? this.category,
+        brand: brand ?? this.brand,
+        images: images ?? this.images,
+        findProduct: findProduct ?? this.findProduct,
+        location: location ?? this.location);
+  }
+
   // 수정된 toString() 메서드
   @override
   String toString() {

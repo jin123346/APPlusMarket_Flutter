@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:applus_market/_core/utils/custom_snackbar.dart';
+import 'package:applus_market/_core/utils/dialog_helper.dart';
 import 'package:applus_market/data/gvm/product/productlist_gvm.dart';
+import 'package:applus_market/data/gvm/session_gvm.dart';
+import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/model/product/product_info_card.dart';
 import 'package:applus_market/data/model/product/selected_product.dart';
 import 'package:applus_market/data/repository/product/product_repository.dart';
@@ -18,24 +22,27 @@ class ProductGvm extends Notifier<ProductInfoCard> {
   @override
   ProductInfoCard build() {
     return ProductInfoCard(
-        product_id: null,
-        title: null,
-        product_name: null,
-        images: null,
-        content: null,
-        updated_at: null,
-        price: null,
-        status: null,
-        seller_id: null,
-        nickname: null,
-        is_negotiable: null,
-        is_possible_meet_you: null,
-        category: null,
-        register_ip: null,
-        created_at: null,
-        brand: null,
-        selectedProduct: null,
-        location: null);
+      product_id: null,
+      title: null,
+      product_name: null,
+      images: null,
+      content: null,
+      updated_at: null,
+      price: null,
+      status: null,
+      seller_id: null,
+      nickname: null,
+      is_negotiable: null,
+      is_possible_meet_you: null,
+      category: null,
+      register_ip: null,
+      created_at: null,
+      brand: null,
+      selectedProduct: null,
+      location: null,
+      findProduct: null,
+      isWished: false,
+    );
   }
 
   //상품 등록
@@ -93,14 +100,16 @@ class ProductGvm extends Notifier<ProductInfoCard> {
   Future<ProductInfoCard?> selectProduct(int productId) async {
     try {
       //선택된 상품 아이디를 검색
-      final responseBody = await productRepository.selectProduct(id: productId);
+      SessionUser? user = ref.read(LoginProvider);
+      final responseBody = await productRepository.selectProduct(
+          id: productId, userId: user?.id);
       logger.e("responseBody: $responseBody['status']");
       if (responseBody['status'] == 'success') {
         //응답된 결과사 성공일 경우 전달 받은 데이터를 todata를 이용해 데이터를 변환 해줍니다.
         // 그리고 전환된 데이터를 state에 전달 하여 바로 사용 가능 하도록 만들었습니다.
         state = ProductInfoCard.todata(responseBody['data']);
 
-        logger.e("Updated State: $state");
+        //
       } else {
         throw Exception(responseBody['message']);
       }
@@ -109,6 +118,24 @@ class ProductGvm extends Notifier<ProductInfoCard> {
       Navigator.pop(mContext);
       ref.read(productListProvider.notifier).fetchProducts(isRefresh: true);
       return null;
+    }
+  }
+
+  Future<void> updateWishList(int productId, int userId) async {
+    try {
+      Map<String, dynamic> resBody =
+          await productRepository.updateWishList(productId, userId);
+      if (resBody['status'] == 'failed') {
+        CustomSnackbar.showSnackBar(resBody['message']);
+        return;
+      }
+
+      state = state.copyWith(isWished: !state.isWished!);
+
+      DialogHelper.showAlertDialog(
+          context: mContext, title: '성공', content: resBody['message']);
+    } catch (e, stackTrace) {
+      ExceptionHandler.handleException(e, stackTrace);
     }
   }
 

@@ -1,15 +1,21 @@
+import 'package:applus_market/_core/utils/dialog_helper.dart';
 import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
+import 'package:applus_market/data/model/product/find_product.dart';
 import 'package:applus_market/ui/pages/chat/room/chat_room_page.dart';
 import 'package:applus_market/ui/pages/chat/room/chat_room_page_view_model.dart';
+import 'package:applus_market/ui/pages/components/time_ago.dart';
+import 'package:applus_market/ui/pages/product/product_detail_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../_core/components/theme.dart';
 import '../../../_core/utils/logger.dart';
+import '../../../_core/utils/priceFormatting.dart';
 import '../../../data/gvm/product/product_gvm.dart';
 import '../../../data/model/product/product_info_card.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /*
   2025.01.22 - 이도영 : 상품 정보 출력화면
@@ -53,8 +59,8 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
   Widget build(BuildContext context) {
     final product = ref.watch(productProvider); // 상태 자동 반영
     final productid = product.product_id; // 상품 아이디
-
-    logger.e("Product Data : $product");
+    String? currentTime = timeAgo(product.updated_at ?? product.created_at);
+    final FindProduct? findProduct = product.findProduct;
     if (_isLoading) {
       // 로딩 중인 경우
       return Scaffold(
@@ -66,7 +72,6 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
         ),
       );
     }
-
     if (_errorMessage != null) {
       // 에러가 발생한 경우
       return Scaffold(
@@ -88,6 +93,8 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
         ),
       );
     }
+    logger.e("관심상품 상태 : ${product.isWished}");
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey[200],
@@ -97,13 +104,13 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
           ),
-          actions: [
-            // 신고 버튼 추가
-            IconButton(
-              icon: const Icon(CupertinoIcons.exclamationmark_triangle),
-              onPressed: () => print("신고 버튼 클릭됨"),
-            ),
-          ],
+          // actions: [
+          //   // 신고 버튼 추가
+          //   IconButton(
+          //     icon: const Icon(CupertinoIcons.),
+          //     onPressed: () => print("신고 버튼 클릭됨"),
+          //   ),
+          // ],
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -208,7 +215,7 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
                     ),
                     const SizedBox(height: 8),
                     // 날짜
-                    Text('${product.updated_at}',
+                    Text('${currentTime}',
                         style: TextStyle(color: Colors.grey)),
                     const SizedBox(height: 8),
                     const Divider(),
@@ -250,6 +257,35 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
+                    Visibility(
+                      visible: findProduct != null && findProduct.name != null,
+                      child: Container(
+                        child: Column(
+                          children: [
+                            if (findProduct != null)
+                              _buildBrand('상품명', findProduct!.name!),
+                            const SizedBox(height: 8),
+                            if (findProduct != null)
+                              _buildBrand(
+                                  '상품코드', findProduct.productDetailCode!),
+                            const SizedBox(height: 8),
+                            if (findProduct != null)
+                              _buildBrand(
+                                  '공홈가',
+                                  formatPrice(findProduct.finalPrice!.toInt())
+                                      .toString()),
+                            const SizedBox(height: 8),
+                            if (findProduct?.productUrl != null)
+                              Visibility(
+                                visible: findProduct!.productUrl != null,
+                                child: _buildUrl('상세링크', findProduct.goodsId,
+                                    findProduct.name!),
+                              )
+                          ],
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -286,9 +322,30 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
             children: [
               // 하트 아이콘 (찜하기)
               IconButton(
-                icon: const Icon(Icons.favorite_border),
+                icon: (product.isWished!)
+                    ? Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      )
+                    : Icon(Icons.favorite_border),
                 onPressed: () {
+                  //로그인 유무 확인
+                  SessionUser? user = ref.watch(LoginProvider);
+                  if (user == null) {
+                    DialogHelper.showAlertDialog(
+                      context: context,
+                      title: '로그인 하시겠습니까?',
+                      isCanceled: true,
+                      onConfirm: () {
+                        Navigator.pushNamed(context, "/login");
+                      },
+                    );
+                    return;
+                  }
                   // 찜하기 동작
+                  ref
+                      .read(productProvider.notifier)
+                      .updateWishList(productid!, user.id!);
                 },
               ),
 
@@ -299,7 +356,7 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('${product.price}원',
+                    Text('${formatPrice(product.price!)}원',
                         style: CustomTextTheme.titleMedium),
                     const SizedBox(height: 4),
                     // is_negotiable 값에 따라 가격 제안 가능/불가 텍스트 출력
@@ -337,6 +394,71 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildBrand(String title, Object content) {
+    return Row(
+      children: [
+        // 고정된 너비로 상품상태 레이블 설정
+        SizedBox(
+          width: 70, // 고정 너비 설정
+          child: Text(
+            '$title',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            '${content}',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUrl(String title, String? goodId, String goodNm) {
+    return Row(
+      children: [
+        // 고정된 너비로 상품상태 레이블 설정
+        SizedBox(
+          width: 70, // 고정 너비 설정
+          child: Text(
+            '$title',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(
+          child: (goodId != null) // 링크인 경우
+              ? GestureDetector(
+                  onTap: () {
+                    // ✅ 링크 클릭 시 Dialog로 WebView 호출
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        logger.i(
+                            'https://www.samsung.com/sec/cxhr/goods/getGoodsSpecList?goodsId=${goodId}&goodsNm=${goodNm}');
+                        return ProductDetailWebView(
+                            productUrl:
+                                'https://www.samsung.com/sec/cxhr/goods/getGoodsSpecList?goodsId=${goodId}&goodsNm=${goodNm}');
+                      },
+                    );
+                  },
+                  child: Text(
+                    '상세보기', // 여기에 원하는 텍스트로 표시
+                    style: TextStyle(
+                      color: Colors.blue, // 링크처럼 보이도록 파란색
+                      decoration: TextDecoration.underline, // 밑줄 추가
+                    ),
+                  ),
+                )
+              : Text(
+                  '없음',
+                  style: TextStyle(color: Colors.grey),
+                ),
+        ),
+      ],
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../_core/utils/exception_handler.dart';
 import '../../../_core/utils/logger.dart';
@@ -7,12 +8,14 @@ import '../../repository/product/product_repository.dart';
 // 상품 리스트 출력 기능
 class ProductListGvm extends StateNotifier<List<ProductInfoCard>> {
   final ProductRepository productRepository = ProductRepository();
+  final Ref ref;
+
   int _currentPage = 1;
   bool _isFetching = false;
   bool _hasMore = true; // 추가: 더 가져올 데이터가 있는지 여부
   bool get isFetching => _isFetching;
   bool get hasMore => _hasMore;
-  ProductListGvm() : super([]) {
+  ProductListGvm(this.ref) : super([]) {
     fetchProducts(); // 초기 로드
   }
 
@@ -50,9 +53,28 @@ class ProductListGvm extends StateNotifier<List<ProductInfoCard>> {
       _isFetching = false;
     }
   }
+
+  Future<void> addRecent(ProductInfoCard product) async {
+    try {
+      int? userId = ref.read(LoginProvider).id;
+      if (userId == null) {}
+
+      Map<String, dynamic> data = {
+        "userId": userId ?? null,
+        "productId": product.product_id,
+        "title": product.title,
+        "thumbnailImage": product.images!.first,
+        "price": product.price,
+      };
+
+      await productRepository.pushRecentProducts(data);
+    } catch (e, stackTrace) {
+      logger.e('$e $stackTrace');
+    }
+  }
 }
 
 final productListProvider =
     StateNotifierProvider<ProductListGvm, List<ProductInfoCard>>(
-  (ref) => ProductListGvm(),
+  (ref) => ProductListGvm(ref),
 );
