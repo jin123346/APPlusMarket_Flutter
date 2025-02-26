@@ -76,6 +76,8 @@ class WebSocketNotifier extends Notifier<bool> {
         callback: (frame) {
           if (frame.body != null) {
             Map<String, dynamic> data = json.decode(frame.body!);
+
+            // ChatSendMessage로 수정
             ChatMessage receivedMessage = ChatMessage.fromJson(data);
             logger.e('💻received data: $receivedMessage');
             // 콜백 함수로 화면 반영

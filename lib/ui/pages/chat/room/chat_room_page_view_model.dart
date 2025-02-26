@@ -73,17 +73,32 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
     };
   }
 
-  void sendMessage(int chatRoomId, String message, int senderId) {
+  void sendMessage(ChatMessage chatMessage) {
     WebSocketNotifier notifier = ref.watch(webSocketProvider.notifier);
     StompClient? stompClient = notifier.stompClient;
-    if (stompClient != null && stompClient!.connected) {
+    if (stompClient != null && stompClient.connected) {
+      Map<String, dynamic> body;
       try {
-        Map<String, dynamic> body = {
-          "chatRoomId": chatRoomId,
-          "content": message,
-          "senderId": senderId,
-        };
-        stompClient!.send(
+        // 일반 메시지인 경우
+        if (chatMessage.content != null) {
+          body = {
+            "chatRoomId": chatMessage.chatRoomId,
+            "content": chatMessage.content,
+            "senderId": chatMessage.userId,
+          };
+          // 약속 메시지인 경우
+        } else {
+          body = {
+            "chatRoomId": chatMessage.chatRoomId,
+            "senderId": chatMessage.userId,
+            "date": chatMessage.date.toString(),
+            "time": chatMessage.time.toString(),
+            "location": chatMessage.location,
+            "locationDescription": chatMessage.locationDescription,
+            "remindBefore": chatMessage.reminderBefore
+          };
+        }
+        stompClient.send(
           destination: "/pub/chat/message",
           body: json.encode(body),
         );
