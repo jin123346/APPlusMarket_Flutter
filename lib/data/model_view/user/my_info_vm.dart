@@ -2,6 +2,8 @@ import 'package:applus_market/_core/utils/dialog_helper.dart';
 import 'package:applus_market/_core/utils/exception_handler.dart';
 import 'package:applus_market/data/gvm/myinfo_event_notifier.dart';
 import 'package:applus_market/data/gvm/session_gvm.dart';
+import 'package:applus_market/data/model/auth/login_state.dart';
+import 'package:applus_market/data/model/auth/token_manager.dart';
 import 'package:applus_market/data/model/auth/user.dart';
 import 'package:applus_market/data/repository/auth/auth_repository.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,12 @@ class MyInfoVM extends Notifier<User?> {
   Future<void> getMyInfo() async {
     try {
       Map<String, dynamic> resBody = await authRepository.getMyInfo();
+
+      if (resBody['code'] == 401) {
+        logger.i("허가되지 않은 사용자");
+        return;
+      }
+
       if (resBody['status'] == 'failed') {
         String message = resBody['message'];
         ExceptionHandler.handleException('message', StackTrace.current);

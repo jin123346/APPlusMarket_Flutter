@@ -2,7 +2,9 @@ import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/ui/pages/chat/list/chat_list_page.dart';
 import 'package:applus_market/ui/pages/my/my_info_page.dart';
+import 'package:applus_market/ui/pages/my/my_sell_list_page.dart';
 import 'package:applus_market/ui/pages/my/withdrawal_page.dart';
+import 'package:applus_market/ui/pages/product/product_modify_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -92,6 +94,7 @@ class MyApp extends ConsumerWidget {
         '/my': (context) => MyLoginedPage(),
         '/my/info': (context) => MyInfoPage(),
         '/my/settings': (context) => MySettingsPage(),
+        '/my/sell/list': (context) => MySellListPage(),
         '/my/delivery': (context) => DeliveryPage(),
         '/my/delivery/register': (context) => DeliveryRegisterPage(),
         '/my/delivery/modify': (context) => DeliveryMoifyPage(),
@@ -104,6 +107,7 @@ class MyApp extends ConsumerWidget {
         '/find_pass': (context) => FindPassPage(),
         '/find_pass_change': (context) => FindPassChangePage(),
         '/pass_change_result': (context) => PassChangeResultPage(),
+        '/product/modify': (context) => ProductModifyPage(),
       },
       initialRoute: '/splash',
     );

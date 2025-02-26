@@ -40,7 +40,7 @@ class ProfileCard extends ConsumerWidget {
                           style: CustomTextTheme.titleMedium),
                       const SizedBox(height: 3),
                       InkWell(
-                          onDoubleTap: () {
+                          onTap: () {
                             print('회원정보클릭!');
                             Navigator.pushNamed(context, '/my/info');
                           },

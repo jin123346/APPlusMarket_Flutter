@@ -63,22 +63,25 @@ class _HomePageState extends ConsumerState<HomePage> {
           // 상단 AppBar
           SliverAppBar(
             floating: true,
-            titleSpacing: 0,
+            titleSpacing: 16,
             backgroundColor: Colors.white,
             elevation: 0,
-            title: Row(
-              children: [
-                Text(
-                  'APPLUS',
-                  textAlign: TextAlign.left,
-                  style: GoogleFonts.bangers(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                    color: APlusTheme.primaryColor,
+            title: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Text(
+                    'APPLUS',
+                    textAlign: TextAlign.left,
+                    style: GoogleFonts.bangers(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                      color: APlusTheme.primaryColor,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             actions: [
               // 알림 아이콘

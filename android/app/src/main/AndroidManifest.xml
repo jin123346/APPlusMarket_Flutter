@@ -12,6 +12,18 @@
         android:usesCleartextTraffic="true"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="io.flutter.embedding.android.FlutterFragmentActivity"
+            android:value="true" />
+        <meta-data
+            android:name="io.flutter.embedding.android.FlutterActivity"
+            android:value="true" />
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

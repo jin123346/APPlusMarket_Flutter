@@ -48,9 +48,23 @@ class ProductRepository {
     }
   }
 
-  Future<Map<String, dynamic>> selectProduct({required int id}) async {
-    Response response = await dio.get('/product/$id');
+  Future<Map<String, dynamic>> selectProduct(
+      {required int id, int? userId}) async {
+    Response response = await dio.get(
+      '/product/$id',
+      queryParameters: {
+        'userId': userId,
+      },
+    );
     logger.e("Updated State: $response");
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> updateWishList(int productId, int userId) async {
+    Response response = await dio.put(
+      '/product/wish/${productId}/${userId}',
+    );
+    logger.i("Updated State: $response");
     return response.data;
   }
 
@@ -106,6 +120,19 @@ class ProductRepository {
           },
         ));
 
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getMyWishList() async {
+    Response response = await dio.get('/product/wish/list');
+    logger.i(response);
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> pushRecentProducts(
+      Map<String, dynamic> data) async {
+    Response response = await dio.post('/api/recent/product', data: data);
+    logger.i(response);
     return response.data;
   }
 }

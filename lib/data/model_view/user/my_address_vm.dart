@@ -39,10 +39,13 @@ class MyAddressVM extends Notifier<List<MyAddress>> {
       }
 
       logger.i('조회성공!! ');
-      List<dynamic> data = resBody['data'];
 
-      state = data.map((e) => MyAddress.fromJson(e)).toList();
-      logger.i(state);
+      if (resBody['data'] != null) {
+        List<dynamic> data = resBody['data'];
+        state = data.map((e) => MyAddress.fromJson(e)).toList();
+        logger.i(state);
+      }
+
       return;
     } catch (e, stackTrace) {
       logger.w(e);

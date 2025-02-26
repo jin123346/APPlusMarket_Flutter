@@ -111,8 +111,8 @@ class ProductModifyVM extends Notifier<Product> {
         "productName": productName,
         "content": content,
         "price": price,
-        "isNegotiable": isNegotiable,
-        "isPossibleMeetYou": isPossibleMeetYou,
+        "isNegotiable": state.isNegotiable,
+        "isPossibleMeetYou": state.isPossibleMeetYou,
         "category": category,
         "brand": brand,
         "findProduct": findProduct,
@@ -168,6 +168,14 @@ class ProductModifyVM extends Notifier<Product> {
         findProduct: null,
         location: null);
     isLoading = true;
+  }
+
+  void updateMeetYou(bool? value) {
+    state = state.copyWith(isPossibleMeetYou: value);
+  }
+
+  void updateIsNego(bool? value) {
+    state = state.copyWith(isNegotiable: value);
   }
 }
 

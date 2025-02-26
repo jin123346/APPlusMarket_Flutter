@@ -38,7 +38,6 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
   late final TextEditingController productNameController;
   late final TextEditingController productFindController;
   bool isNegotiable = false;
-  bool isPossibleMeetYou = false;
   String selectedCategory = "";
   String selectedBrand = "";
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -88,7 +87,6 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
     productFindController.text = product?.findProduct?.name ?? "";
     descriptionController.text = product?.content ?? "";
     isNegotiable = product?.isNegotiable ?? false;
-    isPossibleMeetYou = product?.isPossibleMeetYou ?? false;
     selectedCategory = product?.category ?? "";
     selectedBrand = product?.brand ?? "";
     setState(() {}); // 🔹 UI 강제 업데이트
@@ -101,7 +99,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
                 path:
                     "$apiUrl/uploads/${product!.id!}/${image.uuidName}", // 기존 이미지 경로
                 id: image.id.toString(),
-                sequence: image.sequence!, // 이미지 ID (DB 삭제 처리 가능)
+                sequence: image.sequence!,
               ))
           .toList();
 
@@ -170,6 +168,8 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
     SessionUser sessionUser = ref.watch(LoginProvider);
     int userid = sessionUser.id!;
     product = ref.watch(productModifyProvider);
+    final productProvider = ref.read(productModifyProvider.notifier);
+
     return (isLoading)
         ? const Center(child: CircularProgressIndicator())
         : SafeArea(
@@ -314,11 +314,9 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
                               width: 25,
                               height: 25,
                               child: Checkbox(
-                                value: isNegotiable,
+                                value: product!.isNegotiable,
                                 onChanged: (value) {
-                                  ref
-                                      .read(isNegotiableProvider.notifier)
-                                      .state = value ?? false;
+                                  productProvider.updateIsNego(value);
                                 },
                                 activeColor: Colors.red,
                                 checkColor: Colors.white,
@@ -369,25 +367,20 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
                               width: 30,
                               child: Radio<bool>(
                                 value: false,
-                                groupValue: isPossibleMeetYou,
+                                groupValue: product!.isPossibleMeetYou,
                                 onChanged: (value) {
-                                  ref
-                                      .read(isPossibleMeetYouProvider.notifier)
-                                      .state = value!;
+                                  productProvider.updateMeetYou(value);
                                 },
                               ),
                             ),
                             const Text('가능', style: TextStyle(fontSize: 16)),
                             const SizedBox(width: 5),
                             Radio<bool>(
-                              value: true,
-                              groupValue: isPossibleMeetYou,
-                              onChanged: (value) {
-                                ref
-                                    .read(isPossibleMeetYouProvider.notifier)
-                                    .state = value!;
-                              },
-                            ),
+                                value: true,
+                                groupValue: product!.isPossibleMeetYou,
+                                onChanged: (value) {
+                                  productProvider.updateMeetYou(value);
+                                }),
                             const Text('불가능', style: TextStyle(fontSize: 16)),
                           ],
                         ),
@@ -411,7 +404,8 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
                                     content: descriptionController.text,
                                     price: priceController.text,
                                     isNegotiable: isNegotiable,
-                                    isPossibleMeetYou: isPossibleMeetYou,
+                                    isPossibleMeetYou:
+                                        product!.isPossibleMeetYou!,
                                     category: selectedCategory,
                                     brand: selectedBrand,
                                     findProduct:
@@ -438,6 +432,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
                               ref.read(selectedBrandProvider.notifier).state =
                                   "브랜드";
                             }
+                            Navigator.pop(context); // 👉 여기서 pop
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 50),
