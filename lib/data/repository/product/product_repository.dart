@@ -135,4 +135,10 @@ class ProductRepository {
     logger.i(response);
     return response.data;
   }
+
+  Future<Map<String, dynamic>> getMyRecentList() async {
+    Response response = await dio.get('/api/recent/list');
+    logger.i(response);
+    return response.data;
+  }
 }

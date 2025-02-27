@@ -1,4 +1,5 @@
 import 'package:applus_market/_core/components/size.dart';
+import 'package:applus_market/ui/pages/wish/recent_list_page.dart';
 import 'package:applus_market/ui/widgets/applus_text_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,32 +58,7 @@ class _WishBodyState extends ConsumerState<WishBody>
         controller: _tabController,
         children: [
           WishListPage(),
-          // GridView.builder(
-          //   padding: EdgeInsets.all(5.0),
-          //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //     crossAxisCount: 2,
-          //     crossAxisSpacing: 5,
-          //     mainAxisSpacing: 5,
-          //   ),
-          //   itemCount: products.length,
-          //   itemBuilder: (context, index) {
-          //     ProductCard product = products[index];
-          //     return ProductContainer(price: product.price, name: product.name);
-          //   },
-          // ),
-          GridView.builder(
-            padding: EdgeInsets.all(5.0),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 5,
-            ),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              ProductCard product = products[index];
-              return ProductContainer(price: product.price, name: product.name);
-            },
-          ),
+          RecentListPage(),
         ],
       ),
     );

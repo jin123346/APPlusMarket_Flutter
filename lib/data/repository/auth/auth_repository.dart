@@ -6,6 +6,7 @@ import 'package:applus_market/utils/dynamic_base_url_Interceptor.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../_core/utils/apiUrl.dart';
 import '../../../_core/utils/dio.dart';
@@ -21,10 +22,17 @@ class AuthRepository {
       String uid, String password) async {
     // 로그인 API 요청
     String deviceInfo = await getDeviceInfo();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? tempUserId = prefs.getString('tempUserId');
 
     Response response = await dio.post(
       '/auth/login',
-      data: {'uid': uid, 'password': password, 'deviceInfo': deviceInfo},
+      data: {
+        'uid': uid,
+        'password': password,
+        'deviceInfo': deviceInfo,
+        'tempUserId': tempUserId
+      },
     );
     // 토큰 반환
     logger.d('response Header ${response.headers}');
