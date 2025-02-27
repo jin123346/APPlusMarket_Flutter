@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../_core/utils/apiUrl.dart';
 import '../../_core/utils/dio.dart';
@@ -133,6 +134,7 @@ class SessionGVM extends Notifier<SessionUser> {
   void login(
       GlobalKey<FormState> formKey, String? uid, String? password) async {
     AuthRepository authRepository = AuthRepository();
+
     // 로그인 로직
     //입력필드값 없을때,
     if (uid == null || password == null) {

@@ -38,6 +38,14 @@ class ProductCard {
       thumbnailImage: '$apiUrl/uploads/${json['id']}/${json['productImage']}',
     );
   }
+  factory ProductCard.fromRedis(Map<String, dynamic> json) {
+    return ProductCard(
+      productId: json['productId'],
+      name: json['title'],
+      price: json['price'],
+      thumbnailImage: json['thumbnailImage'],
+    );
+  }
 
   @override
   String toString() {

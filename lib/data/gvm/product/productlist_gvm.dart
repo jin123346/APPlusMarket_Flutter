@@ -1,9 +1,11 @@
 import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../_core/utils/exception_handler.dart';
 import '../../../_core/utils/logger.dart';
 import '../../model/product/product_info_card.dart';
 import '../../repository/product/product_repository.dart';
+import 'package:uuid/uuid.dart';
 
 // 상품 리스트 출력 기능
 class ProductListGvm extends StateNotifier<List<ProductInfoCard>> {
@@ -56,11 +58,16 @@ class ProductListGvm extends StateNotifier<List<ProductInfoCard>> {
 
   Future<void> addRecent(ProductInfoCard product) async {
     try {
+      logger.i('최근 본 상품 저장 : $product');
       int? userId = ref.read(LoginProvider).id;
-      if (userId == null) {}
+      String? tmpUserId = null;
+      if (userId == null) {
+        tmpUserId = await getTemporaryUserId();
+      }
 
       Map<String, dynamic> data = {
         "userId": userId ?? null,
+        "tmpUserId": tmpUserId ?? null,
         "productId": product.product_id,
         "title": product.title,
         "thumbnailImage": product.images!.first,
@@ -70,6 +77,29 @@ class ProductListGvm extends StateNotifier<List<ProductInfoCard>> {
       await productRepository.pushRecentProducts(data);
     } catch (e, stackTrace) {
       logger.e('$e $stackTrace');
+    }
+  }
+
+  // UUID 생성
+  Future<String> getTemporaryUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? tempUserId = prefs.getString('tempUserId');
+
+    // UUID가 없으면 새로 생성
+    if (tempUserId == null) {
+      var uuid = Uuid();
+      tempUserId = uuid.v4();
+      await prefs.setString('tempUserId', tempUserId);
+    }
+
+    return tempUserId;
+  }
+
+  Future<void> showRecentProduct() async {
+    int? userId = ref.read(LoginProvider).id;
+    String? tmpUserId = null;
+    if (userId == null) {
+      tmpUserId = await getTemporaryUserId();
     }
   }
 }

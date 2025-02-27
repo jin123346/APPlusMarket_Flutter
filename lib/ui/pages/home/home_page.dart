@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../_core/components/theme.dart';
 import '../../../data/gvm/geo/location_gvm.dart';
 import '../../../data/gvm/product/productlist_gvm.dart';
+import '../../../data/model/product/brand.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -44,13 +45,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     // 브랜드 목록 예시
-    final brands = [
-      'APPLE',
-      'SamSung',
-      'LG',
-      'Asus',
-      'Lenova',
-    ];
 
     // productListProvider 상태 구독
     final products = ref.watch(productListProvider);
@@ -196,6 +190,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 itemCount: brands.length,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemBuilder: (context, index) {
+                  Brand brand = brands[index];
                   return Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: Column(
@@ -205,12 +200,29 @@ class _HomePageState extends ConsumerState<HomePage> {
                           height: 50,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.grey,
+                            border: Border.fromBorderSide(
+                              BorderSide(color: Colors.grey, width: 0.3),
+                            ),
+                            color: Colors.white,
                           ),
+                          child: (brand.brandLogo == null ||
+                                  brand.brandLogo!.isEmpty)
+                              ? Center(
+                                  child: Text(
+                                  brand.brandName!,
+                                  style: GoogleFonts.acme(
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.1,
+                                      fontSize: 16),
+                                ))
+                              : Image.asset(
+                                  brand.brandLogo!,
+                                  fit: BoxFit.contain,
+                                ),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          brands[index],
+                          brand.brandName!,
                           style: const TextStyle(fontSize: 12),
                         ),
                       ],
