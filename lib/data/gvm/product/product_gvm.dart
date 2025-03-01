@@ -90,7 +90,7 @@ class ProductGvm extends Notifier<ProductInfoCard> {
       //상품 등록에 성공 했을때 /home 화면으로 이동을 합니다.
       Navigator.popAndPushNamed(mContext, '/home');
       // 또한 isRefresh를 true 로 전달 하여 페이지 번호를 1로 리셋 하도록 수정 하였습니다.
-      ref.read(productListProvider.notifier).fetchProducts(isRefresh: true);
+      // ref.read(productListProvider.notifier).fetchProducts(isRefresh: true);
     } catch (e, stackTrace) {
       ExceptionHandler.handleException('서버 연결 실패', stackTrace);
     }
@@ -116,7 +116,7 @@ class ProductGvm extends Notifier<ProductInfoCard> {
     } catch (e) {
       print('상품 정보 불러오기 실패: $e');
       Navigator.pop(mContext);
-      ref.read(productListProvider.notifier).fetchProducts(isRefresh: true);
+      //ref.read(productListProvider.notifier).fetchProducts(isRefresh: true);
       return null;
     }
   }

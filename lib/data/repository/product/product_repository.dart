@@ -35,17 +35,34 @@ class ProductRepository {
     return responseBody;
   }
 
-  Future<Map<String, dynamic>> getProductsPage({required int page}) async {
+  Future<Map<String, dynamic>> getProductsPage({int? pageKey}) async {
     try {
       Response response = await dio.get(
         '/product/listpage',
-        queryParameters: {'page': page},
+        queryParameters: {'lastIndex': pageKey},
       );
       return response.data;
     } catch (e) {
       logger.e('상품 목록 불러오기 실패: $e');
       return {'status': 'fail', 'message': '상품 목록을 불러올 수 없습니다.'};
     }
+  }
+
+  Future<Map<String, dynamic>> getFirstList(String? keyword) async {
+    Response response = await dio.get(
+      '/product/listpage',
+      queryParameters: {'lastIndex': 0, 'keyword': keyword},
+    );
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> searchProducts(
+      String keyword, int? lastIndex) async {
+    Response response = await dio.get(
+      '/product/listpage',
+      queryParameters: {'keyword': keyword, 'lastIndex': lastIndex},
+    );
+    return response.data;
   }
 
   Future<Map<String, dynamic>> selectProduct(
