@@ -1,5 +1,6 @@
 import 'package:applus_market/_core/utils/priceFormatting.dart';
 import 'package:applus_market/data/model/product/product_info_card.dart';
+import 'package:applus_market/ui/pages/home/widgets/product_list_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/gvm/product/productlist_gvm.dart';
@@ -13,7 +14,7 @@ class ProductList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Riverpod으로 상품 리스트 가져오기
-    final products = ref.watch(productListProvider);
+    final products = ref.watch(productListProvider)!.products;
 
     return SliverPadding(
       padding: const EdgeInsets.all(16),
@@ -32,63 +33,7 @@ class ProductList extends ConsumerWidget {
                 (context, index) {
                   final product = products[index];
                   final price = formatPrice(product.price!);
-                  return GestureDetector(
-                    onTap: () {
-                      // 상품 클릭 시 상세 페이지로 이동
-
-                      ref.read(productListProvider.notifier).addRecent(product);
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ProductViewPage(productId: product.product_id!),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                product.images!.first,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '$price 원',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  product.title!,
-                                  style: const TextStyle(fontSize: 14.5),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                  return ProductListContainer(product: product, price: price);
                 },
                 childCount: products.length,
               ),
