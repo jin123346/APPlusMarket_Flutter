@@ -155,7 +155,7 @@ class ChatAppointmentUpdateBodyState
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.read(chatRoomProvider.notifier);
-    final sessionUser = ref.read(LoginProvider);
+    final sessionUser = ref.watch(LoginProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('$sellerName과의 약속 수정'),
