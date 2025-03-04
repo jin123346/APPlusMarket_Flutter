@@ -3,6 +3,7 @@ import 'package:applus_market/data/model/chat/chat_room.dart';
 import 'package:dio/dio.dart';
 
 import '../../../_core/utils/dio.dart';
+import '../../model/chat/chat_message.dart';
 import '../../model/chat/chat_room_card.dart'; // ChatRoomCard 모델 임포트
 
 class ChatRepository {
@@ -22,8 +23,11 @@ class ChatRepository {
 
       // 'data' 배열을 ChatRoomCard 객체 리스트로 파싱
       List<dynamic> chatRoomData = responseBody['data'];
-      List<ChatRoomCard> chatRoomCards =
-          chatRoomData.map((item) => ChatRoomCard.fromJson(item)).toList();
+      List<ChatRoomCard> chatRoomCards = chatRoomData
+          .map((item) => ChatRoomCard.fromJson(item))
+          .toList()
+          .reversed
+          .toList();
 
       logger.d('chatRoomCards : $chatRoomCards');
 
@@ -82,6 +86,57 @@ class ChatRepository {
     } catch (e) {
       logger.e(e);
       throw Exception('채팅방 생성 요청 중 오류 발생');
+    }
+  }
+
+  Future<ChatMessage> updateAppointment(ChatMessage chatMessage) async {
+    try {
+      Response response = await dio.put(
+          '/chat-rooms/${chatMessage.chatRoomId}/messages/${chatMessage.messageId}',
+          data: chatMessage);
+      logger.e('채팅 메시지 수정 결과 : 🎇 ${response.data}');
+
+      return chatMessage;
+    } catch (e) {
+      logger.e('채팅 메시지 수정 중 오류 발생 : $e');
+      throw Exception('채팅 메시지 수정 요청 중 오류 발생');
+    }
+  }
+
+  Future<List<ChatMessage>> getPreviousMessagesByTime(
+      int chatRoomId, String lastCreatedAt) async {
+    try {
+      final response = await dio.get(
+        '/chat-rooms/$chatRoomId/messages',
+        queryParameters: {
+          'beforeCreatedAt': lastCreatedAt, // 가장 오래된 메시지 시간 이전의 메시지 가져오기
+          'limit': 20, // 한 번에 20개씩 가져오기
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // ✅ 응답 데이터 추출
+        List<dynamic> data = response.data['data'];
+        logger.e('이전 메시지 응답 데이터: $data');
+
+        // ✅ Map으로 변환 후 ChatMessage 리스트로 매핑
+        List<ChatMessage> messages = data
+            .map((item) => ChatMessage.fromJson(item as Map<String, dynamic>))
+            .toList();
+
+        // ✅ ChatMessage 리스트를 Map<String, dynamic>으로 변환
+        List<Map<String, dynamic>> jsonList =
+            messages.map((msg) => msg.toJson()).toList();
+
+        logger.e('변환된 메시지 리스트: $jsonList');
+
+        return messages;
+      } else {
+        throw Exception('이전 메시지 로드 실패');
+      }
+    } catch (e) {
+      logger.e('이전 메시지 로드 중 오류: $e');
+      throw Exception('이전 메시지 로드 중 오류 발생');
     }
   }
 }

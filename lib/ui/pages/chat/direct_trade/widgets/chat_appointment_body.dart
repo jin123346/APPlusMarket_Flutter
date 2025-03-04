@@ -2,18 +2,22 @@ import 'package:applus_market/_core/components/theme.dart';
 import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/model/chat/chat_data.dart';
 import 'package:applus_market/data/model/chat/chat_message.dart';
+import 'package:applus_market/ui/pages/chat/direct_trade/widgets/chat_appointment_common.dart';
 import 'package:applus_market/ui/pages/chat/room/chat_room_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
-class ChatDirectBody extends ConsumerStatefulWidget {
-  const ChatDirectBody({super.key});
+class ChatAppointmentBody extends ConsumerStatefulWidget {
+  const ChatAppointmentBody({
+    super.key,
+  });
 
   @override
-  ChatDirectBodyState createState() => ChatDirectBodyState();
+  ChatAppointmentBodyState createState() => ChatAppointmentBodyState();
 }
 
-class ChatDirectBodyState extends ConsumerState<ChatDirectBody> {
+class ChatAppointmentBodyState extends ConsumerState<ChatAppointmentBody> {
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   String selectedLocation = '장소 선택';
@@ -96,18 +100,10 @@ class ChatDirectBodyState extends ConsumerState<ChatDirectBody> {
     );
   }
 
-  BoxDecoration _defaultBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: Colors.grey.shade300),
-      borderRadius: BorderRadius.circular(10),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final chatData = ModalRoute.of(context)!.settings.arguments as ChatData;
     final viewModel = ref.read(chatRoomProvider.notifier);
-    final chatroomState = ref.watch(chatRoomProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -129,7 +125,7 @@ class ChatDirectBodyState extends ConsumerState<ChatDirectBody> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            _buildTitle('날짜'),
+            buildTitle('날짜'),
             SizedBox(height: 8),
             GestureDetector(
               onTap: _selectDate,
@@ -142,7 +138,7 @@ class ChatDirectBodyState extends ConsumerState<ChatDirectBody> {
                   children: [
                     Text(
                       selectedDate != null
-                          ? '${selectedDate!.month}월 ${selectedDate!.day}일 ${_getWeekday(selectedDate!.weekday)}'
+                          ? '${selectedDate!.month}월 ${selectedDate!.day}일 ${getWeekday(selectedDate!.weekday)}'
                           : '날짜 선택',
                       style: TextStyle(
                           color: selectedDate == null
@@ -155,7 +151,7 @@ class ChatDirectBodyState extends ConsumerState<ChatDirectBody> {
               ),
             ),
             SizedBox(height: 16),
-            _buildTitle('시간'),
+            buildTitle('시간'),
             SizedBox(height: 8),
             GestureDetector(
               onTap: _selectTime,
@@ -181,7 +177,7 @@ class ChatDirectBodyState extends ConsumerState<ChatDirectBody> {
               ),
             ),
             SizedBox(height: 16),
-            _buildTitle('장소'),
+            buildTitle('장소'),
             SizedBox(height: 8),
             GestureDetector(
               onTap: _selectLocation,
@@ -205,7 +201,7 @@ class ChatDirectBodyState extends ConsumerState<ChatDirectBody> {
               ),
             ),
             SizedBox(height: 16),
-            _buildTitle('장소 상세 설명'),
+            buildTitle('장소 상세 설명'),
             SizedBox(height: 8),
             TextFormField(
                 decoration: InputDecoration(
@@ -226,7 +222,7 @@ class ChatDirectBodyState extends ConsumerState<ChatDirectBody> {
               ),
             )),
             SizedBox(height: 16),
-            _buildTitle('약속 전 나에게 알림'),
+            buildTitle('약속 전 나에게 알림'),
             SizedBox(height: 8),
             GestureDetector(
               onTap: _selectNotification,
@@ -258,7 +254,7 @@ class ChatDirectBodyState extends ConsumerState<ChatDirectBody> {
               chatRoomId: chatData.chatroomId,
               userId: chatData.senderId,
               date: selectedDate.toString(),
-              time: selectedTime.toString(),
+              time: _formatTimeOfDay(selectedTime!),
               location: selectedLocation,
               // TODO : selectedNotification int로 수정 , description controller추가
               //   String selectedNotification = '30분 전';
@@ -279,32 +275,17 @@ class ChatDirectBodyState extends ConsumerState<ChatDirectBody> {
     );
   }
 
-  Widget _buildTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-          fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
-    );
+  String _formatTimeOfDay(TimeOfDay time) {
+    final now = DateTime.now();
+    final dateTime =
+        DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    return DateFormat('hh:mm a').format(dateTime); // 12시간제 (AM/PM) 형식 변환
   }
 
-  String _getWeekday(int weekday) {
-    switch (weekday) {
-      case 1:
-        return '월요일';
-      case 2:
-        return '화요일';
-      case 3:
-        return '수요일';
-      case 4:
-        return '목요일';
-      case 5:
-        return '금요일';
-      case 6:
-        return '토요일';
-      case 7:
-        return '일요일';
-      default:
-        return '';
-    }
+  BoxDecoration _defaultBoxDecoration() {
+    return BoxDecoration(
+      border: Border.all(color: Colors.grey.shade300),
+      borderRadius: BorderRadius.circular(10),
+    );
   }
 }

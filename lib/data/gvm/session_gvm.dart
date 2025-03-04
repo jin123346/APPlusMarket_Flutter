@@ -175,9 +175,9 @@ class SessionGVM extends Notifier<SessionUser> {
           );
 
           _setupDioInterceptor(accessToken);
-
-          ref.watch(webSocketProvider.notifier).subscribeUser(state.id ?? 0);
-
+          logger.e('사용자 아이디로 구독 시도');
+          ref.watch(webSocketProvider.notifier).subscribeUser(state.id!);
+          logger.e('사용자 아이디로 구독 완료');
           Navigator.popAndPushNamed(mContext, '/home');
         } else {
           ExceptionHandler.handleException(
