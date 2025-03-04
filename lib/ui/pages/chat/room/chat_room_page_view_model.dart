@@ -200,7 +200,9 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   }
 
   void markMessagesAsRead() async {
+
     final sessionUser = ref.watch(LoginProvider);
+
     final chatRoomId = this.chatRoomId;
 
     if (sessionUser.id == null) return;
