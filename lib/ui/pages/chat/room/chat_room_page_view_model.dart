@@ -132,7 +132,7 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
         );
         logger.d("메시지 전송 성공: $body");
         if (chatMessage.isFirst!) {
-          _refreshChatList();
+          ref.read(chatListProvider.notifier).refreshChatRooms();
         }
       } catch (e) {
         logger.e("메시지 전송 오류: $e");
@@ -158,17 +158,13 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
     Map<String, dynamic> result = await chatRepository.createChatRoom(body);
     logger.d('채팅방 생성 완료 -  : $result');
     int resultId = result['chatRoomId'];
-    _refreshChatList();
+    ref.read(chatListProvider.notifier).refreshChatRooms();
     ref.watch(webSocketProvider.notifier).subscribe('/sub/chatroom/$resultId');
     return resultId;
   }
 
   Future<ChatRoom> getChatRoomDetail(int chatRoomId) async {
     return await chatRepository.getChatRoomDetail(chatRoomId);
-  }
-
-  void _refreshChatList() {
-    ref.read(chatListProvider.notifier).refreshChatRooms();
   }
 
   Future<void> loadPreviousMessages() async {
@@ -204,7 +200,9 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   }
 
   void markMessagesAsRead() async {
-    final sessionUser = ref.read(LoginProvider);
+
+    final sessionUser = ref.watch(LoginProvider);
+
     final chatRoomId = this.chatRoomId;
 
     if (sessionUser.id == null) return;

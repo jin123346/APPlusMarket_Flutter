@@ -29,7 +29,7 @@ class ChatListPageViewModel extends StateNotifier<List<ChatRoomCard>> {
 
   Future<void> _fetchChatRooms() async {
     try {
-      SessionUser sessionUser = ref.read(LoginProvider);
+      SessionUser sessionUser = ref.watch(LoginProvider);
       final notifier = ref.read(webSocketProvider.notifier);
 
       final chatRooms = await chatRepository.getChatRoomCards(sessionUser.id!);
