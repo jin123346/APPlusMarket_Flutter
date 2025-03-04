@@ -32,6 +32,8 @@ class ProductInfoCard {
   final String? location;
   final FindProduct? findProduct;
   final bool? isWished;
+  final int? wishCount;
+  final int? hit;
 
   // 생성자
   ProductInfoCard({
@@ -57,6 +59,8 @@ class ProductInfoCard {
     required this.location,
     required this.findProduct,
     this.isWished = false,
+    required this.hit,
+    required this.wishCount,
   });
 
   // 수정된 toString() 메서드
@@ -86,31 +90,32 @@ class ProductInfoCard {
     }
 
     return ProductInfoCard(
-      product_id: json['id'] as int?,
-      title: json['title'] as String?,
-      product_name: json['product_name'] as String?,
-      content: json['content'] as String?,
-      register_location: json['register_location'] as String?,
-      register_ip: json['register_ip'] as String?,
-      created_at: json['created_at'] as String?,
-      updated_at: json['updated_at'] as String?,
-      price: json['price'] as int?,
-      status: json['status'] as String?,
-      deleted_at: json['deleted_at'] as String?,
-      seller_id: json['seller_id'] as int?,
-      nickname: json['nickName'] as String?,
-      is_negotiable: json['is_negotiable'] as bool?,
-      is_possible_meet_you: json['is_possible_meet_you'] as bool?,
-      category: json['category'] as String?,
-      brand: json['brand'] as String?,
-      images: json['productImage'] != null
-          ? ["$apiUrl/uploads/${json['id']}/${json['productImage']}"]
-          : [],
-      selectedProduct: null,
-      location: null,
-      findProduct: findProduct,
-      isWished: json['wished'],
-    );
+        product_id: json['id'] as int?,
+        title: json['title'] as String?,
+        product_name: json['product_name'] as String?,
+        content: json['content'] as String?,
+        register_location: json['register_location'] as String?,
+        register_ip: json['register_ip'] as String?,
+        created_at: json['created_at'] as String?,
+        updated_at: json['updated_at'] as String?,
+        price: json['price'] as int?,
+        status: json['status'] as String?,
+        deleted_at: json['deleted_at'] as String?,
+        seller_id: json['seller_id'] as int?,
+        nickname: json['nickName'] as String?,
+        is_negotiable: json['is_negotiable'] as bool?,
+        is_possible_meet_you: json['is_possible_meet_you'] as bool?,
+        category: json['category'] as String?,
+        brand: json['brand'] as String?,
+        images: json['productImage'] != null
+            ? ["$apiUrl/uploads/${json['id']}/${json['productImage']}"]
+            : [],
+        selectedProduct: null,
+        location: null,
+        findProduct: findProduct,
+        isWished: json['wished'],
+        wishCount: json['wishCount'],
+        hit: json['hit']);
   }
   factory ProductInfoCard.todata(Map<String, dynamic> json) {
     // updatedAt 문자열을 파싱할 때, 만약 서버가 UTC 시간을 보내고 있다면
@@ -147,33 +152,34 @@ class ProductInfoCard {
 
     logger.i("관심상품 들어오는가 ? ${json['isWished']}");
     return ProductInfoCard(
-      product_id: json['id'] as int?,
-      title: json['title'] as String?,
-      product_name: json['productName'] as String?,
-      content: json['content'] as String?,
-      register_location: json['registerLocation'] as String?,
-      register_ip: json['registerIp'] as String?,
-      created_at: json['createdAt'] as String?,
-      updated_at: json['updateAt'] as String?,
-      price: json['price'] as int?,
-      status: json['status'] as String?,
-      deleted_at: json['deletedAt'] as String?,
-      seller_id: json['sellerId'] as int?,
-      nickname: json['nickName'] as String?,
-      is_negotiable: json['isNegotiable'] as bool?,
-      is_possible_meet_you: json['isPossibleMeetYou'] as bool?,
-      category: json['category'] as String?,
-      brand: json['brand'] as String?,
-      images: (json['images'] as List<dynamic>?)?.map((image) {
-            return "$apiUrl/uploads/${json['id']}/${image['uuidName']}";
-          }).toList() ??
-          [], // 이미지 매핑
-      //TODO: 선택된 product 가져오기
-      selectedProduct: null,
-      location: json['location'] ?? null,
-      findProduct: findProduct,
-      isWished: json['wished'] ?? false,
-    );
+        product_id: json['id'] as int?,
+        title: json['title'] as String?,
+        product_name: json['productName'] as String?,
+        content: json['content'] as String?,
+        register_location: json['registerLocation'] as String?,
+        register_ip: json['registerIp'] as String?,
+        created_at: json['createdAt'] as String?,
+        updated_at: json['updateAt'] as String?,
+        price: json['price'] as int?,
+        status: json['status'] as String?,
+        deleted_at: json['deletedAt'] as String?,
+        seller_id: json['sellerId'] as int?,
+        nickname: json['nickName'] as String?,
+        is_negotiable: json['isNegotiable'] as bool?,
+        is_possible_meet_you: json['isPossibleMeetYou'] as bool?,
+        category: json['category'] as String?,
+        brand: json['brand'] as String?,
+        images: (json['images'] as List<dynamic>?)?.map((image) {
+              return "$apiUrl/uploads/${json['id']}/${image['uuidName']}";
+            }).toList() ??
+            [], // 이미지 매핑
+        //TODO: 선택된 product 가져오기
+        selectedProduct: null,
+        location: json['location'] ?? null,
+        findProduct: findProduct,
+        isWished: json['wished'] ?? false,
+        wishCount: json['wishCount'] ?? 0,
+        hit: json['hit'] ?? 0);
   }
 
   ProductInfoCard copyWith({
@@ -199,6 +205,8 @@ class ProductInfoCard {
     String? location,
     FindProduct? findProduct,
     bool? isWished,
+    int? wishCount,
+    int? hit,
   }) {
     return ProductInfoCard(
       product_id: product_id ?? this.product_id,
@@ -221,6 +229,8 @@ class ProductInfoCard {
       location: location ?? this.location,
       findProduct: findProduct ?? this.findProduct,
       isWished: isWished ?? this.isWished,
+      wishCount: wishCount ?? this.wishCount,
+      hit: hit ?? this.hit,
     );
   }
 }

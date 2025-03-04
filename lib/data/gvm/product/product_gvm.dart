@@ -22,27 +22,28 @@ class ProductGvm extends Notifier<ProductInfoCard> {
   @override
   ProductInfoCard build() {
     return ProductInfoCard(
-      product_id: null,
-      title: null,
-      product_name: null,
-      images: null,
-      content: null,
-      updated_at: null,
-      price: null,
-      status: null,
-      seller_id: null,
-      nickname: null,
-      is_negotiable: null,
-      is_possible_meet_you: null,
-      category: null,
-      register_ip: null,
-      created_at: null,
-      brand: null,
-      selectedProduct: null,
-      location: null,
-      findProduct: null,
-      isWished: false,
-    );
+        product_id: null,
+        title: null,
+        product_name: null,
+        images: null,
+        content: null,
+        updated_at: null,
+        price: null,
+        status: null,
+        seller_id: null,
+        nickname: null,
+        is_negotiable: null,
+        is_possible_meet_you: null,
+        category: null,
+        register_ip: null,
+        created_at: null,
+        brand: null,
+        selectedProduct: null,
+        location: null,
+        findProduct: null,
+        isWished: false,
+        hit: 0,
+        wishCount: 0);
   }
 
   //상품 등록
@@ -130,6 +131,13 @@ class ProductGvm extends Notifier<ProductInfoCard> {
         return;
       }
 
+      if (resBody['code'] == 3032) {
+        _updateWishCount(productId, false);
+      }
+      if (resBody['code'] == 3035) {
+        _updateWishCount(productId, true);
+      }
+
       state = state.copyWith(isWished: !state.isWished!);
 
       DialogHelper.showAlertDialog(
@@ -137,6 +145,17 @@ class ProductGvm extends Notifier<ProductInfoCard> {
     } catch (e, stackTrace) {
       ExceptionHandler.handleException(e, stackTrace);
     }
+  }
+
+  void _updateWishCount(int productId, bool isWished) {
+    int wishCount = state.wishCount ?? 0;
+    if (isWished) {
+      wishCount++;
+    } else if (wishCount > 0) {
+      wishCount--;
+    }
+
+    state = state.copyWith(wishCount: wishCount);
   }
 
   void findSelectedProduct() {}

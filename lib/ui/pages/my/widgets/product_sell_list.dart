@@ -1,6 +1,7 @@
 import 'package:applus_market/_core/components/theme.dart';
 import 'package:applus_market/_core/utils/apiUrl.dart';
 import 'package:applus_market/_core/utils/dialog_helper.dart';
+import 'package:applus_market/_core/utils/exception_handler.dart';
 import 'package:applus_market/data/model/product/product_my_list.dart';
 import 'package:applus_market/ui/pages/components/time_ago.dart';
 import 'package:applus_market/ui/pages/my/my_sell_list_page.dart';
@@ -228,7 +229,6 @@ class _ProductSellListState extends ConsumerState<ProductSellList> {
               }),
               Divider(),
               _buildOption(context, '삭제', () {
-                Navigator.pop(context);
                 _deleteProduct(product.id!);
               }, isDelete: true),
             ],
@@ -256,7 +256,22 @@ class _ProductSellListState extends ConsumerState<ProductSellList> {
 
   //삭제기능
   void _deleteProduct(int productId) async {
-    // await ref.read(productMyLisProvider.notifier).deleteProduct(productId);
+    try {
+      DialogHelper.showAlertDialog(
+        context: context,
+        title: '주의',
+        content: '삭제하시겠습니까?',
+        isCanceled: true,
+        onConfirm: () async {
+          Navigator.pop(context);
+          await ref
+              .read(productMyLisProvider.notifier)
+              .updateStatus(productId, "Deleted", '삭제 처리 되었습니다.');
+        },
+      );
+    } catch (e, stackTrace) {
+      ExceptionHandler.handleException(e, stackTrace);
+    }
   }
 
 // 끌어올리기
