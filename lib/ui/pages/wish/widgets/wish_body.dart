@@ -1,17 +1,23 @@
 import 'package:applus_market/_core/components/size.dart';
+import 'package:applus_market/ui/pages/wish/recent_list_page.dart';
+import 'package:applus_market/ui/widgets/applus_text_logo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../_core/utils/logger.dart';
 import '../../../../data/model/product/product_card.dart';
+import '../../../../data/model_view/product/product_wish_view_model.dart';
 import '../../my/widgets/product_container.dart';
+import '../wish_list_page.dart';
 import 'wish_tabbar.dart';
 
-class WishBody extends StatefulWidget {
+class WishBody extends ConsumerStatefulWidget {
   const WishBody({super.key});
 
   @override
-  State<WishBody> createState() => _WishBodyState();
+  ConsumerState<WishBody> createState() => _WishBodyState();
 }
 
-class _WishBodyState extends State<WishBody>
+class _WishBodyState extends ConsumerState<WishBody>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -31,9 +37,10 @@ class _WishBodyState extends State<WishBody>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('관심 상품'),
         leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pushNamed(context, '/home');
             },
             icon: Icon(Icons.arrow_back_ios)),
         bottom: TabBar(
@@ -50,32 +57,8 @@ class _WishBodyState extends State<WishBody>
       body: TabBarView(
         controller: _tabController,
         children: [
-          GridView.builder(
-            padding: EdgeInsets.all(5.0),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 5,
-            ),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              ProductCard product = products[index];
-              return ProductContainer(price: product.price, name: product.name);
-            },
-          ),
-          GridView.builder(
-            padding: EdgeInsets.all(5.0),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 5,
-            ),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              ProductCard product = products[index];
-              return ProductContainer(price: product.price, name: product.name);
-            },
-          ),
+          WishListPage(),
+          RecentListPage(),
         ],
       ),
     );

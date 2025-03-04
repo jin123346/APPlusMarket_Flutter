@@ -7,7 +7,7 @@ import 'package:applus_market/_core/utils/apiUrl.dart';
 
 class ProductCard {
   final int productId;
-  final String name;
+  final String name; // title
   final int price;
   final String thumbnailImage;
   final bool? isNegotiable; // 필수값 아님
@@ -27,6 +27,23 @@ class ProductCard {
       thumbnailImage:
           '$apiUrl/uploads/${json['productId']}/${json['thumbnailImage']}',
       isNegotiable: json['isNegotiable'] ?? '',
+    );
+  }
+
+  factory ProductCard.fromMap(Map<String, dynamic> json) {
+    return ProductCard(
+      productId: json['id'],
+      name: json['title'],
+      price: json['price'],
+      thumbnailImage: '$apiUrl/uploads/${json['id']}/${json['productImage']}',
+    );
+  }
+  factory ProductCard.fromRedis(Map<String, dynamic> json) {
+    return ProductCard(
+      productId: json['productId'],
+      name: json['title'],
+      price: json['price'],
+      thumbnailImage: json['thumbnailImage'],
     );
   }
 

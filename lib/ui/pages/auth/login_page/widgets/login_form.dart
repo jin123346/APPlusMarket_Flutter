@@ -28,6 +28,7 @@ class LoginForm extends StatelessWidget {
           LoginFormField(
             label: '비밀번호',
             controller: passwordController,
+            obsecure: true,
           ),
         ],
       ),

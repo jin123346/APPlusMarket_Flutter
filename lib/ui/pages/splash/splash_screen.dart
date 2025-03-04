@@ -25,10 +25,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _checkLoginState() async {
     try {
-      String? accessToken = await storage.read(key: 'refreshToken');
-      if (accessToken == null) {
+      String? refreshToken = await storage.read(key: 'refreshToken');
+      if (refreshToken == null) {
         logger.i('여기로 안들어와??');
-
         _navigateToLogin();
       } else {
         logger.i('여기로 안들어와??');

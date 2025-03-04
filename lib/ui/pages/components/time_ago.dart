@@ -1,4 +1,6 @@
-String timeAgo(String dateTimeString) {
+String timeAgo(String? dateTimeString) {
+  if (dateTimeString == null) return '날짜 정보 없음';
+
   DateTime currentTime = DateTime.now();
   DateTime inputTime = DateTime.parse(dateTimeString);
 

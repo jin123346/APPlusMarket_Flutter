@@ -113,7 +113,7 @@ class MyLoginedBody extends ConsumerWidget {
                 _buildListTile(
                     title: '회원정보',
                     onTap: () {
-                      print('관심목록 클릭됨');
+                      print('회원정보클릭!');
                       Navigator.pushNamed(context, '/my/info');
                     }),
                 ListTile(

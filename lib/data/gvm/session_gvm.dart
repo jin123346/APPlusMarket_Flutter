@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../_core/utils/apiUrl.dart';
 import '../../_core/utils/dio.dart';
@@ -77,16 +78,16 @@ class SessionGVM extends Notifier<SessionUser> {
   Future<void> initializeAuthState() async {
     String? accessToken = await tokenManager.getAccessToken();
     if (accessToken != null) {
-      logger.i("✅ 기존 Access Token 발견: $accessToken");
+      logger.i("기존 Access Token 발견: $accessToken");
       bool isDecode = decodeAccessToken(accessToken);
       if (isDecode) {
-        logger.i("✅ 기존 Access Token 으로 셋팅: $state");
+        logger.i("기존 Access Token 으로 셋팅: $state");
 
         Navigator.popAndPushNamed(mContext, "/home");
       }
     }
     // 2. Access Token이 없으면, Refresh Token을 사용하여 자동 로그인 시도
-    logger.i("🔄 Access Token 없음, Refresh Token으로 재로그인 시도...");
+    logger.i("Access Token 없음, Refresh Token으로 재로그인 시도...");
     String? refreshToken = await tokenManager.getRefreshToken();
     logger.i('refreshToken 존재X $refreshToken');
     if (refreshToken != null) {
@@ -133,6 +134,7 @@ class SessionGVM extends Notifier<SessionUser> {
   void login(
       GlobalKey<FormState> formKey, String? uid, String? password) async {
     AuthRepository authRepository = AuthRepository();
+
     // 로그인 로직
     //입력필드값 없을때,
     if (uid == null || password == null) {
