@@ -139,4 +139,30 @@ class ChatRepository {
       throw Exception('이전 메시지 로드 중 오류 발생');
     }
   }
+
+  Future<void> markMessagesAsRead(
+      int chatRoomId, int userId, String timestamp) async {
+    logger.e('chatRoomId : $chatRoomId');
+    logger.e('userId : $userId');
+    logger.e(timestamp);
+    try {
+      final response = await dio.post(
+        '/chat-rooms/markAsRead',
+        data: {
+          "chatRoomId": chatRoomId,
+          "userId": userId,
+          "timestamp": timestamp
+        },
+      );
+      logger.e('response ${response.data}');
+      if (response.statusCode == 200) {
+        logger.d("✅ 읽음 처리 완료: 채팅방 $chatRoomId, 사용자 $userId");
+      } else {
+        throw Exception("❌ 읽음 처리 실패: ${response.statusCode}");
+      }
+    } catch (e) {
+      logger.d("❌ 읽음 처리 요청 오류: $e");
+      rethrow;
+    }
+  }
 }
