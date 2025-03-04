@@ -21,13 +21,13 @@ final Dio dio = Dio(
     validateStatus: (status) => true,
   ),
 )
-  ..interceptors.add(CookieManager(cookieJar)) // ✅ 쿠키 관리 추가
+  ..interceptors.add(CookieManager(cookieJar)) //  쿠키 관리 추가
   ..interceptors.add(InterceptorsWrapper(
     onRequest: (options, handler) async {
-      String? token = TokenManager().getAccessToken(); // ✅ 비동기 처리
+      String? token = TokenManager().getAccessToken(); //  비동기 처리
       if (token != null) {
         logger.d('여기에 또 셋팅되나?');
-        options.headers["Authorization"] = "Bearer $token";
+        options.headers["Authorization"] = "$token";
       }
       return handler.next(options);
     },
