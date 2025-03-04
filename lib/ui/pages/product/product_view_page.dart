@@ -304,8 +304,9 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
                     ),
                     const SizedBox(height: 16),
                     // 현재는 고정으로 해놨지만 추후 기능을 추가 해야 합니다.
-                    const Text(
-                      '채팅 1 : 관심 4 : 조회 36',
+                    Text(
+                      //TODO: 챗팅 방 횟수 적기
+                      '채팅 1 : 관심 ${product.wishCount} : 조회 ${product.hit}',
                       style: TextStyle(color: Colors.grey),
                     ),
                     const SizedBox(height: 16),

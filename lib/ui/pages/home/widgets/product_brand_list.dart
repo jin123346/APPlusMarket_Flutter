@@ -40,7 +40,9 @@ class ProductBrandList extends StatelessWidget {
                               fontSize: 16),
                         ))
                       : Image.asset(
-                          brand.brandLogo!,
+                          brand.brandLogo ??
+                              brand.brandLogo ??
+                              'assets/images/brand/default.png',
                           fit: BoxFit.contain,
                         ),
                 ),

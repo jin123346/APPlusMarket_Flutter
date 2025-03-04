@@ -46,12 +46,10 @@ class _WishListPageState extends ConsumerState<WishListPage> {
             child: CircularProgressIndicator(),
           )
         : wishLists.isEmpty
-            ? const SliverToBoxAdapter(
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: CircularProgressIndicator(),
-                  ),
+            ? Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CircularProgressIndicator(),
                 ),
               )
             : GridView.builder(
