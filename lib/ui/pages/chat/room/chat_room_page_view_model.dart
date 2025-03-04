@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:applus_market/data/repository/chat/chat_repository.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
+import '../../../../data/gvm/session_gvm.dart';
+
 /*
  * packageName    : lib/ui/pages/chat/room/chat_room_page_view_model.dart
  * fileName       : chat_room_view_model.dart
@@ -199,6 +201,29 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
         logger.e('이전 메시지 로드 오류: $e');
       }
     });
+  }
+
+  void markMessagesAsRead() async {
+    final sessionUser = ref.read(LoginProvider);
+    final chatRoomId = this.chatRoomId;
+
+    if (sessionUser.id == null) return;
+
+    try {
+      await chatRepository.markMessagesAsRead(
+          chatRoomId, sessionUser.id!, DateTime.now().toIso8601String());
+      logger.d("읽음 처리 요청 완료: 채팅방 $chatRoomId, 사용자 ${sessionUser.id}");
+
+      // 프론트엔드 UI 상태 업데이트
+      state.whenData((currentRoom) {
+        final updatedMessages = currentRoom.messages.map((message) {
+          return message.copyWith(isRead: true);
+        }).toList();
+        state = AsyncData(currentRoom.copyWith(messages: updatedMessages));
+      });
+    } catch (e) {
+      logger.e("읽음 처리 요청 실패: $e");
+    }
   }
 }
 

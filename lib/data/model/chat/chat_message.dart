@@ -58,6 +58,34 @@ class ChatMessage {
     };
   }
 
+  ChatMessage copyWith({
+    String? messageId,
+    int? chatRoomId,
+    int? userId,
+    String? content,
+    String? date,
+    String? time,
+    String? location,
+    String? locationDescription,
+    int? reminderBefore,
+    bool? isRead,
+    String? createdAt,
+  }) {
+    return ChatMessage(
+      messageId: messageId ?? this.messageId,
+      chatRoomId: chatRoomId ?? this.chatRoomId,
+      userId: userId ?? this.userId,
+      content: content ?? this.content,
+      date: date ?? this.date,
+      time: time ?? this.time,
+      location: location ?? this.location,
+      locationDescription: locationDescription ?? this.locationDescription,
+      reminderBefore: reminderBefore ?? this.reminderBefore,
+      isRead: isRead ?? this.isRead,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
   @override
   String toString() {
     return 'ChatMessage{chatRoomId: $chatRoomId, messageId: $messageId, userId: $userId, content: $content, isRead: $isRead, createdAt: $createdAt, deletedAt: $deletedAt, date: $date, time: $time, location: $location, locationDescription: $locationDescription, reminderBefore: $reminderBefore}';

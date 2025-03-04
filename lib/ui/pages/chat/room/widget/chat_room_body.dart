@@ -45,6 +45,11 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
     final viewModel = ref.read(chatRoomProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       viewModel.setChatRoomId(widget.chatRoomId);
+
+      // TODO : 사용자가 입장한 시점을 기준으로 이전 메시지 읽음 처리
+      logger.d('chatRoomBody - 읽음 처리 실행전');
+      viewModel.markMessagesAsRead();
+      logger.d('chatRoomBody - 읽음 처리 실행후');
     });
 
     _scrollController.addListener(() {
@@ -167,8 +172,8 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                                       ? MainAxisAlignment.end
                                       : MainAxisAlignment.start,
                                   children: [
-                                    _buildMessageTimestamp(
-                                        isMyMessage, message.createdAt!),
+                                    _buildMessageTimestamp(isMyMessage,
+                                        message.createdAt!, message.isRead!),
                                     SizedBox(width: isMyMessage ? 5 : 0),
                                     message.date == null &&
                                             message.content != null
@@ -177,8 +182,8 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                                         : _buildDateBox(
                                             message, chatData, context),
                                     SizedBox(width: !isMyMessage ? 5 : 0),
-                                    _buildMessageTimestamp(
-                                        !isMyMessage, message.createdAt!),
+                                    _buildMessageTimestamp(!isMyMessage,
+                                        message.createdAt!, message.isRead!),
                                   ],
                                 ),
                               );
@@ -317,12 +322,31 @@ _buildOptionButton(String label, IconData icon, Color color) {
   );
 }
 
-_buildMessageTimestamp(bool isMyMessage, String timestamp) {
+Widget _buildMessageTimestamp(bool isMyMessage, String timestamp, bool isRead) {
   return Visibility(
     visible: isMyMessage,
-    child: Text(
-      timeAgo(timestamp),
-      style: TextStyle(fontSize: 13, color: Colors.black26),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      // 내 메시지는 오른쪽, 상대 메시지는 왼쪽 정렬
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+            right: isMyMessage ? 4.0 : 0.0, // 내 메시지는 오른쪽 여백
+            left: isMyMessage ? 0.0 : 4.0, // 상대 메시지는 왼쪽 여백
+          ),
+          child: Text(
+            isRead ? '' : '1', // 읽음 여부에 따라 숫자 표시
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        Text(
+          timeAgo(timestamp),
+          style: TextStyle(fontSize: 12, color: Colors.black26),
+        ),
+      ],
     ),
   );
 }
