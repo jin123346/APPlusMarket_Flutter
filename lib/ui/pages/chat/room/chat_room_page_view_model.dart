@@ -4,6 +4,7 @@ import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/data/model/chat/chat_message.dart';
 import 'package:applus_market/data/model/chat/chat_room.dart';
+import 'package:applus_market/ui/pages/chat/list/chat_list_page_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:applus_market/data/repository/chat/chat_repository.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
@@ -23,9 +24,9 @@ import 'package:stomp_dart_client/stomp_dart_client.dart';
  *                         id가 초기화 되지 않았을 땐 로딩 처리
  */
 
-// TODO : (중요) AutoDispose.family 로 수정 해야함
 class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   final ChatRepository chatRepository = ChatRepository();
+  String? lastCreatedAt;
 
   late int chatRoomId; // 나중에 ChatRoomBody 에서 초기화 해줄 것
   bool _isInitialized = false;
@@ -33,7 +34,7 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   Future<ChatRoom> build() async {
     if (!isInitialized()) {
       state = const AsyncLoading();
-      return await Future.delayed(Duration.zero);
+      await Future.delayed(Duration(milliseconds: 10)); // 짧은 지연 추가
     }
 
     return await getChatRoomDetail(chatRoomId);
@@ -48,6 +49,18 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
     chatRoomId = id;
     _isInitialized = true;
 
+    // 🔥 setChatRoomId()에서도 lastCreatedAt 초기화
+    state.whenData((room) {
+      if (room.messages.isNotEmpty) {
+        // createdAt 중 가장 작은 값 찾기
+        lastCreatedAt = room.messages
+            .map((msg) => msg.createdAt)
+            .where((createdAt) => createdAt != null)
+            .reduce((a, b) => a!.compareTo(b!) < 0 ? a : b);
+        logger.d('초기화된 lastCreatedAt: $lastCreatedAt');
+      }
+    });
+
     setupMessageListener();
     await _refreshData();
   }
@@ -56,6 +69,17 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
     try {
       final roomDetail = await getChatRoomDetail(chatRoomId);
       state = AsyncData(roomDetail);
+
+      state.whenData((room) {
+        if (room.messages.isNotEmpty) {
+          // createdAt 중 가장 작은 값 찾기
+          lastCreatedAt = room.messages
+              .map((msg) => msg.createdAt)
+              .where((createdAt) => createdAt != null)
+              .reduce((a, b) => a!.compareTo(b!) < 0 ? a : b);
+          logger.d('초기화된 lastCreatedAt: $lastCreatedAt');
+        }
+      });
     } catch (e, stacktrace) {
       state = AsyncError(e, stacktrace);
     }
@@ -84,18 +108,20 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
           body = {
             "chatRoomId": chatMessage.chatRoomId,
             "content": chatMessage.content,
-            "senderId": chatMessage.userId,
+            "userId": chatMessage.userId,
+            "isFirst": chatMessage.isFirst
           };
           // 약속 메시지인 경우
         } else {
           body = {
             "chatRoomId": chatMessage.chatRoomId,
-            "senderId": chatMessage.userId,
+            "userId": chatMessage.userId,
             "date": chatMessage.date.toString(),
             "time": chatMessage.time.toString(),
             "location": chatMessage.location,
             "locationDescription": chatMessage.locationDescription,
-            "remindBefore": chatMessage.reminderBefore
+            "remindBefore": chatMessage.reminderBefore,
+            "isFirst": chatMessage.isFirst
           };
         }
         stompClient.send(
@@ -103,12 +129,21 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
           body: json.encode(body),
         );
         logger.d("메시지 전송 성공: $body");
+        if (chatMessage.isFirst!) {
+          _refreshChatList();
+        }
       } catch (e) {
         logger.e("메시지 전송 오류: $e");
       }
     } else {
       logger.e("WebSocket 연결되지 않음 ${stompClient?.connected}");
     }
+  }
+
+  Future<ChatMessage> updateAppointment(ChatMessage chatMessage) async {
+    await chatRepository.updateAppointment(chatMessage);
+    _refreshData();
+    return chatMessage;
   }
 
   Future<int> createChatRoom(int sellerId, int productId, int userId) async {
@@ -120,14 +155,50 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
 
     Map<String, dynamic> result = await chatRepository.createChatRoom(body);
     logger.d('채팅방 생성 완료 -  : $result');
-
     int resultId = result['chatRoomId'];
+    _refreshChatList();
     ref.watch(webSocketProvider.notifier).subscribe('/sub/chatroom/$resultId');
     return resultId;
   }
 
   Future<ChatRoom> getChatRoomDetail(int chatRoomId) async {
     return await chatRepository.getChatRoomDetail(chatRoomId);
+  }
+
+  void _refreshChatList() {
+    ref.read(chatListProvider.notifier).refreshChatRooms();
+  }
+
+  Future<void> loadPreviousMessages() async {
+    state.whenData((currentRoom) async {
+      // 현재 저장된 가장 오래된 메시지 시간 확인
+      if (lastCreatedAt == null) return;
+
+      try {
+        // ChatRepository에서 이전 메시지를 가져옴
+        final previousMessages = await chatRepository.getPreviousMessagesByTime(
+          chatRoomId,
+          lastCreatedAt!,
+        );
+
+        if (previousMessages.isNotEmpty) {
+          // 가져온 메시지 중 가장 오래된 createdAt 갱신
+          lastCreatedAt = previousMessages
+              .map((msg) => msg.createdAt)
+              .where((createdAt) => createdAt != null)
+              .reduce((a, b) => a!.compareTo(b!) < 0 ? a : b);
+
+          // 기존 메시지 리스트 상단에 이전 메시지 추가
+          final updatedMessages = [
+            ...previousMessages,
+            ...currentRoom.messages
+          ];
+          state = AsyncData(currentRoom.copyWith(messages: updatedMessages));
+        }
+      } catch (e, stacktrace) {
+        logger.e('이전 메시지 로드 오류: $e');
+      }
+    });
   }
 }
 

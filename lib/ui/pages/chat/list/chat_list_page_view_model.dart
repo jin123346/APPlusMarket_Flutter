@@ -49,8 +49,20 @@ class ChatListPageViewModel extends StateNotifier<List<ChatRoomCard>> {
     }
   }
 
-  void refreshChatRooms() {
-    _fetchChatRooms();
+  Future<void> refreshChatRooms() async {
+    try {
+      SessionUser sessionUser = ref.read(LoginProvider);
+
+      final chatRooms = await chatRepository.getChatRoomCards(sessionUser.id!);
+
+      if (chatRooms.isNotEmpty) {
+        state = chatRooms;
+      } else {
+        state = [];
+      }
+    } catch (e, stackTrace) {
+      logger.e('채팅방 목록 불러오기 실패: $e, $stackTrace');
+    }
   }
 
   void setupMessageListener(ChatMessage newMessage) {
