@@ -10,8 +10,8 @@ class ChatListBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final chatListViewModel = ref.watch(chatListProvider.notifier);
     final chatListState = ref.watch(chatListProvider);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -41,11 +41,16 @@ class ChatListBody extends ConsumerWidget {
       ),
       body: chatListState.isEmpty
           ? Center(child: Text('채팅방이 존재하지 않습니다.')) // 로딩 상태를 빈 리스트로 대체
-          : ListView.builder(
-              itemCount: chatListState.length,
-              itemBuilder: (context, index) {
-                return ChatListContainer(chatRoom: chatListState[index]);
+          : RefreshIndicator(
+              onRefresh: () async {
+                await chatListViewModel.refreshChatRooms();
               },
+              child: ListView.builder(
+                itemCount: chatListState.length,
+                itemBuilder: (context, index) {
+                  return ChatListContainer(chatRoom: chatListState[index]);
+                },
+              ),
             ),
     );
   }

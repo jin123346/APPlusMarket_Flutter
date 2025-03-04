@@ -17,7 +17,7 @@ class ChatRoomCard {
   final int sellerId; // 채팅방의 제품 판매자
   final int? unRead;
 
-  final String recentMessage;
+  final String? recentMessage;
   final String messageCreatedAt;
 
   ChatRoomCard(
@@ -29,7 +29,7 @@ class ChatRoomCard {
       required this.productThumbnail,
       required this.sellerId,
       this.unRead = 0,
-      required this.recentMessage,
+      this.recentMessage,
       required this.messageCreatedAt}); // JSON 데이터를 ChatRoomCard 객체로 변환하는 fromJson 메서드
 
   factory ChatRoomCard.fromJson(Map<String, dynamic> json) {
@@ -37,16 +37,14 @@ class ChatRoomCard {
       chatRoomId: json['chatRoomId'],
       userId: json['userId'],
       userNickname: json['userNickname'],
-      // TODO 하드코딩 고치기
-      userImage: json['userImage'] ??
-          '$apiUrl/uploads/profile/e6c4fd7e-3ee7-4e1c-91e4-45c2fb5b5cad.png',
+      userImage: json['userImage'],
       productId: json['productId'],
       unRead: json['unRead'],
       productThumbnail:
           '$apiUrl/uploads/${json['productId']}/${json['productThumbnail']}',
       sellerId: json['sellerId'],
-      recentMessage: json['recentMessage'] ?? 'mongo로 분리할 생각 중 따로 쿼리문 작성',
-      messageCreatedAt: json['messageCreatedAt'] ?? '2025-01-20 15:02:22',
+      recentMessage: json['recentMessage'] ?? '약속 정하기',
+      messageCreatedAt: json['messageCreatedAt'] ?? '',
     );
   }
   // copyWith 메서드 추가

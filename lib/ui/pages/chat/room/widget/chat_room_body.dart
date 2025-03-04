@@ -1,8 +1,10 @@
+import 'package:applus_market/_core/components/theme.dart';
 import 'package:applus_market/_core/utils/logger.dart';
 import 'package:applus_market/data/gvm/session_gvm.dart';
 import 'package:applus_market/data/model/auth/login_state.dart';
 import 'package:applus_market/data/model/chat/chat_data.dart';
 import 'package:applus_market/data/model/chat/chat_message.dart';
+import 'package:applus_market/ui/pages/chat/direct_trade/chat_appointment_update_page.dart';
 import 'package:applus_market/ui/pages/chat/room/chat_room_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,6 +26,7 @@ import '../../../components/time_ago.dart';
  * 2024/02/06     황수빈      MyId sessionUser에서 받아옴
  * 2024/02/07     황수빈      chatRoomId 추가 id로 채팅방 조회
  * 2024/02/18     황수빈      내용이 없을 땐 전송이 안되도록 수정
+ * 2024/02/27     황수빈      직거래 약속 잡기 기능 추가
  */
 
 class ChatRoomBody extends ConsumerStatefulWidget {
@@ -42,6 +45,14 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
     final viewModel = ref.read(chatRoomProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       viewModel.setChatRoomId(widget.chatRoomId);
+    });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels <=
+          _scrollController.position.minScrollExtent + 100) {
+        logger.e('채팅방 이전 메시지  조회 로직');
+        viewModel.loadPreviousMessages();
+      }
     });
   }
 
@@ -73,8 +84,8 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
     _messageController.dispose();
     _focusNode.dispose();
     _scrollController.dispose();
-    logger.e('상세보기 화면 파괴됨');
     super.dispose();
+    logger.e('상세보기 화면 파괴됨');
   }
 
   void _toggleOptions() async {
@@ -92,18 +103,28 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
   Widget build(BuildContext context) {
     int chatRoomId = widget.chatRoomId;
     SessionUser sessionUser = ref.watch(LoginProvider);
+
     int myId = sessionUser.id!;
     ChatData chatData;
 
     final viewModel = ref.read(chatRoomProvider.notifier);
     final chatRoomState = ref.watch(chatRoomProvider);
+    bool isFirst;
+
+    if (!viewModel.isInitialized()) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
 
     return chatRoomState.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Text('$error'),
       data: (room) {
+        isFirst = room.messages.isEmpty;
         final otherUser =
             room.participants.firstWhere((user) => user.userId != myId);
+
         chatData = ChatData(
             chatroomId: widget.chatRoomId,
             sellerName: otherUser.nickname,
@@ -129,13 +150,12 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                             child: Text('메시지가 없습니다'),
                           )
                         : ListView.builder(
-                            shrinkWrap: true,
+                            controller: _scrollController,
                             keyboardDismissBehavior:
                                 ScrollViewKeyboardDismissBehavior.onDrag,
-                            controller: _scrollController,
                             itemCount: room.messages.length,
                             itemBuilder: (context, index) {
-                              final message = room.messages[index];
+                              final ChatMessage message = room.messages[index];
                               final isMyMessage = message.userId == myId;
                               logger.e(message);
 
@@ -154,7 +174,8 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                                             message.content != null
                                         ? _buildMessageContainer(isMyMessage,
                                             message.content!, context)
-                                        : _buildDateBox(message),
+                                        : _buildDateBox(
+                                            message, chatData, context),
                                     SizedBox(width: !isMyMessage ? 5 : 0),
                                     _buildMessageTimestamp(
                                         !isMyMessage, message.createdAt!),
@@ -229,9 +250,11 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                         onPressed: () {
                           setState(() {
                             viewModel.sendMessage(ChatMessage(
-                                chatRoomId: chatRoomId,
-                                content: _messageController.text,
-                                userId: myId));
+                              chatRoomId: chatRoomId,
+                              content: _messageController.text,
+                              userId: myId,
+                              isFirst: isFirst,
+                            ));
                           });
                           _messageController.clear();
                           scrollToBottom();
@@ -535,71 +558,177 @@ void _onParcelTradeSelected() {
   // 예: 배송지 입력 화면으로 이동 등
 }
 
-Widget _buildDateBox(ChatMessage chatData) {
+Widget _buildDateBox(
+    ChatMessage chatMessage, ChatData chatData, BuildContext context) {
   return Center(
     child: Container(
-      width: 200,
-      height: 200,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      width: 270,
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
-        border: Border.all(width: 1, color: Colors.grey.shade200),
-        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '약속 정하기',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Text(
-            '📅 ${chatData.date}',
-            style: TextStyle(
-              color: Colors.grey[800],
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 4),
-          Text(
-            '⏰ ${chatData.time}',
-            style: TextStyle(
-              color: Colors.grey[800],
-              fontSize: 17,
-            ),
-          ),
-          SizedBox(height: 4),
-          Text(
-            '📍 ${chatData.location}',
-            style: TextStyle(
-              color: Colors.grey[800],
-              fontSize: 17,
-            ),
-          ),
-          if (chatData.locationDescription != null) ...[
-            SizedBox(height: 4),
-            Text(
-              chatData.locationDescription!,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 12,
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: const Text(
+                  '약속 정하기',
+                  style: TextStyle(
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
               ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      '📅',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      //TODO : 형식 바꾸기
+                      '${chatMessage.date}',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    const Text(
+                      '⏰',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${chatMessage.time}',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '📍',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${chatMessage.location}',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          if (chatMessage.locationDescription != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              chatMessage.locationDescription!,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          if (chatMessage.reminderBefore != null) ...[
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                const Icon(
+                  Icons.notifications_outlined,
+                  size: 16,
+                  color: Color(0xFFFEE500),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '${chatMessage.reminderBefore} 전 알림',
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ],
-          if (chatData.reminderBefore != null) ...[
-            SizedBox(height: 4),
-            Text(
-              '🔔 ${chatData.reminderBefore} 전 알림',
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 12,
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {
+                logger.e('chatMessage : $chatMessage');
+                Navigator.pushNamed(
+                  context,
+                  '/chat/appointment/update',
+                  arguments: [chatMessage, chatData],
+                );
+              },
+              style: FilledButton.styleFrom(
+                backgroundColor: APlusTheme.primaryColor,
+                // 카카오 노란색
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+              child: const Text(
+                '변경하기',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
               ),
             ),
-          ],
+          ),
         ],
       ),
     ),

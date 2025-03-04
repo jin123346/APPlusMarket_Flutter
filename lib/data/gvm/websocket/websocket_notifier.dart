@@ -54,6 +54,7 @@ class WebSocketNotifier extends Notifier<bool> {
 
   void subscribeUser(int userId) {
     try {
+      logger.e('구독 메서드 입성');
       subscribe("/sub/user/$userId");
     } catch (e) {
       logger.e('로그인 요청 후 구독');

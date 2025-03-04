@@ -79,7 +79,7 @@ class ChatListContainer extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    chatRoom.recentMessage, // 최근 메시지
+                    chatRoom.recentMessage!, // 최근 메시지
                     style: TextStyle(fontSize: 13.5, color: Colors.black54),
                     overflow: TextOverflow.ellipsis,
                     softWrap: true,
