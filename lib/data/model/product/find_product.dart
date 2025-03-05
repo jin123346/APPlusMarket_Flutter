@@ -30,7 +30,7 @@ class FindProduct {
       productDetailCode: map['productDetailCode'] as String,
       originalPrice: map['originalPrice'] ?? 0,
       finalPrice: map['finalPrice'] ?? 0,
-      productUrl: map['productUrl'] as String,
+      productUrl: map['productUrl'] as String? ?? null,
       brandName: map['brandName'] as String,
       goodsId: map['goodsId'] ?? null,
     );

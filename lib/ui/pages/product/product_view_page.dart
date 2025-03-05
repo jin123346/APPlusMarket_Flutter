@@ -93,7 +93,7 @@ class _ProductViewState extends ConsumerState<ProductViewPage> {
         ),
       );
     }
-    logger.e("관심상품 상태 : ${product.isWished}");
+    //logger.e("관심상품 상태 : ${product.isWished ?? false}");
 
     return SafeArea(
       child: Scaffold(

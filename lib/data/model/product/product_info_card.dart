@@ -167,8 +167,8 @@ class ProductInfoCard {
         nickname: json['nickName'] as String?,
         is_negotiable: json['isNegotiable'] as bool?,
         is_possible_meet_you: json['isPossibleMeetYou'] as bool?,
-        category: json['category'] as String?,
-        brand: json['brand'] as String?,
+        category: json['category'] as String? ?? null,
+        brand: json['brand'] as String? ?? "기타",
         images: (json['images'] as List<dynamic>?)?.map((image) {
               return "$apiUrl/uploads/${json['id']}/${image['uuidName']}";
             }).toList() ??
