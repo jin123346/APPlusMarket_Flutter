@@ -66,22 +66,29 @@ class ChatListPageViewModel extends StateNotifier<List<ChatRoomCard>> {
   }
 
   void setupMessageListener(ChatMessage newMessage) {
+    SessionUser sessionUser = ref.watch(LoginProvider);
     // 새로운 메시지가 들어온 채팅방을 찾아서 copyWith으로 업데이트
     state = state.map((chatRoom) {
       if (chatRoom.chatRoomId == newMessage.chatRoomId) {
         return chatRoom.copyWith(
-          recentMessage: newMessage.content, // 최신 메시지 업데이트
-          messageCreatedAt: newMessage.createdAt, // 메시지 시간 업데이트
-          unRead: newMessage.isRead!
-              ? chatRoom.unRead
-              : (chatRoom.unRead ?? 0) + 1, // 안 읽은 메시지 증가
-        );
+            recentMessage: newMessage.content, // 최신 메시지 업데이트
+            messageCreatedAt: newMessage.createdAt, // 메시지 시간 업데이트
+            // TODO : 이거 수정해야함 내가 한건지 확인 하는 로직 ***
+
+            unRead: sessionUser.id == newMessage.userId
+                ? chatRoom.unRead
+                : (chatRoom.unRead ?? 0) + 1 // 안 읽은 메시지 증가
+            );
       }
       return chatRoom;
     }).toList();
   }
 }
 
+final unreadMessagesProvider = Provider<int>((ref) {
+  final chatRooms = ref.watch(chatListProvider);
+  return chatRooms.fold<int>(0, (sum, room) => sum + (room.unRead ?? 0));
+});
 final chatListProvider =
     StateNotifierProvider<ChatListPageViewModel, List<ChatRoomCard>>(
   (ref) => ChatListPageViewModel(ref, ChatRepository()),

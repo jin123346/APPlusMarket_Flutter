@@ -256,6 +256,7 @@ class ChatAppointmentBodyState extends ConsumerState<ChatAppointmentBody> {
               date: selectedDate.toString(),
               time: _formatTimeOfDay(selectedTime!),
               location: selectedLocation,
+              isRead: false,
               // TODO : selectedNotification int로 수정 , description controller추가
               //   String selectedNotification = '30분 전';
             );

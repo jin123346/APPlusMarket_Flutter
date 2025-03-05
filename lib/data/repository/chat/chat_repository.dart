@@ -141,18 +141,14 @@ class ChatRepository {
   }
 
   Future<void> markMessagesAsRead(
-      int chatRoomId, int userId, String timestamp) async {
+      int chatRoomId, int userId, String time) async {
     logger.e('chatRoomId : $chatRoomId');
     logger.e('userId : $userId');
-    logger.e(timestamp);
+    logger.e(time);
     try {
       final response = await dio.post(
         '/chat-rooms/markAsRead',
-        data: {
-          "chatRoomId": chatRoomId,
-          "userId": userId,
-          "timestamp": timestamp
-        },
+        data: {"chatRoomId": chatRoomId, "userId": userId, "time": time},
       );
       logger.e('response ${response.data}');
       if (response.statusCode == 200) {

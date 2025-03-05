@@ -34,7 +34,6 @@ class ChatListContainer extends StatelessWidget {
           children: [
             Container(
               width: 50,
-              // TODO : Image network 로 수정하기
               child: Image.network(
                 chatRoom.userImage ??
                     '$apiUrl/uploads/1/e6c4fd7e-3ee7-4e1c-91e4-45c2fb5b5cad.png',
@@ -62,17 +61,23 @@ class ChatListContainer extends StatelessWidget {
                         timeAgo(chatRoom.messageCreatedAt), // 최근 메시지 시간
                         style: TextStyle(fontSize: 12, color: Colors.black54),
                       ),
-                      Container(
-                        width: 20,
-                        height: 20,
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(25)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Text(
-                            '${chatRoom.unRead}', // 최근 메시지 시간
-                            style: TextStyle(fontSize: 13, color: Colors.white),
+                      Visibility(
+                        visible: chatRoom.unRead != 0,
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(25)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Center(
+                              child: Text(
+                                '${chatRoom.unRead}',
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.white),
+                              ),
+                            ),
                           ),
                         ),
                       )

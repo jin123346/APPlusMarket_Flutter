@@ -255,11 +255,11 @@ class ChatRoomBodyState extends ConsumerState<ChatRoomBody> {
                         onPressed: () {
                           setState(() {
                             viewModel.sendMessage(ChatMessage(
-                              chatRoomId: chatRoomId,
-                              content: _messageController.text,
-                              userId: myId,
-                              isFirst: isFirst,
-                            ));
+                                chatRoomId: chatRoomId,
+                                content: _messageController.text,
+                                userId: myId,
+                                isFirst: isFirst,
+                                isRead: false));
                           });
                           _messageController.clear();
                           scrollToBottom();

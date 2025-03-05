@@ -15,7 +15,7 @@ class ChatRoomCard {
   final int productId;
   final String productThumbnail;
   final int sellerId; // 채팅방의 제품 판매자
-  final int? unRead;
+  final int? unRead; // 안 읽은 메시지 수
 
   final String? recentMessage;
   final String messageCreatedAt;
