@@ -35,7 +35,7 @@ class ChatListContainer extends StatelessWidget {
             Container(
               width: 50,
               child: Image.network(
-                chatRoom.userImage ??
+                '$apiUrl/uploads/profile/${chatRoom.userImage}' ??
                     '$apiUrl/uploads/1/e6c4fd7e-3ee7-4e1c-91e4-45c2fb5b5cad.png',
                 width: 50,
                 height: 50,
