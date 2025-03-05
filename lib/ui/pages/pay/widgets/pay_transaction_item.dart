@@ -12,6 +12,7 @@ class PayTransactionItem extends StatelessWidget {
   final String type;
   final int amount;
   final String? iconPath;
+  final bool showBorder; // 새로운 매개변수 추가
 
   const PayTransactionItem({
     super.key,
@@ -20,6 +21,7 @@ class PayTransactionItem extends StatelessWidget {
     required this.type,
     required this.amount,
     this.iconPath,
+    this.showBorder = true, // 기본값은 true (테두리 표시)
   });
 
   @override
@@ -30,9 +32,11 @@ class PayTransactionItem extends StatelessWidget {
         horizontal: APlusTheme.spacingM,
       ),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: APlusTheme.tertiarySystemBackground),
-        ),
+        border: showBorder
+            ? Border(
+                bottom: BorderSide(color: APlusTheme.tertiarySystemBackground),
+              )
+            : null, // showBorder가 false면 테두리 없음
       ),
       child: Row(
         children: [

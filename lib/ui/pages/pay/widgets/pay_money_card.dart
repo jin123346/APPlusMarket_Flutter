@@ -29,49 +29,42 @@ class PayMoneyCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(APlusTheme.spacingM),
         child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              // mainAxisAlignment: MainAxisAlignment.start,
-
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                MediaQuery.removePadding(
-                  context: context,
-                  child: Row(),
-                ),
+                // 애쁠머니 로고와 텍스트
                 Row(
                   children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        CupertinoIcons.money_dollar_circle_fill,
-                      ),
+                    Icon(
+                      CupertinoIcons.money_dollar_circle_fill,
+                      size: 28,
                     ),
+                    const SizedBox(width: APlusTheme.spacingS),
                     Text('애쁠머니', style: CustomTextTheme.titleMedium),
                   ],
                 ),
-                Spacer(),
-                Row(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: APlusTheme.tertiarySystemBackground,
-                        borderRadius: BorderRadius.circular(APlusTheme.radiusM),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: APlusTheme.spacingM,
-                          vertical: APlusTheme.spacingS,
-                        ),
-                        child: Text('내 계좌', style: CustomTextTheme.bodyMedium),
-                      ),
+                // 내 계좌 버튼
+                Container(
+                  decoration: BoxDecoration(
+                    color: APlusTheme.tertiarySystemBackground,
+                    borderRadius: BorderRadius.circular(APlusTheme.radiusM),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: APlusTheme.spacingM,
+                      vertical: APlusTheme.spacingS,
                     ),
-                  ],
+                    child: Text('내 계좌', style: CustomTextTheme.bodyMedium),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: APlusTheme.spacingM),
+            // 잔액 표시와 새로고침 버튼
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   '${balance}원',
@@ -84,6 +77,7 @@ class PayMoneyCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: APlusTheme.spacingM),
+            // 충전 및 송금 버튼
             Row(
               children: [
                 Expanded(
