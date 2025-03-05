@@ -20,7 +20,7 @@ class ChatAppointmentBody extends ConsumerStatefulWidget {
 class ChatAppointmentBodyState extends ConsumerState<ChatAppointmentBody> {
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
-  String selectedLocation = '장소 선택';
+  final TextEditingController locationController = TextEditingController();
   String selectedNotification = '30분 전';
 
   List<String> notificationOptions = ['10분 전', '30분 전', '1시간 전', '당일'];
@@ -67,12 +67,6 @@ class ChatAppointmentBodyState extends ConsumerState<ChatAppointmentBody> {
         selectedTime = pickedTime;
       });
     }
-  }
-
-  void _selectLocation() {
-    setState(() {
-      selectedLocation = '광안역 수영역 중간';
-    });
   }
 
   void _selectNotification() {
@@ -179,48 +173,26 @@ class ChatAppointmentBodyState extends ConsumerState<ChatAppointmentBody> {
             SizedBox(height: 16),
             buildTitle('장소'),
             SizedBox(height: 8),
-            GestureDetector(
-              onTap: _selectLocation,
-              child: Container(
-                height: 47,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: _defaultBoxDecoration(),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      selectedLocation,
-                      style: TextStyle(
-                          color: selectedLocation == '장소 선택'
-                              ? Colors.grey
-                              : Colors.black),
-                    ),
-                    Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
-                  ],
+            TextFormField(
+              controller: locationController,
+              decoration: InputDecoration(
+                focusColor: Colors.grey,
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
                 ),
               ),
             ),
-            SizedBox(height: 16),
-            buildTitle('장소 상세 설명'),
-            SizedBox(height: 8),
-            TextFormField(
-                decoration: InputDecoration(
-              focusColor: Colors.grey,
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
-              ),
-            )),
             SizedBox(height: 16),
             buildTitle('약속 전 나에게 알림'),
             SizedBox(height: 8),
@@ -255,7 +227,7 @@ class ChatAppointmentBodyState extends ConsumerState<ChatAppointmentBody> {
               userId: chatData.senderId,
               date: selectedDate.toString(),
               time: _formatTimeOfDay(selectedTime!),
-              location: selectedLocation,
+              location: locationController.text,
               isRead: false,
               // TODO : selectedNotification int로 수정 , description controller추가
               //   String selectedNotification = '30분 전';

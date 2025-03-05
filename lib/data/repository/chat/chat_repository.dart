@@ -115,16 +115,13 @@ class ChatRepository {
       );
 
       if (response.statusCode == 200) {
-        // ✅ 응답 데이터 추출
         List<dynamic> data = response.data['data'];
         logger.e('이전 메시지 응답 데이터: $data');
 
-        // ✅ Map으로 변환 후 ChatMessage 리스트로 매핑
         List<ChatMessage> messages = data
             .map((item) => ChatMessage.fromJson(item as Map<String, dynamic>))
             .toList();
 
-        // ✅ ChatMessage 리스트를 Map<String, dynamic>으로 변환
         List<Map<String, dynamic>> jsonList =
             messages.map((msg) => msg.toJson()).toList();
 
