@@ -111,7 +111,8 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
             "chatRoomId": chatMessage.chatRoomId,
             "content": chatMessage.content,
             "userId": chatMessage.userId,
-            "isFirst": chatMessage.isFirst
+            "isFirst": chatMessage.isFirst,
+            "isRead": chatMessage.isRead
           };
           // 약속 메시지인 경우
         } else {
@@ -123,7 +124,8 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
             "location": chatMessage.location,
             "locationDescription": chatMessage.locationDescription,
             "remindBefore": chatMessage.reminderBefore,
-            "isFirst": chatMessage.isFirst
+            "isFirst": chatMessage.isFirst,
+            "isRead": chatMessage.isRead
           };
         }
         stompClient.send(
@@ -200,7 +202,6 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   }
 
   void markMessagesAsRead() async {
-
     final sessionUser = ref.watch(LoginProvider);
 
     final chatRoomId = this.chatRoomId;
@@ -219,6 +220,8 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
         }).toList();
         state = AsyncData(currentRoom.copyWith(messages: updatedMessages));
       });
+      // TODO : (중요) 어떤 방법이 있을지 고민해보기
+      ref.read(chatListProvider.notifier).refreshChatRooms();
     } catch (e) {
       logger.e("읽음 처리 요청 실패: $e");
     }
