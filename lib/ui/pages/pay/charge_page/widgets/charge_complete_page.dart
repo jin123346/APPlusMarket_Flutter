@@ -25,7 +25,7 @@ class ChargeCompletePage extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(vertical: 20),
               child: Text(
-                '김민희님\n1,000원이 충전되었습니다',
+                '밈페이🍎님\n50,000원이 충전되었습니다!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18,

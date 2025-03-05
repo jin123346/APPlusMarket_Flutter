@@ -103,45 +103,46 @@ class PayHomePage extends StatelessWidget {
   }
 
   // 최근 이용내역
+// 최근 이용내역
   Widget _buildRecentTransactions() {
     return Card(
-      color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text('최근 이용내역', style: CustomTextTheme.titleMedium),
-              Spacer(),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
+      child: Padding(
+        padding: const EdgeInsets.all(APlusTheme.spacingM),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 타이틀 위에 텍스트 추가
+            Row(
+              children: [
+                Text('최근 이용내역', style: CustomTextTheme.titleMedium),
+                Spacer(),
+                Icon(
                   Icons.arrow_forward_ios,
                   size: iconList,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: APlusTheme.spacingM),
-          PayTransactionItem(
-            title: '오버디바이크 공식 안장 판매합..',
-            date: '09.28',
-            type: '승인',
-            amount: -10000,
-          ),
-          PayTransactionItem(
-            title: '기업 1011',
-            date: '09.28',
-            type: '충전',
-            amount: 10000,
-          ),
-          PayTransactionItem(
-            title: '9/13 금 롯데한화 6:30',
-            date: '09.13',
-            type: '송금',
-            amount: -60000,
-          ),
-        ],
+              ],
+            ),
+            PayTransactionItem(
+              title: '맥 미니',
+              date: '03.07',
+              type: '송금',
+              amount: -10000,
+            ),
+            PayTransactionItem(
+              title: '10,000 충전',
+              date: '02.10',
+              type: '충전',
+              amount: 10000,
+            ),
+            PayTransactionItem(
+              title: '갤럭시 스마트태그2',
+              date: '12.31',
+              type: '송금',
+              amount: -5000,
+              showBorder: false,
+            ),
+          ],
+        ),
       ),
     );
   } // end of _buildRecentTransactions
