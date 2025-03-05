@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../_core/components/size.dart';
 import '../../../../_core/utils/apiUrl.dart';
+import '../../../../_core/utils/logger.dart';
 import '../../../../data/gvm/session_gvm.dart';
 import '../../../../data/model/auth/login_state.dart';
 import '../../../../data/model/product/product.dart';
@@ -129,8 +130,9 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
         ),
       ),
     );
+    logger.i('선택된 카테고리 $selected');
     if (selected != null) {
-      ref.read(selectedCategoryProvider.notifier).state = selected;
+      ref.read(productModifyProvider.notifier).updateCategory(selected);
     }
   }
 
@@ -145,8 +147,10 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
         ),
       ),
     );
+    logger.i('선택된 브랜드 : $selected');
+
     if (selected != null) {
-      ref.read(selectedBrandProvider.notifier).state = selected;
+      ref.read(productModifyProvider.notifier).updateBrand(selected);
     }
   }
 
@@ -230,7 +234,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            selectedBrand,
+                                            product?.brand ?? '브랜드',
                                             style: TextStyle(
                                               fontSize: 15,
                                               color: selectedBrand == '브랜드'
@@ -264,7 +268,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            selectedCategory,
+                                            product?.category ?? '카테고리',
                                             style: TextStyle(
                                               fontSize: 15,
                                               color: selectedCategory == '카테고리'
