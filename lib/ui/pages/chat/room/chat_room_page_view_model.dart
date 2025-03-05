@@ -91,9 +91,18 @@ class ChatRoomPageViewModel extends AsyncNotifier<ChatRoom> {
   void setupMessageListener() {
     ref.watch(webSocketProvider.notifier).onMessageReceived =
         (ChatMessage newMessage) {
-      logger.d('메시지 화면 반영');
+      logger.d('메시지 화면 반영: ${newMessage.messageId}');
+
       state.whenData((currentRoom) {
-        final updatedMessages = [...currentRoom.messages, newMessage];
+        // 기존 메시지 중 동일한 messageId가 있는지 확인하여 필터링
+        final filteredMessages = currentRoom.messages
+            .where((msg) => msg.messageId != newMessage.messageId)
+            .toList();
+
+        // 새로운 메시지를 추가
+        final updatedMessages = [...filteredMessages, newMessage];
+
+        // 상태 업데이트
         state = AsyncData(currentRoom.copyWith(messages: updatedMessages));
       });
     };
