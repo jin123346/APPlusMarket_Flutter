@@ -85,33 +85,40 @@ class _ProductSellListState extends ConsumerState<ProductSellCompletedList> {
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text('${product.productName}'),
-                                        Text(
-                                            '${product.registerLocation} ${time} '),
-                                        Text('${price} 원'),
-                                        const SizedBox(height: 5),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: Colors.black,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${product.productName}',
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            softWrap: false,
                                           ),
-                                          child: Text(
-                                            '거래완료',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12),
-                                          ),
-                                        )
-                                      ],
+                                          Text(
+                                              '${product.registerLocation} ${time} '),
+                                          Text('${price} 원'),
+                                          const SizedBox(height: 5),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Text(
+                                              '거래완료',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     )
                                   ],
                                 )),

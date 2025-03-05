@@ -73,55 +73,64 @@ class _ProductSellListState extends ConsumerState<ProductSellList> {
                               children: [
                                 const SizedBox(height: 16),
                                 SizedBox(
+                                    width: double.infinity,
                                     child: Row(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      child: Image.network(
-                                        "$apiUrl/uploads/${product.id}/${product.uuidName}",
-                                        width: 140,
-                                        height: 150,
-                                        fit: BoxFit.fitHeight,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          '${product.productName}',
-                                          style: CustomTextTheme.titleMedium,
-                                        ),
-                                        Text(
-                                            '${product.registerLocation} ${time} '),
-                                        Text(
-                                          '${price} 원',
-                                          style: CustomTextTheme.titleMedium,
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
+                                          child: Image.network(
+                                            "$apiUrl/uploads/${product.id}/${product.uuidName}",
+                                            width: 140,
+                                            height: 150,
+                                            fit: BoxFit.fitHeight,
                                           ),
-                                          child: Text(
-                                            '판매중',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${product.productName}',
+                                                style:
+                                                    CustomTextTheme.titleMedium,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                softWrap: false,
+                                              ),
+                                              Text(
+                                                  '${product.registerLocation} ${time} '),
+                                              Text(
+                                                '${price} 원',
+                                                style:
+                                                    CustomTextTheme.titleMedium,
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 4),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.red,
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                                child: Text(
+                                                  '판매중',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         )
                                       ],
-                                    )
-                                  ],
-                                )),
+                                    )),
                                 const SizedBox(height: 8),
                                 Row(
                                   mainAxisAlignment:
