@@ -73,7 +73,6 @@ class ChatListPageViewModel extends StateNotifier<List<ChatRoomCard>> {
         return chatRoom.copyWith(
             recentMessage: newMessage.content, // 최신 메시지 업데이트
             messageCreatedAt: newMessage.createdAt, // 메시지 시간 업데이트
-            // TODO : 이거 수정해야함 내가 한건지 확인 하는 로직 ***
 
             unRead: sessionUser.id == newMessage.userId
                 ? chatRoom.unRead
