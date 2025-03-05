@@ -27,7 +27,7 @@ class SelectionPage extends ConsumerStatefulWidget {
 class _SelectionPageState extends ConsumerState<SelectionPage> {
   @override
   void initState() {
-    if (widget.title == '브랜드') {
+    if (widget.title == '카테고리') {
       CategoryVM categoryVM = ref.read(categoryProvider.notifier);
       categoryVM.getAllCategory();
     }

@@ -52,8 +52,18 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
     productFindController = TextEditingController();
   }
 
+  void clear() {
+    titleController.clear();
+    priceController.clear();
+    descriptionController.clear();
+    tradeLocationController.clear();
+    productNameController.clear();
+    productFindController.clear();
+  }
+
   @override
   void dispose() {
+    clear();
     titleController.dispose();
     priceController.dispose();
     descriptionController.dispose();
@@ -121,7 +131,10 @@ class _ProductRegisterBodyState extends ConsumerState<ProductRegisterBody> {
           title: const Text('내 물건 팔기'),
           leading: IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pushNamed(context, '/home'),
+            onPressed: () {
+              ref.read(imageStateProvider.notifier).reset();
+              Navigator.pushNamed(context, '/home');
+            },
           ),
         ),
         body: SingleChildScrollView(

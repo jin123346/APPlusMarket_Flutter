@@ -177,6 +177,14 @@ class ProductModifyVM extends Notifier<Product> {
   void updateIsNego(bool? value) {
     state = state.copyWith(isNegotiable: value);
   }
+
+  void updateBrand(String brand) {
+    state = state.copyWith(brand: brand);
+  }
+
+  void updateCategory(String category) {
+    state = state.copyWith(category: category);
+  }
 }
 
 final productModifyProvider = NotifierProvider<ProductModifyVM, Product>(
