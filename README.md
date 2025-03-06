@@ -91,6 +91,8 @@ Name	Role	GitHub
 
 > 채팅화면
 
+![image](https://github.com/user-attachments/assets/4ce803ca-fca1-4f3c-9d93-cc9209a30f47)
+
 
 > 마이페이지화면
 
