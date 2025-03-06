@@ -35,7 +35,7 @@ class PayHomePage extends StatelessWidget {
           // 1. 애쁠머니
           PayMoneyCard(
             // 잔액
-            balance: 0,
+            balance: 100000,
             // 🔁 초기화 아이콘
             onRefresh: () {},
             // 충전 - chargePage
@@ -103,7 +103,6 @@ class PayHomePage extends StatelessWidget {
   }
 
   // 최근 이용내역
-// 최근 이용내역
   Widget _buildRecentTransactions() {
     return Card(
       child: Padding(
@@ -191,18 +190,23 @@ class PayHomePage extends StatelessWidget {
               ),
               trailing: ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
-                child: Container(
-                  width: 60,
-                  height: 35,
+                child: Material(
                   color: APlusTheme.tertiaryColor,
-                  child: TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      foregroundColor: APlusTheme.primaryColor, // 텍스트 색상
-                    ),
-                    child: Text(
-                      '받기',
-                      style: TextStyle(color: Colors.black),
+                  child: InkWell(
+                    onTap: () {
+                      print('받기 버튼 클릭됨');
+                    },
+                    child: Container(
+                      width: 60,
+                      height: 35,
+                      alignment: Alignment.center,
+                      child: Text(
+                        '받기',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ),

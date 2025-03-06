@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:page_transition/page_transition.dart';
 import '../../../../_core/utils/logger.dart';
 import '../../../../_core/components/theme.dart';
 import 'widgets/charge_password_page.dart';
@@ -171,12 +170,20 @@ class _ChargePageState extends State<ChargePage> {
       child: Column(
         children: [
           Text(
-            '얼마를 충전할까요?${_currentAmount.isEmpty ? "0" : _currentAmount}원',
+            '얼마를 충전할까요?',
             style: CustomTextTheme.titleLarge,
           ),
+          SizedBox(height: APlusTheme.spacingS),
+          if (_currentAmount.isNotEmpty)
+            Text(
+              '${_currentAmount}원',
+              style: CustomTextTheme.titleLarge?.copyWith(
+                color: Colors.grey[700], // 회색으로 설정
+              ),
+            ),
           SizedBox(height: APlusTheme.spacingM),
           Text(
-            '당근머니 잔액',
+            '애쁠머니 잔액',
             style: CustomTextTheme.bodyMedium?.copyWith(
               color: APlusTheme.labelSecondary,
             ),
@@ -241,7 +248,6 @@ class _ChargePageState extends State<ChargePage> {
   }
 
   // 충전하기 버튼 → 비밀번호 입력 페이지 이동
-
   Widget _buildChargeButton() {
     return Padding(
       padding: EdgeInsets.all(APlusTheme.spacingM),
