@@ -132,12 +132,6 @@ This project is licensed under the ApplusMarkte License - see the [LICENSE](./LI
 
 ---
 
-## 📧 Contact
-프로젝트에 대한 문의 또는 기여 관련 질문은 아래 이메일로 연락해 주세요.
-- **이메일:** hajhi7899@gmail.com / 
-
----
-
 ## ⭐️ Show Your Support
 이 프로젝트가 도움이 되었다면 ⭐️ 스타를 눌러주세요!
 
