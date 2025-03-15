@@ -16,6 +16,7 @@ import '../../gvm/session_gvm.dart';
 import '../../model/auth/login_state.dart';
 import '../../model/product/product_image.dart';
 import 'image_item_view_model.dart';
+import 'product_my_list_model_view.dart';
 
 class ProductModifyVM extends Notifier<Product> {
   final ProductRepository productRepository = const ProductRepository();
@@ -139,6 +140,10 @@ class ProductModifyVM extends Notifier<Product> {
           await productRepository.modifyProduct(id, user.id!, formData);
 
       imageProvider.reset();
+
+      ref
+          .read(productMyLisProvider.notifier)
+          .updateProductPrice(id, int.parse(price));
 
       return;
     } catch (e, stackTrace) {

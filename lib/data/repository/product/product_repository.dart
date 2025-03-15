@@ -92,6 +92,13 @@ class ProductRepository {
     return response.data;
   }
 
+  Future<Map<String, dynamic>> searchProductForCheck(String keyword) async {
+    Response response = await dio.get('/api/samsung/search/check',
+        queryParameters: {"keyword": keyword});
+
+    return response.data;
+  }
+
   Future<Map<String, dynamic>> selectForMyList(
       Map<String, dynamic> body) async {
     Response response = await dio.get('/product/on-sale', data: body);

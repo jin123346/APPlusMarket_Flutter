@@ -318,7 +318,7 @@ class _ProductRegisterBodyState extends ConsumerState<ProductModifyBody> {
                               width: 25,
                               height: 25,
                               child: Checkbox(
-                                value: product!.isNegotiable,
+                                value: product?.isNegotiable ?? false,
                                 onChanged: (value) {
                                   productProvider.updateIsNego(value);
                                 },

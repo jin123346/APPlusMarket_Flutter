@@ -97,7 +97,7 @@ class SessionGVM extends Notifier<SessionUser> {
       Map<String, dynamic> resBody = tuple.$1;
       String? newAccessToken = tuple.$2;
 
-      if (resBody['code'] != 1000 || newAccessToken == null) {
+      if (resBody['code'] != 1219 || newAccessToken == null) {
         logger.w("❌ 자동 로그인 실패 - 로그인 화면으로 이동");
         Navigator.pushNamed(mContext, "/login");
         return;
@@ -122,7 +122,13 @@ class SessionGVM extends Notifier<SessionUser> {
         isLoggedIn: true,
       );
       logger.i('업데이트 된 정보@@ ${state.nickname}');
+
       _setupDioInterceptor(newAccessToken);
+
+      ref.watch(webSocketProvider.notifier).subscribeUser(state.id!);
+      ref.watch(webSocketProvider.notifier).subscribeToNotifications(state.id!);
+      ref.watch(webSocketProvider.notifier).requestPastNotifications(state.id!);
+
       Navigator.pushNamed(mContext, "/home");
     } else {
       logger.w("❌ refreshToken 존재 X  - 로그인 화면으로 이동");
@@ -179,6 +185,13 @@ class SessionGVM extends Notifier<SessionUser> {
           _setupDioInterceptor(accessToken);
           logger.e('사용자 아이디로 구독 시도');
           ref.watch(webSocketProvider.notifier).subscribeUser(state.id!);
+          ref
+              .watch(webSocketProvider.notifier)
+              .subscribeToNotifications(state.id!);
+          ref
+              .watch(webSocketProvider.notifier)
+              .requestPastNotifications(state.id!);
+
           logger.e('사용자 아이디로 구독 완료');
           Navigator.popAndPushNamed(mContext, '/home');
         } else {
@@ -253,7 +266,7 @@ class SessionGVM extends Notifier<SessionUser> {
 
       // logger.e('! [] ==  이용시 : ${!response['code'] == 1009}'); 런타임 시 여기서 에러
 
-      if (response['code'] != 1010) {
+      if (response['code'] != 1217) {
         _showErrorDialog('로그아웃 API 요청 에러', response['message']);
         return;
       }

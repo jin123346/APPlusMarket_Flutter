@@ -147,6 +147,15 @@ class ProductMyListVM extends Notifier<List<ProductMyList>> {
       ExceptionHandler.handleException('조회시 오류 발생, $e', stackTrace);
     }
   }
+
+  void updateProductPrice(int productId, int price) {
+    state = state.map((e) {
+      if (e.id == productId) {
+        return e.copyWith(price: price);
+      }
+      return e; // else 케이스 명시적으로 반환
+    }).toList();
+  }
 }
 
 final productMyLisProvider =
