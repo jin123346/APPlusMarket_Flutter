@@ -31,6 +31,7 @@ class _WishListPageState extends ConsumerState<WishListPage> {
     logger.i('관심상품 리스트 로직 시작');
     await ref.read(productWishProvider.notifier).getMyWishList();
     wishLists = ref.watch(productWishProvider);
+    logger.w(wishLists);
     if (wishLists.isEmpty) {
       wishLists = [];
       isLoading = false;
@@ -41,82 +42,85 @@ class _WishListPageState extends ConsumerState<WishListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return (isLoading)
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : wishLists.isEmpty
-            ? Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            : GridView.builder(
-                padding: EdgeInsets.all(5.0),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                ),
-                itemCount: wishLists.length,
-                itemBuilder: (context, index) {
-                  ProductCard product = wishLists[index];
-                  return GestureDetector(
-                    onTap: () {
-                      // 상품 클릭 시 상세 페이지로 이동
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ProductViewPage(productId: product.productId),
+    wishLists = ref.watch(productWishProvider);
+
+    return Scaffold(
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : wishLists.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text('관심 상품이 없습니다.'),
+                  ),
+                )
+              : GridView.builder(
+                  padding: EdgeInsets.all(5.0),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 5,
+                    mainAxisSpacing: 5,
+                  ),
+                  itemCount: wishLists.length,
+                  itemBuilder: (context, index) {
+                    ProductCard product = wishLists[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProductViewPage(productId: product.productId),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                product.thumbnailImage,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  product.thumbnailImage,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${product.price} 원',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${product.price} 원',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  product.name,
-                                  style: const TextStyle(fontSize: 14.5),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              ],
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    product.name,
+                                    style: const TextStyle(fontSize: 14.5),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              );
+                    );
+                  },
+                ),
+    );
   }
 }

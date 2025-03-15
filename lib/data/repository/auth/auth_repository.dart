@@ -66,9 +66,9 @@ class AuthRepository {
 
     Response response = await dio.get("/auth/refresh");
     Map<String, dynamic> responseBody = response.data;
-    if (response.statusCode == 200 && responseBody['code'] == 1000) {
+    if (response.statusCode == 200 && responseBody['code'] == 1219) {
       String? newAccessToken = response.headers.value('Authorization');
-      logger.i("✅ Access Token 갱신 완료: $newAccessToken");
+      logger.i("Access Token 갱신 완료: $newAccessToken");
       return (responseBody, newAccessToken);
     }
 

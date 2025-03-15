@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../_core/components/size.dart';
 import '../../../../_core/utils/logger.dart';
+import '../../../../data/gvm/search_event_notifier.dart';
 import '../../../../data/model_view/product/product_search_notifier.dart';
 
 class ProductSearchField extends ConsumerStatefulWidget {
@@ -23,10 +24,13 @@ class _ProductSearchFieldState extends ConsumerState<ProductSearchField> {
   final LayerLink _layerLink = LayerLink();
   final FocusNode _focusNode = FocusNode();
 
+  int searchResult = 0;
+
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
       ref.read(productSearchProvider.notifier).searchProducts(query);
+      _showOverlay();
     });
   }
 
@@ -48,43 +52,87 @@ class _ProductSearchFieldState extends ConsumerState<ProductSearchField> {
 
   OverlayEntry _createOverlayEntry(Offset offset, double textFieldHeight) {
     final productList = ref.watch(productSearchProvider);
+    SearchAction action = ref.watch(searchEventProvider);
     return OverlayEntry(
-      builder: (context) => Positioned(
-        left: offset.dx,
-        top: offset.dy + textFieldHeight + 8, // TextField 바로 아래에 위치
-        width: MediaQuery.of(context).size.width * 0.9,
-        child: Material(
-          elevation: 4,
-          borderRadius: BorderRadius.circular(10),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: 250, // 최대 높이 제한 (overflow 시 스크롤)
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: productList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(productList[index].name ?? "이름 없음"),
-                  onTap: () {
-                    widget.controller.text = productList[index].name ?? "";
-                    ref
-                        .read(productSearchProvider.notifier)
-                        .updateCurrentSelected(productList[index]);
-                    _hideOverlay();
-                  },
-                );
+      builder: (context) => Stack(
+        children: [
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                _hideOverlay(); // 다른 곳 클릭하면 overlay 사라짐
               },
+              behavior: HitTestBehavior.opaque, // 투명한 영역도 클릭 감지
+              child: Container(), // 빈 컨테이너지만 클릭 이벤트를 감지
             ),
           ),
-        ),
+          Positioned(
+            left: offset.dx,
+            top: offset.dy + textFieldHeight + 8, // TextField 바로 아래에 위치
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Material(
+              elevation: 4,
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: 250, // 최대 높이 제한 (overflow 시 스크롤)
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: action == SearchAction.isLoading
+                    ? _loadingIndicator() // 로딩 중일 때 표시
+                    : _buildProductList(productList),
+              ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _loadingIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(),
+          const SizedBox(height: 10),
+          Text(
+            "검색 중...",
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductList(List<dynamic> productList) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: productList.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(productList[index].name ?? "이름 없음"),
+          onTap: () {
+            widget.controller.text = productList[index].name ?? "";
+            ref
+                .read(productSearchProvider.notifier)
+                .updateCurrentSelected(productList[index]);
+            _hideOverlay();
+          },
+        );
+      },
+    );
+  }
+
+  void _updateOverlay() {
+    if (_overlayEntry != null) {
+      _hideOverlay(); // 기존 Overlay 제거
+      _showOverlay(); // 새 Overlay 삽입
+    }
   }
 
   @override
@@ -102,6 +150,9 @@ class _ProductSearchFieldState extends ConsumerState<ProductSearchField> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(searchEventProvider, (_, __) {
+      _updateOverlay(); // 상태 변경 감지 시 Overlay 업데이트
+    });
     return CompositedTransformTarget(
       link: _layerLink,
       child: Column(

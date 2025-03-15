@@ -54,12 +54,18 @@ class _WishBodyState extends ConsumerState<WishBody>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          WishListPage(),
-          RecentListPage(),
-        ],
+      body: NestedScrollView(
+        // ✅ ✅ ✅ 변경 부분
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return []; // 필요 시 SliverAppBar 추가 가능
+        },
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            WishListPage(),
+            RecentListPage(),
+          ],
+        ),
       ),
     );
   }
