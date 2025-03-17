@@ -4,6 +4,7 @@ import 'package:applus_market/_core/utils/custom_snackbar.dart';
 import 'package:applus_market/_core/utils/dialog_helper.dart';
 import 'package:applus_market/_core/utils/exception_handler.dart';
 import 'package:applus_market/data/gvm/myinfo_event_notifier.dart';
+import 'package:applus_market/data/gvm/notification_state.dart';
 import 'package:applus_market/data/gvm/websocket/websocket_notifier.dart';
 import 'package:applus_market/data/repository/auth/auth_repository.dart';
 import 'package:applus_market/main.dart';
@@ -277,6 +278,8 @@ class SessionGVM extends Notifier<SessionUser> {
       // 쿠키 삭제 - Refresh Token 제거
       await cookieJar.deleteAll();
       logger.e('로그아웃 되었습니다.');
+
+      ref.read(notificationProvider.notifier).clearNotifications();
 
       // 이전 화면 다 파괴
       Navigator.pushNamedAndRemoveUntil(
