@@ -3,7 +3,7 @@ import 'package:applus_market/data/model/product/product_info_card.dart';
 class ProductListModel {
   bool isFirst;
   bool isLast;
-  int lastIndex;
+  int page;
   int size;
   int totalPage;
   List<ProductInfoCard> products;
@@ -11,7 +11,7 @@ class ProductListModel {
   ProductListModel(
       {required this.isFirst,
       required this.isLast,
-      required this.lastIndex,
+      required this.page,
       required this.size,
       required this.totalPage,
       required this.products});
@@ -20,7 +20,7 @@ class ProductListModel {
     return ProductListModel(
       isFirst: map['isFirst'] ?? false,
       isLast: map['isLast'] ?? false,
-      lastIndex: map['lastIndex'] ?? 0,
+      page: map['page'] ?? 0,
       size: map['size'] ?? 10,
       totalPage: map['totalPage'] ?? 1,
       products: (map['products'] as List<dynamic>? ?? [])
@@ -33,7 +33,7 @@ class ProductListModel {
   ProductListModel copyWith({
     bool? isFirst,
     bool? isLast,
-    int? lastIndex,
+    int? page,
     int? size,
     int? totalPage,
     List<ProductInfoCard>? products,
@@ -41,7 +41,7 @@ class ProductListModel {
     return ProductListModel(
       isFirst: isFirst ?? this.isFirst,
       isLast: isLast ?? this.isLast,
-      lastIndex: lastIndex ?? this.lastIndex,
+      page: page ?? this.page,
       size: size ?? this.size,
       totalPage: totalPage ?? this.totalPage,
       products:
@@ -51,6 +51,6 @@ class ProductListModel {
 
   @override
   String toString() {
-    return 'ProductListModel{isFirst: $isFirst, isLast: $isLast, lastIndex: $lastIndex, size: $size, totalPage: $totalPage, products: $products}';
+    return 'ProductListModel{isFirst: $isFirst, isLast: $isLast, page: $page, size: $size, totalPage: $totalPage, products: $products}';
   }
 }

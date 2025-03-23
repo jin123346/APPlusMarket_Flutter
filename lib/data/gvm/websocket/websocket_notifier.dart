@@ -114,18 +114,10 @@ class WebSocketNotifier extends Notifier<bool> {
   }
 
   void requestPastNotifications(int userId) {
-    logger.i("📡 과거 알림 요청 시작: $userId");
+    logger.d("구독 시도: /topic/notification/first/$userId");
 
-    stompClient?.send(
-      destination: "/app/notifications/history",
-      body: json.encode({"userId": userId}),
-    );
-  }
-
-  void subscribeToNotifications(int userId) {
-    logger.i("알림 구독 시작");
     String destination =
-        "/topic/notification/$userId"; // 백엔드에서 설정한 WebSocket 경로
+        "/topic/notification/first/$userId"; // 백엔드에서 설정한 WebSocket 경로
 
     stompClient?.subscribe(
       destination: destination,
@@ -146,6 +138,37 @@ class WebSocketNotifier extends Notifier<bool> {
               // 단일 JSON 객체 처리
               NotificationItem item = NotificationItem.fromJson(decodedData);
               ref.read(notificationProvider.notifier).addNotification(item);
+            } else {
+              logger.e("알 수 없는 데이터 형식: ${frame.body}");
+            }
+          } catch (e) {
+            logger.e("알림 데이터 변환 오류: $e, 원본 데이터: ${frame.body}");
+          }
+        }
+      },
+    );
+  }
+
+  void subscribeToNotifications(int userId) {
+    logger.i("알림 구독 시작 subscribeToNotifications");
+    String destination =
+        "/topic/notification/$userId"; // 백엔드에서 설정한 WebSocket 경로
+
+    stompClient?.subscribe(
+      destination: destination,
+      callback: (StompFrame frame) {
+        logger.w("Received  실시간 message: ${frame.body}");
+
+        if (frame.body != null) {
+          try {
+            dynamic decodedData = json.decode(frame.body!);
+
+            if (decodedData is List<dynamic>) {
+              // JSON 배열이면 리스트 변환
+              List<NotificationItem> items = decodedData.map((e) {
+                return NotificationItem.fromJson(e);
+              }).toList();
+              ref.read(notificationProvider.notifier).addNotifications(items);
             } else {
               logger.e("알 수 없는 데이터 형식: ${frame.body}");
             }

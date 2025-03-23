@@ -54,10 +54,10 @@ class ProductListGvm extends AutoDisposeNotifier<ProductListModel?> {
 
     if (state!.isLast) return;
     try {
-      int lastIndex = state!.lastIndex;
-      logger.i('lastIndex : $lastIndex');
+      int newPage = state!.page + 1;
+      logger.i('newPage : $newPage');
       Map<String, dynamic> resBody =
-          await productRepository.getProductsPage(pageKey: lastIndex);
+          await productRepository.getProductsPage(pageKey: newPage);
       logger.i('fetchProducts : $resBody');
 
       final newProducts = ProductListModel.fromMap(resBody['data']).products;
@@ -67,7 +67,7 @@ class ProductListGvm extends AutoDisposeNotifier<ProductListModel?> {
         isFirst: resBody['data']['isFirst'],
         isLast: resBody['data']['isLast'],
         products: [...state!.products, ...newProducts],
-        lastIndex: resBody['data']['lastIndex'],
+        page: resBody['data']['page'],
       );
     } catch (e, stackTrace) {
       ExceptionHandler.handleException('상품 목록 불러오기 실패', stackTrace);
@@ -113,7 +113,7 @@ class ProductListGvm extends AutoDisposeNotifier<ProductListModel?> {
     return tempUserId;
   }
 
-  Future<void> searchProducts({required String keyword, int? lastIndex}) async {
+  Future<void> searchProducts({required String keyword, int? page}) async {
     if (_isLoding) {
       logger.w('이미 검색 중이므로 요청을 무시함.');
       return;
@@ -123,7 +123,7 @@ class ProductListGvm extends AutoDisposeNotifier<ProductListModel?> {
 
     try {
       Map<String, dynamic> resBody =
-          await productRepository.searchProducts(keyword, lastIndex);
+          await productRepository.searchProducts(keyword, page);
       logger.i('searchProducts : $resBody');
 
       if (resBody['status'] == 'failed') {
