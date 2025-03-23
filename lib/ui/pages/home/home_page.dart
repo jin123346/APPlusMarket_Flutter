@@ -98,14 +98,21 @@ class _HomePageState extends ConsumerState<HomePage> {
         enablePullUp: model != null && !model.isLast,
         enablePullDown: true,
         onLoading: () async {
-          int lastIndex = model!.lastIndex;
           if (isSearching) {
             await vm.searchProducts(
-                keyword: textEditingController.text, lastIndex: lastIndex ?? 0);
+                keyword: textEditingController.text,
+                page: model!.page + 1 ?? 0);
           }
-          await vm.fetchProducts();
+          if (model != null && model.isLast) {
+            _refreshController.loadNoData(); // 마지막
+            return; // 더 이상 요청 X
+          } else {
+            await vm.fetchProducts();
+          }
+
           _refreshController.loadComplete();
         },
+
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(

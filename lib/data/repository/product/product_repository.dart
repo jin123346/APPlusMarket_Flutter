@@ -39,7 +39,7 @@ class ProductRepository {
     try {
       Response response = await dio.get(
         '/product/listpage',
-        queryParameters: {'lastIndex': pageKey},
+        queryParameters: {'page': pageKey},
       );
       return response.data;
     } catch (e) {
@@ -51,16 +51,15 @@ class ProductRepository {
   Future<Map<String, dynamic>> getFirstList(String? keyword) async {
     Response response = await dio.get(
       '/product/listpage',
-      queryParameters: {'lastIndex': 0, 'keyword': keyword},
+      queryParameters: {'page': 0, 'keyword': keyword},
     );
     return response.data;
   }
 
-  Future<Map<String, dynamic>> searchProducts(
-      String keyword, int? lastIndex) async {
+  Future<Map<String, dynamic>> searchProducts(String keyword, int? page) async {
     Response response = await dio.get(
       '/product/listpage',
-      queryParameters: {'keyword': keyword, 'lastIndex': lastIndex},
+      queryParameters: {'keyword': keyword, 'page': page},
     );
     return response.data;
   }
