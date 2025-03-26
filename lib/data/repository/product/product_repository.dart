@@ -134,7 +134,7 @@ class ProductRepository {
 
   Future<Map<String, dynamic>> modifyProduct(
       int productId, int userId, FormData formdata) async {
-    Response response = await dio.put('/product/modify/${productId}/${userId}',
+    Response response = await dio.post('/product/modify/${productId}/${userId}',
         data: formdata,
         options: Options(
           contentType: "multipart/form-data",
